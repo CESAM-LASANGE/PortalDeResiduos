@@ -23,7 +23,7 @@ Uso frequente em celular. A tarefa mais comum é "achar o documento de um munic�
 - Busca global (`SiteSearch`) e seus atalhos de teclado.
 - Link "Pular para o conteúdo", foco no `main` a cada rota, respeito a `prefers-reduced-motion`.
 - Todas as URLs de `src/data/siteMap.ts` e os aliases legados.
-- A tarefa ativa `tasks/active/TASK_reorganizar_hero_e_diretorios.md`: os três cards do herói levam a Projeto Valoriza, Nota Técnica e Diretórios. Nada deste pacote contradiz isso.
+- A tarefa `tasks/done/TASK_reorganizar_hero_e_diretorios.md` (concluída): os três cards do herói levam a Projeto Valoriza, Nota Técnica e Diretórios. Nada deste pacote contradiz isso.
 
 ## Mapa de arquivos
 

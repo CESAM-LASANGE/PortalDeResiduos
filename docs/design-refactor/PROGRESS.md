@@ -49,6 +49,11 @@ Texto novo ou alterado visível ao público. Nada disso vai ao ar sem aprovaçã
 
 ## Sessões
 
+### 2026-10-02 — organização das tarefas
+
+- 30 tarefas concluídas movidas de `tasks/active/` para `tasks/done/` (D1.1–D1.11, D2.1–D2.8, D3.1–D3.11 exceto D3.2, e `TASK_reorganizar_hero_e_diretorios.md`). Referências nos evals atualizadas.
+- Em `tasks/active/` fica só a D3.2, que espera a aprovação do texto "Sobre o panorama" (ADR-004).
+
 ### 2026-09-29 — D3.11 Produções em uma página (fim da fase 3)
 
 - Produções com âncoras e 7 seções com ação direta; Materiais Compilados e Municípios Contemplados mostram o índice (NAV-2). E10 final: tabela do `10-navegacao.md` toda a ≤ 2 cliques (GRS e notícia a 1); 105 documentos a 2, 59 a 3 (arquivos secundários dos planos, ADR-008 pendente), 0 páginas de erro, 0 órfãs.
