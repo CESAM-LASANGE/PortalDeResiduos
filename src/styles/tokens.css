@@ -21,6 +21,7 @@
   --cerrado-claro: #d4a15f; /* rótulo e foco sobre --mata-deep (5,78:1) */
   --cerrado-texto: #8a5a1f; /* texto cerrado sobre papel (5,31:1); o --cerrado nunca é texto */
   --line: #e0dccd;
+  --mata-claro: #dce8df; /* contorno do município escolhido no mapa (L01) */
   --line-strong: #cec8b4; /* borda decorativa de cartão */
   --field-border: #8a8470; /* borda de campo de formulário (3,58:1, WCAG 1.4.11) */
   --on-mata: #edf0e9;

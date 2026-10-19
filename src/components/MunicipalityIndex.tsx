@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState, type ReactNode } from 'react'
+import { lazy, Suspense, useMemo, useRef, useState, type ReactNode } from 'react'
 import { ExternalLink, Search } from 'lucide-react'
 import { Eyebrow } from './Eyebrow'
 import { Link } from './router'
@@ -21,6 +21,10 @@ const FILTROS: Array<{ id: Filtro; label: string; slugs?: Set<string> }> = [
 ]
 // Visão estadual dos panoramas (L09), no topo do índice.
 const relatorioGeral = documents.find((doc) => doc.title === 'Relatório geral dos panoramas')
+// O mapa (L01) e os contornos do IBGE só são baixados quando alguém escolhe "Mapa".
+const MunicipalityMap = lazy(() => import('./MunicipalityMap'))
+type Visao = 'lista' | 'mapa'
+const visaoDaUrl = (): Visao => (new URLSearchParams(window.location.search).get('visao') === 'mapa' ? 'mapa' : 'lista')
 const inicial = (name: string) => normalizeName(name).charAt(0).toUpperCase()
 
 type MunicipalityIndexProps = {
@@ -39,6 +43,7 @@ type MunicipalityIndexProps = {
 export function MunicipalityIndex({ eyebrow, title, description, filtroInicial = 'todos' }: MunicipalityIndexProps) {
   const [query, setQuery] = useState('')
   const [filtro, setFiltro] = useState<Filtro>(filtroInicial)
+  const [visao, setVisao] = useState<Visao>(visaoDaUrl)
   const inputRef = useRef<HTMLInputElement>(null)
   const termo = normalizeName(query.trim())
 
@@ -54,6 +59,12 @@ export function MunicipalityIndex({ eyebrow, title, description, filtroInicial =
     for (const city of visiveis) porLetra.set(inicial(city.name), [...(porLetra.get(inicial(city.name)) ?? []), city])
     return [...porLetra.entries()]
   }, [visiveis])
+
+  const mudarVisao = (nova: Visao) => {
+    setVisao(nova)
+    // Guarda a escolha na URL sem criar entrada no histórico (L01).
+    history.replaceState(history.state, '', nova === 'mapa' ? '?visao=mapa' : window.location.pathname)
+  }
 
   const limpar = () => {
     setQuery('')
@@ -87,9 +98,13 @@ export function MunicipalityIndex({ eyebrow, title, description, filtroInicial =
             </button>
           ))}
         </div>
+        <div className="segmented" role="group" aria-label="Visualização">
+          <button type="button" aria-pressed={visao === 'lista'} onClick={() => mudarVisao('lista')}>Lista</button>
+          <button type="button" aria-pressed={visao === 'mapa'} onClick={() => mudarVisao('mapa')}>Mapa</button>
+        </div>
       </div>
 
-      {grupos.length > 0 && (
+      {visao === 'lista' && grupos.length > 0 && (
         <nav className="municipality-az" aria-label="Índice alfabético">
           {grupos.map(([letra]) => <a key={letra} href={`#municipios-${letra.toLowerCase()}`}>{letra}</a>)}
         </nav>
@@ -104,6 +119,10 @@ export function MunicipalityIndex({ eyebrow, title, description, filtroInicial =
           <p>Nenhum município encontrado para “{query}”.</p>
           <button type="button" className="button button-ghost" onClick={limpar}>Limpar busca</button>
         </div>
+      ) : visao === 'mapa' ? (
+        <Suspense fallback={<p className="municipality-index-count">Carregando mapa…</p>}>
+          <MunicipalityMap cidades={visiveis.map((city) => ({ slug: city.slug, name: city.name, panorama: `/uploads/2025/03/${city.file}`, plano: planos.get(city.slug)?.primaryDocumentUrl }))} />
+        </Suspense>
       ) : (
         <div className="municipality-groups">
           {grupos.map(([letra, cidades]) => (

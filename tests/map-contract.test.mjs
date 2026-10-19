@@ -27,3 +27,23 @@ test('L01: todo marcador fica dentro da área desenhada', () => {
   const [, , largura, altura] = mapViewBox.split(' ').map(Number)
   for (const { slug, x, y } of municipalityShapes) assert.ok(x > 0 && x < largura && y > 0 && y < altura, slug)
 })
+
+test('L01: o índice de municípios alterna Lista e Mapa sobre a mesma busca e filtro', async () => {
+  const fs = await import('node:fs')
+  const indice = fs.readFileSync(new URL('../src/components/MunicipalityIndex.tsx', import.meta.url), 'utf8')
+  assert.match(indice, /lazy\(\(\) => import\('\.\/MunicipalityMap'\)\)/, 'o mapa carrega sob demanda')
+  assert.match(indice, /aria-label="Visualização"/)
+  assert.match(indice, />Lista</)
+  assert.match(indice, />Mapa</)
+  assert.match(indice, /visao=mapa/)
+  assert.match(indice, /<MunicipalityMap cidades=\{[^}]*visiveis/)
+})
+
+test('L01: marcadores são botões com nome acessível e o painel tem as ações da linha do índice', async () => {
+  const fs = await import('node:fs')
+  const mapa = fs.readFileSync(new URL('../src/components/MunicipalityMap.tsx', import.meta.url), 'utf8')
+  assert.match(mapa, /<button[\s\S]{0,400}?aria-label=\{`\$\{[a-z.]+\}: abrir opções`\}/)
+  assert.match(mapa, /'Escape'/)
+  for (const acao of ['Ficha', 'Panorama · PDF', 'Plano de coleta seletiva']) assert.ok(mapa.includes(acao), acao)
+  assert.match(mapa, /<svg[^>]*aria-hidden="true"/)
+})

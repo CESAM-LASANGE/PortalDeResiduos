@@ -229,6 +229,39 @@ textarea.field-control { resize: vertical; }
 .municipality-action-short { display: none; }
 .municipality-index-note { padding-bottom: var(--section-y); }
 
+/* Mapa dos municípios (L01): contornos do IBGE em SVG e marcadores como botões por cima. */
+.municipality-map { display: grid; grid-template-columns: minmax(0, 44rem) minmax(14rem, 1fr); gap: clamp(1.5rem, 4vw, 3rem); align-items: start; margin-top: 1.5rem; }
+.municipality-map-canvas { position: relative; }
+.municipality-map-svg { display: block; width: 100%; height: auto; }
+.municipality-map-svg path { fill: var(--paper-sunk); stroke: var(--paper); stroke-width: 1; vector-effect: non-scaling-stroke; }
+.municipality-map-svg path.is-visible { fill: var(--paper-raised); stroke: var(--line-strong); }
+.municipality-map-svg path.is-selected { fill: var(--mata-claro); stroke: var(--mata); }
+.municipality-map-markers { position: absolute; inset: 0; list-style: none; margin: 0; padding: 0; pointer-events: none; }
+.municipality-map-markers li { position: absolute; transform: translate(-50%, -50%); }
+/* O ponteiro é tratado no mapa (vizinho mais próximo); o botão atende teclado e leitor de tela. */
+.municipality-map-canvas { cursor: pointer; }
+.municipality-map-marker { position: relative; display: grid; place-items: center; width: 24px; height: 24px; padding: 0; background: none; border: 0; }
+.municipality-map-marker::before { content: ''; box-sizing: content-box; width: 10px; height: 10px; border: 2px solid var(--paper-raised); border-radius: 50%; background: var(--mata); }
+.municipality-map-marker[aria-expanded="true"]::before { width: 14px; height: 14px; background: var(--cerrado); }
+.municipality-map-label { position: absolute; left: 100%; top: 50%; display: none; transform: translateY(-50%); padding: 0 0.3rem; white-space: nowrap; font-family: var(--font-sans); font-size: var(--step-meta); font-weight: 600; color: var(--ink); background: var(--paper-raised); border: 1px solid var(--line); pointer-events: none; }
+.municipality-map-marker.is-label-left .municipality-map-label { left: auto; right: 100%; }
+.municipality-map.is-few .municipality-map-label,
+.municipality-map-marker:is(.is-hover, :focus-visible, [aria-expanded="true"]) .municipality-map-label { display: block; z-index: 1; }
+/* Fixo ao lado do mapa no desktop: abrir um município não rola a página sob o ponteiro. */
+.municipality-map-panel { position: sticky; top: 6rem; display: grid; gap: 0.75rem; justify-items: start; padding: 1.25rem; background: var(--paper-raised); border: 1px solid var(--line); border-top: 3px solid var(--mata); }
+.municipality-map-panel h3 { margin: 0; scroll-margin-top: 5.5rem; font-family: var(--font-display); font-size: var(--step-2); color: var(--ink); }
+.municipality-map-panel p { margin: 0; color: var(--ink-soft); font-size: var(--step-small); line-height: 1.6; }
+.municipality-map-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.municipality-map-close { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 44px; padding: 0; background: none; border: 0; cursor: pointer; }
+@media (max-width: 900px) {
+  .municipality-map { grid-template-columns: minmax(0, 1fr); }
+  .municipality-map-panel { position: static; }
+}
+/* No celular os nomes não cabem lado a lado: só o do marcador em foco ou escolhido. */
+@media (max-width: 560px) {
+  .municipality-map.is-few .municipality-map-marker:not(.is-hover, :focus-visible, [aria-expanded="true"]) .municipality-map-label { display: none; }
+}
+
 /* No celular: uma coluna; ações com rótulo curto e alvo de 44 px (DS-13) à direita do nome. */
 @media (max-width: 700px) {
   .municipality-groups { columns: 1; }
