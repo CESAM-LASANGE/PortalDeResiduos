@@ -17,6 +17,8 @@ export type SiteRoute = {
   parent?: string
   status: 'foundation' | 'pending-content' | 'legacy'
   notes?: string
+  /** Alias legado: a URL antiga troca para esta, sem recarregar (history.replaceState). */
+  redirectTo?: string
 }
 
 const page = (path: string, title: string, kind: SiteRoute['kind'], options: Partial<Omit<SiteRoute, 'path' | 'title' | 'kind'>> = {}): SiteRoute => ({
@@ -62,6 +64,22 @@ export const siteRoutes: SiteRoute[] = [
   page('/producoes-do-convenio/materiais-compilados/plano-de-compostagem/', 'Plano de Compostagem', 'projects', { parent: '/producoes-do-convenio/materiais-compilados/' }),
   page('/producoes-do-convenio/materiais-compilados/plano-de-coleta-seletiva/municipios-contemplados/', 'Municípios Contemplados', 'projects', { parent: '/producoes-do-convenio/materiais-compilados/plano-de-coleta-seletiva/' }),
   page('/producoes-do-convenio/materiais-compilados/plano-de-compostagem/municipios-contemplados/', 'Municípios Contemplados', 'projects', { parent: '/producoes-do-convenio/materiais-compilados/plano-de-compostagem/' }),
+  // Planos de coleta seletiva por município no site antigo (L13): levam à ficha, que lista o plano.
+  page('/producoes-do-convenio/materiais-compilados/plano-de-coleta-seletiva/alcinopolis/', 'Alcinópolis', 'cities', { status: 'legacy', redirectTo: '/cidades/alcinopolis/', notes: 'Página do plano no WordPress.' }),
+  page('/producoes-do-convenio/materiais-compilados/plano-de-coleta-seletiva/amambai/', 'Amambai', 'cities', { status: 'legacy', redirectTo: '/cidades/amambai/', notes: 'Página do plano no WordPress.' }),
+  page('/producoes-do-convenio/materiais-compilados/plano-de-coleta-seletiva/bataguassu/', 'Bataguassu', 'cities', { status: 'legacy', redirectTo: '/cidades/bataguassu/', notes: 'Página do plano no WordPress.' }),
+  page('/producoes-do-convenio/materiais-compilados/plano-de-coleta-seletiva/bonito/', 'Bonito', 'cities', { status: 'legacy', redirectTo: '/cidades/bonito/', notes: 'Página do plano no WordPress.' }),
+  page('/producoes-do-convenio/materiais-compilados/plano-de-coleta-seletiva/chapadao-do-sul/', 'Chapadão do Sul', 'cities', { status: 'legacy', redirectTo: '/cidades/chapadao-do-sul/', notes: 'Página do plano no WordPress.' }),
+  page('/producoes-do-convenio/materiais-compilados/plano-de-coleta-seletiva/costa-rica/', 'Costa Rica', 'cities', { status: 'legacy', redirectTo: '/cidades/costa-rica/', notes: 'Página do plano no WordPress.' }),
+  page('/producoes-do-convenio/materiais-compilados/plano-de-coleta-seletiva/coxim/', 'Coxim', 'cities', { status: 'legacy', redirectTo: '/cidades/coxim/', notes: 'Página do plano no WordPress.' }),
+  page('/producoes-do-convenio/materiais-compilados/plano-de-coleta-seletiva/gloria-de-dourados/', 'Glória de Dourados', 'cities', { status: 'legacy', redirectTo: '/cidades/gloria-de-dourados/', notes: 'Página do plano no WordPress.' }),
+  page('/producoes-do-convenio/materiais-compilados/plano-de-coleta-seletiva/japora/', 'Japorã', 'cities', { status: 'legacy', redirectTo: '/cidades/japora/', notes: 'Página do plano no WordPress.' }),
+  page('/producoes-do-convenio/materiais-compilados/plano-de-coleta-seletiva/miranda/', 'Miranda', 'cities', { status: 'legacy', redirectTo: '/cidades/miranda/', notes: 'Página do plano no WordPress.' }),
+  page('/producoes-do-convenio/materiais-compilados/plano-de-coleta-seletiva/mundo-novo/', 'Mundo Novo', 'cities', { status: 'legacy', redirectTo: '/cidades/mundo-novo/', notes: 'Página do plano no WordPress.' }),
+  page('/producoes-do-convenio/materiais-compilados/plano-de-coleta-seletiva/nova-alvorada-do-sul/', 'Nova Alvorada do Sul', 'cities', { status: 'legacy', redirectTo: '/cidades/nova-alvorada-do-sul/', notes: 'Página do plano no WordPress.' }),
+  page('/producoes-do-convenio/materiais-compilados/plano-de-coleta-seletiva/porto-murtinho/', 'Porto Murtinho', 'cities', { status: 'legacy', redirectTo: '/cidades/porto-murtinho/', notes: 'Página do plano no WordPress.' }),
+  page('/producoes-do-convenio/materiais-compilados/plano-de-coleta-seletiva/rio-brilhante/', 'Rio Brilhante', 'cities', { status: 'legacy', redirectTo: '/cidades/rio-brilhante/', notes: 'Página do plano no WordPress.' }),
+  page('/producoes-do-convenio/materiais-compilados/plano-de-coleta-seletiva/sidrolandia/', 'Sidrolândia', 'cities', { status: 'legacy', redirectTo: '/cidades/sidrolandia/', notes: 'Página do plano no WordPress.' }),
   page('/documentos/', 'Documentos', 'publications', { status: 'legacy' }),
   page('/recicla-match/', 'Recicla Match', 'projects', { status: 'legacy', notes: 'Link encontrado no conteúdo, sem página publicada correspondente.' }),
   page('/logistica-reversa/', 'Logística Reversa', 'projects', { status: 'legacy', notes: 'Link encontrado no conteúdo, sem página publicada correspondente.' }),

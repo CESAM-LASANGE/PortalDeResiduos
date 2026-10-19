@@ -55,6 +55,14 @@ function App() {
     return () => window.removeEventListener('popstate', onPopState)
   }, [])
 
+  // Aliases legados com destino próprio (ex.: planos por município do site antigo, L13).
+  useEffect(() => {
+    const destino = resolveRoute(path)?.redirectTo
+    if (!destino) return
+    window.history.replaceState({}, '', destino)
+    setPath(destino)
+  }, [path])
+
   useEffect(() => {
     if (path !== "/sobre/" && path !== "/sobre") return
     window.history.replaceState({}, "", "/#sobre-projeto")

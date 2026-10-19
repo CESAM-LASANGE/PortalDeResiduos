@@ -57,3 +57,22 @@ test('L00: DocumentRow e PortalDocument aceitam documento local, do Drive e link
   assert.match(docs, /origin: 'local' \| 'drive' \| 'external'/)
 })
 
+const PLANOS_ANTIGOS = ['alcinopolis', 'amambai', 'bataguassu', 'bonito', 'chapadao-do-sul', 'costa-rica', 'coxim', 'gloria-de-dourados', 'japora', 'miranda', 'mundo-novo', 'nova-alvorada-do-sul', 'porto-murtinho', 'rio-brilhante', 'sidrolandia']
+
+test('L13: as 15 URLs antigas dos planos são aliases legados que levam à ficha do município', async () => {
+  const { resolveRoute } = await import('../src/data/siteMap.ts')
+  for (const slug of PLANOS_ANTIGOS) {
+    const rota = resolveRoute(`/producoes-do-convenio/materiais-compilados/plano-de-coleta-seletiva/${slug}/`)
+    assert.ok(rota, slug)
+    assert.equal(rota.status, 'legacy', slug)
+    assert.equal(rota.redirectTo, `/cidades/${slug}/`, slug)
+  }
+  // A página antiga de Rio Brilhante tinha o título "Bataguassu"; vale o slug.
+  assert.equal(resolveRoute('/producoes-do-convenio/materiais-compilados/plano-de-coleta-seletiva/rio-brilhante').title, 'Rio Brilhante')
+})
+
+test('L13: a rota da página de planos continua sendo a página de planos, sem redirecionar', async () => {
+  const { resolveRoute } = await import('../src/data/siteMap.ts')
+  const rota = resolveRoute('/producoes-do-convenio/materiais-compilados/plano-de-coleta-seletiva/')
+  assert.equal(rota.redirectTo, undefined)
+})
