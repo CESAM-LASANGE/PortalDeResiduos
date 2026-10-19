@@ -283,7 +283,8 @@ test('D3.4: a notícia mostra data e resumo uma vez e a trilha não repete o tí
 })
 
 test('D3.5: documents.ts é a fonte única dos 11 documentos do acervo', async () => {
-  const { documents } = await import('../src/data/documents.ts')
+  // Desde o Bloco B (legado), documents.ts também tem documentos do Drive e externos; aqui valem os 11 locais.
+  const documents = (await import('../src/data/documents.ts')).documents.filter((d) => d.origin === 'local')
   assert.equal(documents.length, 11)
   const porTipo = {}
   for (const d of documents) porTipo[d.type] = (porTipo[d.type] ?? 0) + 1

@@ -125,3 +125,53 @@ test('URLs: toda página publicada no WordPress resolve no site novo', async () 
   const semRota = publishedPages(loadDump(raiz)).map((p) => p.path).filter((caminho) => !resolveRoute(caminho))
   assert.deepEqual(semRota, [])
 })
+
+// Bloco B — documentos do acervo (L05 a L11). Títulos: rótulo publicado, nome real do
+// arquivo ou primeira página do PDF (docs/specs/legado/verificacao-2026-10-19.md).
+const NOVOS = {
+  'Manual da Planilha de Dimensionamento': ['Ferramenta', 'drive'],
+  'Cartilha de compostagem: gestão de resíduos orgânicos': ['Cartilha', 'drive'],
+  'Compostagem em 4 passos': ['Folder', 'drive'],
+  'Planilha de Dimensionamento de Usina de Compostagem': ['Ferramenta', 'drive'],
+  'Projeto Arquitetônico para Usina de Triagem de Resíduos de Campo Grande': ['Projeto arquitetônico', 'drive'],
+  'Projeto Arquitetônico para Usina de Triagem de Resíduos de Corumbá': ['Projeto arquitetônico', 'drive'],
+  'Cartilha para implantação de taxa municipal de resíduos sólidos urbanos': ['Cartilha', 'drive'],
+  'Relatório Anual de Logística Reversa': ['Estudo', 'drive'],
+  'Mapeamento dos Agentes da Reciclagem': ['Estudo', 'drive'],
+  'Panorama da Educação Ambiental': ['Estudo', 'drive'],
+  'Cadeia da Reciclagem e sua Tributação — material de divulgação': ['Estudo', 'drive'],
+  'Relatório geral dos panoramas': ['Estudo', 'drive'],
+  'Estudo estatístico para estimação de resíduos sólidos': ['Estudo', 'drive'],
+  'Análise gravimétrica dos resíduos sólidos urbanos do município de Dourados, MS': ['Artigo', 'external'],
+  'Análise das Ações de Educação Ambiental em Resíduos Sólidos no Estado de Mato Grosso do Sul': ['Artigo', 'external'],
+  'Implementação de taxa municipal de resíduos sólidos urbanos': ['Artigo', 'external'],
+  'Panorama da gestão dos resíduos sólidos de Dourados – MS (CONTECC)': ['Artigo', 'drive'],
+  'Monografia da Claudia Aquino Gasparetto, FAENG/UFMS': ['Monografia', 'external'],
+  'Dissertação de mestrado da Kamila Barbosa Nunes do Programa de Pós-Graduação em Direito da UFMS': ['Dissertação', 'external'],
+}
+
+test('L05–L11: os 19 documentos novos do acervo, com tipo e origem', async () => {
+  const { documents } = await import('../src/data/documents.ts')
+  assert.equal(documents.length, 30)
+  for (const [titulo, [tipo, origem]] of Object.entries(NOVOS)) {
+    const doc = documents.find((d) => d.title === titulo)
+    assert.ok(doc, titulo)
+    assert.equal(doc.type, tipo, titulo)
+    assert.equal(doc.origin, origem, titulo)
+  }
+})
+
+test('L05–L11: toda URL do Drive ou externa do acervo existe no banco do site antigo', async () => {
+  const { documents } = await import('../src/data/documents.ts')
+  const urls = new Set(legacyDocuments.map((d) => d.url))
+  for (const doc of documents.filter((d) => d.origin !== 'local')) assert.ok(urls.has(doc.href), `${doc.title}: ${doc.href}`)
+})
+
+test('L11: os documentos locais voltam aos títulos completos publicados no site antigo', async () => {
+  const { documents } = await import('../src/data/documents.ts')
+  const titulo = (arquivo) => documents.find((d) => d.href.endsWith(arquivo)).title
+  assert.equal(titulo('artigo2-1.pdf'), 'Extinção dos lixões no Mato Grosso do Sul: atuação do ministério público na mitigação das mudanças climáticas – um estudo de caso')
+  assert.equal(titulo('artigo_Cadeia-de-Reciclagem.pdf'), 'Cadeia da Reciclagem e sua Tributação no Estado de Mato Grosso do Sul')
+  assert.equal(titulo('Nota-tecnica-Taxa-RSU-FINAL-1.pdf'), 'Proposta de metodologia para cobrança da taxa dos serviços públicos de coleta, tratamento e disposição final de resíduos sólidos domiciliares nos municípios sul-mato-grossenses')
+  assert.equal(titulo('Artigo-RSDL-1.pdf'), 'Projeto resíduos sólidos: disposição legal – a atuação articulada do ministério público estadual, tribunal de contas e o instituto do meio ambiente na busca pela extinção dos lixões em mato grosso do sul')
+})
