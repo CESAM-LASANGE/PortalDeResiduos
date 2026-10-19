@@ -9,7 +9,7 @@ export type DocumentRowProps = {
   /** "PDF", "DOCX"… Omitido em links do Google Drive, cujo formato não é conhecido. */
   format?: string
   sizeBytes?: number
-  origin: 'local' | 'drive'
+  origin: 'local' | 'drive' | 'external'
   /** Capa do documento, quando existe; senão, ícone de arquivo. */
   cover?: string
   /** Frase curta já publicada sobre o documento. */
@@ -21,7 +21,8 @@ export function DocumentRow({ title, type, href, format, sizeBytes, origin, cove
   const local = origin === 'local'
   const size = local ? formatSize(sizeBytes) : ''
   const formatAndSize = [format, size].filter(Boolean).join(' · ')
-  const action = local ? `Abrir ${format ?? 'arquivo'}` : 'Abrir no Drive'
+  const action = { local: `Abrir ${format ?? 'arquivo'}`, drive: 'Abrir no Drive', external: 'Abrir link' }[origin]
+  const originLabel = { local: 'Arquivo local', drive: 'Google Drive', external: 'Link externo' }[origin]
   return (
     <div className="document-row">
       <span className="document-row-thumb" aria-hidden="true">
@@ -33,7 +34,7 @@ export function DocumentRow({ title, type, href, format, sizeBytes, origin, cove
         <p className="document-row-meta">
           <span>{type}</span>
           {formatAndSize && <span>{formatAndSize}</span>}
-          <span>{local ? 'Arquivo local' : 'Google Drive'}</span>
+          <span>{originLabel}</span>
         </p>
       </div>
       <a className="button button-ghost document-row-action" href={href} target="_blank" rel="noopener">
