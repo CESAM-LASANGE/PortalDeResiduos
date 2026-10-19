@@ -44,3 +44,9 @@
 - **Decisão:** `src/data/documents.ts` passa a ser a fonte dos 11 documentos do acervo que não são de um município, com os títulos e descrições já publicados. A ADR-005 (tamanho gerado, nunca digitado) se estende a eles: `scripts/generate-document-sizes.mjs` grava `src/data/document-sizes.generated.ts` a partir de `public/uploads`, e `npm run sync:data` roda o novo gerador.
 - **Motivo:** RC-1 (tipo, formato, tamanho e origem sem digitação manual) e uma lista só para as páginas e a busca (D3.9).
 - **Sem ano:** o único ano disponível é o da pasta de upload, que não é o ano de publicação; a PG-05.2 fica sem ano até existir o dado.
+
+## 2026-10-19 — Migração das funcionalidades do site antigo (specs L00–L13)
+
+- **Decisão:** as specs de `docs/specs/legado/` foram aprovadas pelo dono do projeto ("dei uma lida por cima e está bom"), incluindo as recomendações das decisões pendentes. A implementação vem em quatro blocos com PR próprio: A (L00, L13), B (L04–L12), C (L01), D (L02, L03).
+- **Fatos verificados em vez de supostos:** `scripts/check-external-links.mjs` lê o nome real dos arquivos do Drive. Onde o rótulo do site antigo contradiz o arquivo, vale o nome do arquivo (ver `docs/specs/legado/verificacao-2026-10-19.md`).
+- **L13:** as URLs antigas dos planos por município redirecionam para a ficha (`history.replaceState`), como `/sobre/`.
