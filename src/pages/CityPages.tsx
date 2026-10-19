@@ -6,6 +6,7 @@ import { ArrowRight } from 'lucide-react'
 import { Alert } from '../components/Alert'
 import { Badge } from '../components/Badge'
 import { DocumentRow } from '../components/DocumentRow'
+import { DadosDoPortalAnterior } from '../components/DadosDoPortalAnterior'
 import { selectiveCollectionPlans } from '../data/selective-collection-plans.generated'
 import { Link } from '../components/router'
 
@@ -57,6 +58,7 @@ export function CityDetail({ path, navigate }: { path: string; navigate: Navigat
             {plano?.documents.map((documento) => <DocumentRow key={documento.title + documento.description + documento.url} title={documento.description ? `${documento.title} — ${documento.description}` : documento.title} type="Plano de coleta seletiva" href={documento.url} origin="drive" />)}
             {outros.map((doc) => <DocumentRow key={doc.url} title={doc.title} type={doc.kind === 'educacao-ambiental' ? 'Plano de educação ambiental' : 'Compostagem'} href={doc.url} origin="drive" />)}
           </div>
+          <DadosDoPortalAnterior slug={city.slug} nome={city.name} />
         </div>
         <aside className="city-about">
           <Eyebrow>Sobre o panorama</Eyebrow>

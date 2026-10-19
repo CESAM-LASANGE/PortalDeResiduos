@@ -565,6 +565,24 @@
 .city-about p { color: var(--ink-soft); font-size: var(--step-small); line-height: 1.65; }
 .city-about .eyebrow + p { margin-bottom: 0.75rem; }
 .city-about-links { display: grid; gap: 0.6rem; justify-items: start; }
+/* Dados do portal anterior nas 5 fichas (L02, L03). */
+/* min-width: 0 deixa a tabela rolar na própria caixa em vez de alargar a coluna da ficha. */
+.city-detail-layout > *, .legacy-city, .legacy-city > section { min-width: 0; }
+.legacy-city { display: grid; gap: var(--section-y); margin-top: var(--section-y); }
+.legacy-city-group h3 { margin: 1.25rem 0 0.5rem; font-family: var(--font-sans); font-size: var(--step-0); font-weight: 600; }
+.legacy-city-group ul { columns: 3 9rem; column-gap: 2rem; margin: 0; padding: 0; list-style: none; }
+.legacy-city-group li { padding: 0.35rem 0; border-bottom: 1px solid var(--line); color: var(--ink-soft); font-size: var(--step-small); break-inside: avoid; }
+.legacy-city-text { color: var(--ink-soft); }
+.table-scroll { overflow-x: auto; border: 1px solid var(--line); }
+.data-table { width: 100%; min-width: 20rem; border-collapse: collapse; font-size: var(--step-small); }
+.data-table caption { padding: 0.75rem 1rem; text-align: left; color: var(--ink-soft); background: var(--paper-raised); border-bottom: 1px solid var(--line); }
+.data-table th, .data-table td { padding: 0.6rem 1rem; text-align: left; border-bottom: 1px solid var(--line); }
+.data-table thead th { font-family: var(--font-mono); font-size: var(--step-meta); font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink-faint); background: var(--paper-sunk); }
+.data-table tbody th { font-weight: 500; color: var(--ink); }
+.data-table td, .data-table thead th + th { text-align: right; }
+.data-table td { font-family: var(--font-mono); font-variant-numeric: tabular-nums; color: var(--ink); }
+.data-table tr.is-part th { padding-left: 2rem; font-weight: 400; color: var(--ink-soft); }
+.legacy-city-source { margin-top: 0.75rem; font-family: var(--font-mono); font-size: var(--step-meta); color: var(--ink-faint); }
 .city-empty-page { min-height: 34rem; padding-block: var(--section-y); }
 .city-missing { display: grid; gap: 1.5rem; justify-items: start; padding-block: var(--section-y); }
 .city-missing .alert { max-width: 60ch; }

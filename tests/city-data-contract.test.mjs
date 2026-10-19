@@ -51,3 +51,15 @@ test('L03: o número aparece com as casas decimais da fonte, em pt-BR', () => {
   assert.equal(formatarIndicador({ valor: 0, casas: 1 }), '0,0')
   assert.equal(formatarIndicador(null), '—')
 })
+
+test('L02/L03: a ficha mostra os dados do portal anterior com a fonte e a data visíveis', async () => {
+  const fs = await import('node:fs')
+  const ler = (p) => fs.readFileSync(new URL(`../${p}`, import.meta.url), 'utf8')
+  assert.match(ler('src/pages/CityPages.tsx'), /<DadosDoPortalAnterior slug=\{city\.slug\} nome=\{city\.name\} \/>/)
+  const bloco = ler('src/components/DadosDoPortalAnterior.tsx')
+  assert.match(bloco, /<caption>/)
+  assert.match(bloco, /scope="col"/)
+  assert.match(bloco, /scope="row"/)
+  assert.match(bloco, /tabIndex=\{0\}/, 'a tabela rola por teclado no celular')
+  for (const texto of ['Locais de entrega voluntária', 'Coleta seletiva em 2018 e 2019', 'Fonte: portal anterior (dados de 2018 e 2019)', 'Em migração', 'Ver locais no mapa', 'no portal anterior']) assert.ok(bloco.includes(texto), texto)
+})
