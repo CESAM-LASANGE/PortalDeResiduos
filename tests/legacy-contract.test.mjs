@@ -175,3 +175,26 @@ test('L11: os documentos locais voltam aos títulos completos publicados no site
   assert.equal(titulo('Nota-tecnica-Taxa-RSU-FINAL-1.pdf'), 'Proposta de metodologia para cobrança da taxa dos serviços públicos de coleta, tratamento e disposição final de resíduos sólidos domiciliares nos municípios sul-mato-grossenses')
   assert.equal(titulo('Artigo-RSDL-1.pdf'), 'Projeto resíduos sólidos: disposição legal – a atuação articulada do ministério público estadual, tribunal de contas e o instituto do meio ambiente na busca pela extinção dos lixões em mato grosso do sul')
 })
+
+test('L05–L10: cada página do site antigo volta a mostrar os seus documentos', async () => {
+  const fs = await import('node:fs')
+  const ler = (p) => fs.readFileSync(new URL(`../${p}`, import.meta.url), 'utf8')
+  const bloco = (arquivo, funcao) => ler(arquivo).match(new RegExp(`export function ${funcao}[\\s\\S]*?\\n\\}`))[0]
+  assert.match(bloco('src/pages/ProductionPages.tsx', 'Composting'), /<DocumentosDaPagina contexto="\/plano-de-compostagem\/"/)
+  assert.match(bloco('src/pages/ProductionPages.tsx', 'EnvironmentalEducation'), /<DocumentosDaPagina contexto="\/educacao-ambiental\/"/)
+  assert.match(bloco('src/pages/InstitutionalPages.tsx', 'PlantModel'), /<DocumentosDaPagina contexto="\/modelo-de-usinas-de-triagem-de-residuos\/"/)
+  assert.doesNotMatch(bloco('src/pages/InstitutionalPages.tsx', 'PlantModel'), /será conectado aos arquivos originais/)
+  assert.match(bloco('src/pages/InstitutionalPages.tsx', 'LegalDisposition'), /<DocumentosDaPagina contexto="\/disposicao-legal\/"/)
+  assert.match(bloco('src/pages/ResourcePages.tsx', 'DecisionSupport'), /<DocumentosDaPagina contexto="\/apoio-a-decisao\/"/)
+  const guia = bloco('src/pages/ResourcePages.tsx', 'UserGuide')
+  assert.match(guia, /videosDoGuia/)
+  assert.doesNotMatch(guia, /Guia em preparação/)
+})
+
+test('L09/L11: Documentos filtra pelos 8 grupos e o índice de municípios leva ao relatório geral', async () => {
+  const fs = await import('node:fs')
+  const ler = (p) => fs.readFileSync(new URL(`../${p}`, import.meta.url), 'utf8')
+  const grupos = [...ler('src/pages/ResourcePages.tsx').matchAll(/\{ id: '([a-z]+)', label: '([^']+)'/g)].map((m) => m[2])
+  assert.deepEqual(grupos, ['Todos', 'Notas técnicas', 'Artigos e revista', 'Trabalhos acadêmicos', 'Estudos', 'Cartilhas e folders', 'Ferramentas', 'Projetos arquitetônicos', 'Modelos editáveis'])
+  assert.match(ler('src/components/MunicipalityIndex.tsx'), /Relatório geral dos panoramas/)
+})

@@ -1,9 +1,10 @@
 import { useMemo, useRef, useState, type ReactNode } from 'react'
-import { Search } from 'lucide-react'
+import { ExternalLink, Search } from 'lucide-react'
 import { Eyebrow } from './Eyebrow'
 import { Link } from './router'
 import { cityRecords, municipalDocuments, normalizeName } from '../data/cities'
 import { selectiveCollectionPlans } from '../data/selective-collection-plans.generated'
+import { documents } from '../data/documents'
 
 export type Filtro = 'todos' | 'com-plano' | 'com-educacao-ambiental' | 'com-compostagem'
 
@@ -18,6 +19,8 @@ const FILTROS: Array<{ id: Filtro; label: string; slugs?: Set<string> }> = [
   { id: 'com-educacao-ambiental', label: 'Com plano de educação ambiental', slugs: comDocumento('educacao-ambiental') },
   { id: 'com-compostagem', label: 'Com documento de compostagem', slugs: comDocumento('compostagem') },
 ]
+// Visão estadual dos panoramas (L09), no topo do índice.
+const relatorioGeral = documents.find((doc) => doc.title === 'Relatório geral dos panoramas')
 const inicial = (name: string) => normalizeName(name).charAt(0).toUpperCase()
 
 type MunicipalityIndexProps = {
@@ -63,6 +66,12 @@ export function MunicipalityIndex({ eyebrow, title, description, filtroInicial =
         {eyebrow && <Eyebrow>{eyebrow}</Eyebrow>}
         <h2 id="indice-municipios-titulo">{title}</h2>
         {description && <p>{description}</p>}
+        {relatorioGeral && (
+          <a className="text-link" href={relatorioGeral.href} target="_blank" rel="noopener">
+            Relatório geral dos panoramas <ExternalLink size={15} aria-hidden="true" />
+            <span className="sr-only"> (abre em nova aba)</span>
+          </a>
+        )}
       </div>
 
       <div className="municipality-index-tools">

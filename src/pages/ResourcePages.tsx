@@ -1,9 +1,12 @@
 import { PageHero } from '../components/PageHero'
 import type { Crumb } from '../components/Breadcrumbs'
 import { Eyebrow } from '../components/Eyebrow'
-import { ArrowRight, BarChart3, BookOpen, ExternalLink, FileArchive, FileText, Gauge, HandHeart, Laptop, Recycle, Search, Users } from 'lucide-react'
+import { ArrowRight, BarChart3, BookOpen, ExternalLink, FileText, Gauge, HandHeart, Laptop, Recycle, Search, Users } from 'lucide-react'
 import { Link } from '../components/router'
 import { DocumentRow } from '../components/DocumentRow'
+import { DocumentosDaPagina } from '../components/DocumentosDaPagina'
+import { Alert } from '../components/Alert'
+import { legacyDocuments } from '../data/legacy-documents.generated'
 import { documents } from '../data/documents'
 import { documentSizes } from '../data/document-sizes.generated'
 import { useRef, useState } from 'react'
@@ -26,13 +29,16 @@ export function Cooperatives() {
 
 type Grupo = { id: string; label: string; tipos: DocumentType[] }
 
-// Tipos agrupados como na proposta da página Documentos (10-navegacao.md).
+// Tipos agrupados como na proposta da página Documentos (10-navegacao.md), com os tipos do acervo antigo (L11).
 const GRUPOS: Grupo[] = [
   { id: 'todos', label: 'Todos', tipos: [] },
   { id: 'notas', label: 'Notas técnicas', tipos: ['Nota técnica'] },
   { id: 'artigos', label: 'Artigos e revista', tipos: ['Artigo', 'Revista'] },
+  { id: 'academicos', label: 'Trabalhos acadêmicos', tipos: ['Monografia', 'Dissertação'] },
   { id: 'estudos', label: 'Estudos', tipos: ['Estudo'] },
-  { id: 'cartilhas', label: 'Cartilhas', tipos: ['Cartilha'] },
+  { id: 'cartilhas', label: 'Cartilhas e folders', tipos: ['Cartilha', 'Folder'] },
+  { id: 'ferramentas', label: 'Ferramentas', tipos: ['Ferramenta'] },
+  { id: 'projetos', label: 'Projetos arquitetônicos', tipos: ['Projeto arquitetônico'] },
   { id: 'modelos', label: 'Modelos editáveis', tipos: ['Modelo editável'] },
 ]
 const noGrupo = (doc: PortalDocument, grupo: Grupo) => grupo.tipos.length === 0 || grupo.tipos.includes(doc.type)
@@ -68,11 +74,16 @@ export function TechnicalNote() {
 }
 
 export function DecisionSupport({ navigate }: { navigate: Navigate }) {
-  return <><ResourceHero eyebrow="Ferramenta digital" title="Apoio a Decisão" description="Sistemas, indicadores e referências para qualificar o gerenciamento de resíduos sólidos." crumbs={[{ label: 'Início', href: '/' }, { label: 'Produções do Convênio', href: '/producoes-do-convenio/' }, { label: 'Apoio a Decisão' }]} /><section className="resource-section section container"><div className="tool-grid"><ToolPanel icon={<Gauge />} eyebrow="Sistema GRS" title="Dados para decidir com mais segurança." text="Acesse a aplicação de apoio à decisão e consulte informações que ajudam a analisar cenários, estimativas e alternativas para a gestão de resíduos." href="https://sadgrs.streamlit.app/" label="Abrir sistema GRS" /><article className="tool-context"><Eyebrow>Como usar esta área</Eyebrow><h2>Da informação à decisão.</h2><div className="tool-points"><div><BarChart3 size={20} /><strong>Indicadores</strong><span>Consulte dados que ajudam a comparar situações e prioridades.</span></div><div><BookOpen size={20} /><strong>Orientação</strong><span>Use o guia do usuário para navegar pelo sistema.</span></div><div><Laptop size={20} /><strong>Acesso externo</strong><span>A aplicação abre em uma nova aba e depende de conexão com a internet.</span></div></div><Link to="/apoio-a-decisao/guia-do-usuario-do-grs/" className="button button-dark">Ler guia do usuário <ArrowRight size={16} /></Link></article></div></section></>
+  return <><ResourceHero eyebrow="Ferramenta digital" title="Apoio a Decisão" description="Sistemas, indicadores e referências para qualificar o gerenciamento de resíduos sólidos." crumbs={[{ label: 'Início', href: '/' }, { label: 'Produções do Convênio', href: '/producoes-do-convenio/' }, { label: 'Apoio a Decisão' }]} /><section className="resource-section section container"><div className="tool-grid"><ToolPanel icon={<Gauge />} eyebrow="Sistema GRS" title="Dados para decidir com mais segurança." text="Acesse a aplicação de apoio à decisão e consulte informações que ajudam a analisar cenários, estimativas e alternativas para a gestão de resíduos." href="https://sadgrs.streamlit.app/" label="Abrir sistema GRS" /><article className="tool-context"><Eyebrow>Como usar esta área</Eyebrow><h2>Da informação à decisão.</h2><div className="tool-points"><div><BarChart3 size={20} /><strong>Indicadores</strong><span>Consulte dados que ajudam a comparar situações e prioridades.</span></div><div><BookOpen size={20} /><strong>Orientação</strong><span>Use o guia do usuário para navegar pelo sistema.</span></div><div><Laptop size={20} /><strong>Acesso externo</strong><span>A aplicação abre em uma nova aba e depende de conexão com a internet.</span></div></div><Link to="/apoio-a-decisao/guia-do-usuario-do-grs/" className="button button-dark">Ler guia do usuário <ArrowRight size={16} /></Link></article></div></section><DocumentosDaPagina contexto="/apoio-a-decisao/" /></>
 }
 
+// Vídeos do guia no site antigo (L10). Lá o terceiro se chama "Parte 4", mas o arquivo é Parte_3.mp4 (docs/specs/legado/verificacao-2026-10-19.md).
+const videosDoGuia = legacyDocuments
+  .filter((doc) => doc.page === '/apoio-a-decisao/guia-do-usuario-do-grs/' && doc.kind === 'embed')
+  .map((doc, index) => ({ title: `Guia em vídeo — Parte ${index + 1}`, href: doc.url }))
+
 export function UserGuide({ navigate }: { navigate: Navigate }) {
-  return <><ResourceHero eyebrow="Apoio ao usuário" title="Guia do usuário do GRS" description="Orientações para acessar e interpretar as informações do sistema de apoio à decisão." crumbs={[{ label: 'Início', href: '/' }, { label: 'Apoio a Decisão', href: '/apoio-a-decisao/' }, { label: 'Guia do usuário do GRS' }]} /><section className="resource-section section container"><div className="guide-layout"><article className="prose"><Eyebrow>Comece por aqui</Eyebrow><h2>Uma leitura rápida para explorar o sistema.</h2><p>O Guia do usuário apresenta a lógica de navegação do GRS, os principais indicadores e o modo de consultar as informações disponíveis para os municípios.</p><div className="guide-steps"><div><span>01</span><strong>Abra o sistema</strong><p>Acesse o GRS pela ferramenta online.</p></div><div><span>02</span><strong>Escolha o recorte</strong><p>Selecione o município ou indicador que deseja analisar.</p></div><div><span>03</span><strong>Interprete os dados</strong><p>Use os resultados como apoio ao planejamento.</p></div></div><a className="button button-primary" href="https://sadgrs.streamlit.app/" target="_blank" rel="noreferrer">Abrir sistema GRS <ExternalLink size={15} /></a></article><aside className="guide-aside"><div className="guide-aside-icon"><FileArchive /></div><h3>Guia em preparação</h3><p>A rota está pronta para receber o arquivo original do WordPress assim que o documento for associado ao upload correto.</p><Link to="/apoio-a-decisao/" className="text-link">Voltar para Apoio a Decisão <ArrowRight size={15} /></Link></aside></div></section></>
+  return <><ResourceHero eyebrow="Apoio ao usuário" title="Guia do usuário do GRS" description="Orientações para acessar e interpretar as informações do sistema de apoio à decisão." crumbs={[{ label: 'Início', href: '/' }, { label: 'Apoio a Decisão', href: '/apoio-a-decisao/' }, { label: 'Guia do usuário do GRS' }]} /><section className="resource-section section container"><div className="guide-layout"><article className="prose"><Eyebrow>Comece por aqui</Eyebrow><h2>Uma leitura rápida para explorar o sistema.</h2><p>O Guia do usuário apresenta a lógica de navegação do GRS, os principais indicadores e o modo de consultar as informações disponíveis para os municípios.</p><div className="guide-steps"><div><span>01</span><strong>Abra o sistema</strong><p>Acesse o GRS pela ferramenta online.</p></div><div><span>02</span><strong>Escolha o recorte</strong><p>Selecione o município ou indicador que deseja analisar.</p></div><div><span>03</span><strong>Interprete os dados</strong><p>Use os resultados como apoio ao planejamento.</p></div></div><a className="button button-primary" href="https://sadgrs.streamlit.app/" target="_blank" rel="noreferrer">Abrir sistema GRS <ExternalLink size={15} /></a></article><aside className="guide-aside"><Alert tone="warning" title="Guia em PDF não encontrado">O arquivo do guia não está no acervo do site antigo. Os vídeos do guia estão logo abaixo.</Alert><Link to="/apoio-a-decisao/" className="text-link">Voltar para Apoio a Decisão <ArrowRight size={15} /></Link></aside></div></section><section className="section container document-library" aria-labelledby="guia-videos-titulo"><h2 id="guia-videos-titulo" className="resource-list-title">Guia em vídeos</h2><div className="document-list">{videosDoGuia.map((video) => <DocumentRow key={video.href} title={video.title} type="Vídeo" href={video.href} origin="drive" />)}</div></section></>
 }
 
 export function ValorizaHub({ navigate }: { navigate: Navigate }) {
