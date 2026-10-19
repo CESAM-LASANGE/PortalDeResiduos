@@ -36,3 +36,14 @@ O Sistema GRS (`sadgrs.streamlit.app`) responde 303 (redireciona para a autentic
 ## Achado nos planos de coleta seletiva (catálogo atual)
 
 Em **Bonito**, o documento "Plano Municipal de Coleta Seletiva" (`primaryDocumentUrl`) é o arquivo **"Anexo I - Minuta da Lei de Coleta Seletiva Municipal.pdf"**. Nos outros 14 municípios, o plano é um arquivo "PCS_<município>_final…". O plano de Bonito não está no banco: o link "plano" de Bonito no site leva à minuta. Corrigir na fonte (WordPress ou equipe) e regenerar; não editar `selective-collection-plans.generated.ts`.
+
+## Achado nas coordenadas do mapa (L01)
+
+As 79 coordenadas do mapa do site antigo foram cruzadas com a malha municipal do IBGE (`BD/ibge/`, qualidades mínima, intermediária e máxima):
+
+| Município | Coordenada do site antigo | Cai em | Causa | No site novo |
+| --- | --- | --- | --- | --- |
+| Novo Horizonte do Sul | -22.2189, -53.3519 | Nova Andradina, em todas as qualidades | **dado errado no site antigo** | centro do contorno do IBGE |
+| Rochedo | -19.9519, -54.8939 | Corguinho na malha mínima; Rochedo na intermediária e na máxima | a malha simplificada desloca a divisa | centro do contorno do IBGE |
+
+As outras 77 caem no próprio município e são usadas como estão. O gerador (`scripts/generate-municipality-map.mjs`) aplica a regra sozinho e marca esses municípios com `posicao: 'ibge'`.
