@@ -82,11 +82,13 @@ function App() {
     })
   }, [])
 
-  const route = routeFromPath(path)
-  const routeInfo = resolveRoute(path)
+  // Alias legado com destino: já renderiza o destino; o efeito de redirecionamento só troca a URL.
+  const atual = resolveRoute(path)?.redirectTo ?? path
+  const route = routeFromPath(atual)
+  const routeInfo = resolveRoute(atual)
 
   useEffect(() => {
-    const title = pageTitle(path, routeInfo)
+    const title = pageTitle(atual, routeInfo)
     document.title = title + ' · Portal Resíduos MS'
     document
       .querySelector('meta[name=description]')
@@ -109,7 +111,7 @@ function App() {
     <NavProvider navigate={navigate}>
       <div className="app-shell">
         <a className="skip-link" href="#main-content">Pular para o conteúdo</a>
-        <Header route={route} path={path} menuOpen={menuOpen} setMenuOpen={setMenuOpen} navigate={navigate} />
+        <Header route={route} path={atual} menuOpen={menuOpen} setMenuOpen={setMenuOpen} navigate={navigate} />
         <main id="main-content" tabIndex={-1}>
           {route === 'home' && <HomePage navigate={navigate} />}          {route === 'projects' && routeInfo?.path === '/disposicao-legal/' && <LegalDisposition navigate={navigate} />}
           {route === 'projects' && routeInfo?.path === '/modelo-de-usinas-de-triagem-de-residuos/' && <PlantModel navigate={navigate} />}
@@ -135,10 +137,10 @@ function App() {
           {route === 'projects' && routeInfo?.path === '/pagina-exemplo/' && <LegacyNotice title="Página de exemplo" description="Esta era a página padrão criada pelo WordPress. Ela foi mantida como rota compatível, mas o conteúdo público do projeto está organizado nas áreas atuais do portal." navigate={navigate} />}
           {route === 'projects' && !['/disposicao-legal/', '/modelo-de-usinas-de-triagem-de-residuos/', '/como-separar-corretamente-seu-lixo/', '/diferenca-de-lixao-e-aterro-sanitario/', '/cooperativas/', '/nota-tecnica/', '/apoio-a-decisao/', '/apoio-a-decisao/guia-do-usuario-do-grs/', '/producoes-do-convenio/', '/materiais-compilados/', '/panoramas-da-gestao-de-residuos/', '/producoes-do-convenio/materiais-compilados/panoramas-da-gestao-de-residuos/', '/plano-de-coleta-seletiva/', '/producoes-do-convenio/materiais-compilados/plano-de-coleta-seletiva/', '/plano-de-compostagem/', '/producoes-do-convenio/materiais-compilados/plano-de-compostagem/', '/municipios-contemplados/', '/producoes-do-convenio/materiais-compilados/plano-de-coleta-seletiva/municipios-contemplados/', '/producoes-do-convenio/materiais-compilados/plano-de-compostagem/municipios-contemplados/', '/educacao-ambiental/', '/producoes-do-convenio/materiais-compilados/educacao-ambiental/', '/planos-de-educacao-ambiental/', '/educacao-ambiental/planos-de-educacao-ambiental/', '/panorama-e-censo-dos-catadores/', '/producoes-do-convenio/panorama-e-censo-dos-catadores/', '/recicla-match/', '/logistica-reversa/', '/booking/', '/pagina-exemplo/'].includes(routeInfo?.path ?? '') && <Projects navigate={navigate} />}
           {route === 'news' && <NewsArchive navigate={navigate} />}
-          {route === 'article' && <NewsArticle path={path} navigate={navigate} />}
+          {route === 'article' && <NewsArticle path={atual} navigate={navigate} />}
           {route === 'contact' && <Contact />}
           {route === 'cities' && routeInfo?.path === '/cidades/' && <CityDirectory navigate={navigate} />}
-          {route === 'cities' && routeInfo?.path !== '/cidades/' && <CityDetail path={routeInfo?.path ?? path} navigate={navigate} />}
+          {route === 'cities' && routeInfo?.path !== '/cidades/' && <CityDetail path={routeInfo?.path ?? atual} navigate={navigate} />}
           {route === 'publications' && <PublicationsPage navigate={navigate} />}
           {route === 'valoriza' && <ValorizaHub navigate={navigate} />}
           {route === 'directories' && <Directories navigate={navigate} />}

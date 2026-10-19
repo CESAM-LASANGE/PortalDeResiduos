@@ -12,7 +12,7 @@ import { Link } from '../components/router'
 const ASSET = '/uploads/'
 type Navigate = (to: string) => void
 
-import { cityRecords } from '../data/cities'
+import { cityRecords, municipalDocuments } from '../data/cities'
 
 export { cityRecords, type CityRecord } from '../data/cities'
 
@@ -41,7 +41,8 @@ export function CityDetail({ path, navigate }: { path: string; navigate: Navigat
   const city = cityRecords.find((item) => item.slug === slug)
   if (!city) return <UnknownCity path={path} navigate={navigate} />
   const plano = selectiveCollectionPlans.find((plan) => plan.slug === city.slug)
-  const total = 1 + (plano?.documents.length ?? 0)
+  const outros = municipalDocuments.filter((doc) => doc.slug === city.slug)
+  const total = 1 + (plano?.documents.length ?? 0) + outros.length
   return <>
     <PageHero eyebrow="Dados municipais" title={city.name} crumbs={cityCrumbs(city.name)}>
       <span className="page-hero-badges"><Badge variant="positive">Panorama publicado</Badge>{plano && <Badge variant="doc">Plano de coleta seletiva</Badge>}</span>
@@ -54,6 +55,7 @@ export function CityDetail({ path, navigate }: { path: string; navigate: Navigat
           <div className="city-documents">
             <DocumentRow title={`Panorama de gestão de resíduos de ${city.name}`} type="Panorama municipal" href={`${ASSET}2025/03/${city.file}`} format="PDF" sizeBytes={city.sizeBytes} origin="local" cover={`${ASSET}2025/03/${city.cover}`} />
             {plano?.documents.map((documento) => <DocumentRow key={documento.title + documento.description + documento.url} title={documento.description ? `${documento.title} — ${documento.description}` : documento.title} type="Plano de coleta seletiva" href={documento.url} origin="drive" />)}
+            {outros.map((doc) => <DocumentRow key={doc.url} title={doc.title} type={doc.kind === 'educacao-ambiental' ? 'Plano de educação ambiental' : 'Compostagem'} href={doc.url} origin="drive" />)}
           </div>
         </div>
         <aside className="city-about">

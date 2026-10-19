@@ -8,6 +8,8 @@ import { selectiveCollectionPlans } from "../data/selective-collection-plans.gen
 import { Link } from '../components/router'
 import { MunicipalityIndex } from '../components/MunicipalityIndex'
 import { documents } from '../data/documents'
+import { municipalDocuments } from '../data/cities'
+import { DocumentRow } from '../components/DocumentRow'
 
 const ASSET = '/uploads/'
 type Navigate = (to: string) => void
@@ -136,9 +138,13 @@ export function Municipalities({ navigate: _navigate, mode = "coleta" }: { navig
   const isSelectiveCollection = mode === "coleta"
   const parent = isSelectiveCollection ? "Plano de Coleta Seletiva" : "Plano de Compostagem"
   const back = isSelectiveCollection ? "/plano-de-coleta-seletiva/" : "/plano-de-compostagem/"
+  // Compostagem: os documentos municipais do site antigo (L12), não o índice dos 79.
+  const compostagem = municipalDocuments.filter((doc) => doc.kind === 'compostagem').sort((a, b) => a.name.localeCompare(b.name, 'pt-BR'))
   return <>
     <ProductionHero eyebrow="Recorte territorial" title="Municípios Contemplados" description={"Consulte os municípios associados ao " + parent.toLowerCase() + " e acesse os materiais municipais disponíveis."} crumbs={[{ label: "Início", href: "/" }, { label: "Materiais Compilados", href: "/materiais-compilados/" }, { label: parent, href: back }, { label: "Municípios Contemplados" }]} />
-    <MunicipalityIndex filtroInicial={isSelectiveCollection ? "com-plano" : "todos"} eyebrow="Diretório territorial" title={<>Escolha um <span>município.</span></>} description={isSelectiveCollection ? selectiveCollectionPlans.length + " municípios possuem materiais de coleta seletiva publicados no acervo." : "Consulte os panoramas municipais disponíveis no acervo."} />
+    {isSelectiveCollection
+      ? <MunicipalityIndex filtroInicial="com-plano" eyebrow="Diretório territorial" title={<>Escolha um <span>município.</span></>} description={selectiveCollectionPlans.length + " municípios possuem materiais de coleta seletiva publicados no acervo."} />
+      : <section className="section container document-library" aria-labelledby="compostagem-municipios-titulo"><Eyebrow>Diretório territorial</Eyebrow><h2 id="compostagem-municipios-titulo">Escolha um <span>município.</span></h2><p className="municipality-index-count">{compostagem.length} municípios com documentos de compostagem publicados no acervo</p><div className="document-list">{compostagem.map((doc) => <DocumentRow key={doc.url} title={doc.title} type="Compostagem" href={doc.url} origin="drive" />)}</div></section>}
   </>
 }
 
@@ -147,7 +153,8 @@ export function EnvironmentalEducation({ navigate }: { navigate: Navigate }) {
 }
 
 export function EducationPlans({ navigate }: { navigate: Navigate }) {
-  return <><ProductionHero eyebrow="Planejamento educativo" title="Planos de Educação Ambiental" description="Uma estrutura prática para organizar ações educativas conectadas à gestão de resíduos." crumbs={[{ label: 'Início', href: '/' }, { label: 'Educação Ambiental', href: '/educacao-ambiental/' }, { label: 'Planos de Educação Ambiental' }]} /><section className="section container plan-section"><div className="catalogue-heading"><div><Eyebrow>Como transformar intenção em prática</Eyebrow><h2>Planeje, envolva e <span>acompanhe.</span></h2></div><p>Um bom plano dá clareza para quem participa, ajuda a escolher prioridades e cria um ritmo de acompanhamento para as ações.</p></div><div className="plan-steps"><div><span>01</span><strong>Conhecer</strong><p>Leia o contexto local e identifique os públicos envolvidos.</p></div><div><span>02</span><strong>Priorizar</strong><p>Escolha problemas concretos e objetivos possíveis de acompanhar.</p></div><div><span>03</span><strong>Mobilizar</strong><p>Conecte escolas, serviços, cooperativas e comunidades.</p></div><div><span>04</span><strong>Acompanhar</strong><p>Registre resultados e ajuste as próximas ações.</p></div></div><div className="catalogue-note"><BookOpen size={20} /><div><strong>Educação ligada ao território</strong><p>Consulte também os planos de coleta seletiva e compostagem para conectar comunicação e serviço.</p></div><Link to="/materiais-compilados/" className="text-link">Ver materiais <ArrowRight size={15} /></Link></div></section></>
+  const planosEducacao = municipalDocuments.filter((doc) => doc.kind === 'educacao-ambiental').sort((a, b) => a.name.localeCompare(b.name, 'pt-BR'))
+  return <><ProductionHero eyebrow="Planejamento educativo" title="Planos de Educação Ambiental" description="Uma estrutura prática para organizar ações educativas conectadas à gestão de resíduos." crumbs={[{ label: 'Início', href: '/' }, { label: 'Educação Ambiental', href: '/educacao-ambiental/' }, { label: 'Planos de Educação Ambiental' }]} /><section className="section container document-library" aria-labelledby="planos-municipais-titulo"><Eyebrow>Planos municipais</Eyebrow><h2 id="planos-municipais-titulo">Um plano para cada <span>município.</span></h2><p className="municipality-index-count">{planosEducacao.length} planos municipais de educação ambiental</p><div className="document-list">{planosEducacao.map((doc) => <DocumentRow key={doc.url} title={doc.title} type="Plano de educação ambiental" href={doc.url} origin="drive" />)}</div></section><section className="section container plan-section"><div className="catalogue-heading"><div><Eyebrow>Como transformar intenção em prática</Eyebrow><h2>Planeje, envolva e <span>acompanhe.</span></h2></div><p>Um bom plano dá clareza para quem participa, ajuda a escolher prioridades e cria um ritmo de acompanhamento para as ações.</p></div><div className="plan-steps"><div><span>01</span><strong>Conhecer</strong><p>Leia o contexto local e identifique os públicos envolvidos.</p></div><div><span>02</span><strong>Priorizar</strong><p>Escolha problemas concretos e objetivos possíveis de acompanhar.</p></div><div><span>03</span><strong>Mobilizar</strong><p>Conecte escolas, serviços, cooperativas e comunidades.</p></div><div><span>04</span><strong>Acompanhar</strong><p>Registre resultados e ajuste as próximas ações.</p></div></div><div className="catalogue-note"><BookOpen size={20} /><div><strong>Educação ligada ao território</strong><p>Consulte também os planos de coleta seletiva e compostagem para conectar comunicação e serviço.</p></div><Link to="/materiais-compilados/" className="text-link">Ver materiais <ArrowRight size={15} /></Link></div></section></>
 }
 
 export function CatadoresOverview({ navigate }: { navigate: Navigate }) {

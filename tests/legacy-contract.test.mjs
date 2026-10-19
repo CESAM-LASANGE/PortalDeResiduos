@@ -76,3 +76,52 @@ test('L13: a rota da página de planos continua sendo a página de planos, sem r
   const rota = resolveRoute('/producoes-do-convenio/materiais-compilados/plano-de-coleta-seletiva/')
   assert.equal(rota.redirectTo, undefined)
 })
+
+// Bloco B — documentos municipais (L04 e L12)
+const { panoramaRecords } = await import('../src/data/panoramas.generated.ts')
+const cidades = panoramaRecords.map((p) => ({ slug: p.slug, name: p.name }))
+
+test('L04: os 17 Planos Municipais de Educação Ambiental ligam cada arquivo ao seu município', async () => {
+  const { municipalDocumentsFrom } = await import('../src/data/municipalDocuments.ts')
+  const planos = municipalDocumentsFrom(legacyDocuments, cidades).filter((d) => d.kind === 'educacao-ambiental')
+  assert.equal(planos.length, 17)
+  const porSlug = Object.fromEntries(planos.map((d) => [d.slug, d]))
+  assert.equal(porSlug.corumba.url, 'https://drive.google.com/file/d/1Ex5UCUfVrQXO9M7UXTt-_MQW8L3TOzIv/view?usp=drive_link')
+  assert.equal(porSlug.navirai.title, 'Plano Municipal de Educação Ambiental — Naviraí')
+  assert.equal(porSlug['agua-clara'], undefined)
+})
+
+test('L12: os 5 documentos de compostagem de Municípios Contemplados ligam ao município', async () => {
+  const { municipalDocumentsFrom } = await import('../src/data/municipalDocuments.ts')
+  const docs = municipalDocumentsFrom(legacyDocuments, cidades).filter((d) => d.kind === 'compostagem')
+  assert.deepEqual(docs.map((d) => d.slug).sort(), ['bataguassu', 'bonito', 'chapadao-do-sul', 'navirai', 'sao-gabriel-do-oeste'])
+  assert.equal(docs.find((d) => d.slug === 'sao-gabriel-do-oeste').title, 'Gestão dos recursos orgânicos: compostagem — São Gabriel do Oeste')
+})
+
+test('L04/L12: rótulo sem município correspondente falha alto, em vez de sumir', async () => {
+  const { municipalDocumentsFrom } = await import('../src/data/municipalDocuments.ts')
+  const falso = [{ page: '/producoes-do-convenio/educacao-ambiental/planos-de-educacao-ambiental/', kind: 'link', label: 'Cidade Inventada', context: '', url: 'https://x', origin: 'drive' }]
+  assert.throws(() => municipalDocumentsFrom(falso, cidades), /Cidade Inventada/)
+})
+
+test('L04/L12: ficha, índice, páginas e busca usam os documentos municipais', async () => {
+  const fs = await import('node:fs')
+  const ler = (p) => fs.readFileSync(new URL(`../${p}`, import.meta.url), 'utf8')
+  assert.match(ler('src/data/cities.ts'), /export const municipalDocuments = municipalDocumentsFrom\(legacyDocuments, cityRecords\)/)
+  assert.match(ler('src/pages/CityPages.tsx').match(/export function CityDetail[\s\S]*?\n\}/)[0], /municipalDocuments\.filter/)
+  const producao = ler('src/pages/ProductionPages.tsx')
+  assert.match(producao.match(/export function EducationPlans[\s\S]*?\n\}/)[0], /<DocumentRow /)
+  assert.match(producao.match(/export function Municipalities[\s\S]*?\n\}/)[0], /'compostagem'/)
+  const indice = ler('src/components/MunicipalityIndex.tsx')
+  assert.match(indice, /'com-educacao-ambiental'/)
+  assert.match(indice, /'com-compostagem'/)
+  assert.match(ler('src/data/search.ts'), /municipalDocuments/)
+})
+
+test('URLs: toda página publicada no WordPress resolve no site novo', async () => {
+  const { loadDump, publishedPages } = await import('../scripts/lib/wordpress-dump.mjs')
+  const { resolveRoute } = await import('../src/data/siteMap.ts')
+  const raiz = new URL('..', import.meta.url).pathname
+  const semRota = publishedPages(loadDump(raiz)).map((p) => p.path).filter((caminho) => !resolveRoute(caminho))
+  assert.deepEqual(semRota, [])
+})

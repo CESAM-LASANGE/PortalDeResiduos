@@ -5,7 +5,7 @@
 
 import { siteRoutes } from './siteMap'
 import { newsRecords } from '../pages/NewsPages'
-import { cityRecords } from './cities'
+import { cityRecords, municipalDocuments } from './cities'
 import { documents } from './documents'
 import { selectiveCollectionPlans } from './selective-collection-plans.generated'
 
@@ -112,12 +112,22 @@ for (const plan of selectiveCollectionPlans) {
   }
 }
 
+// Planos de educação ambiental e documentos de compostagem por município (L04, L12).
+const municipalEntries: SearchEntry[] = municipalDocuments.map((doc) => ({
+  label: doc.title,
+  kind: 'Documento',
+  href: doc.url,
+  external: true,
+  keywords: `${doc.name} ${doc.kind === 'educacao-ambiental' ? 'pmea educação ambiental plano' : 'compostagem orgânicos'}`,
+}))
+
 export const searchIndex: SearchEntry[] = [
   ...routeEntries,
   ...newsEntries,
   ...cityEntries,
   ...documentEntries,
   ...planEntries,
+  ...municipalEntries,
 ]
 
 const KIND_WEIGHT: Record<SearchKind, number> = {

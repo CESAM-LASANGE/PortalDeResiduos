@@ -2,13 +2,22 @@ import { useMemo, useRef, useState, type ReactNode } from 'react'
 import { Search } from 'lucide-react'
 import { Eyebrow } from './Eyebrow'
 import { Link } from './router'
-import { cityRecords, normalizeName } from '../data/cities'
+import { cityRecords, municipalDocuments, normalizeName } from '../data/cities'
 import { selectiveCollectionPlans } from '../data/selective-collection-plans.generated'
 
-export type Filtro = 'todos' | 'com-plano'
+export type Filtro = 'todos' | 'com-plano' | 'com-educacao-ambiental' | 'com-compostagem'
 
 const planos = new Map(selectiveCollectionPlans.map((plan) => [plan.slug, plan]))
 const comPlano = new Set(planos.keys())
+const comDocumento = (kind: 'educacao-ambiental' | 'compostagem') => new Set(municipalDocuments.filter((doc) => doc.kind === kind).map((doc) => doc.slug))
+
+// Sem `slugs`, o filtro mostra todos os municípios.
+const FILTROS: Array<{ id: Filtro; label: string; slugs?: Set<string> }> = [
+  { id: 'todos', label: 'Todos' },
+  { id: 'com-plano', label: 'Com plano de coleta seletiva', slugs: comPlano },
+  { id: 'com-educacao-ambiental', label: 'Com plano de educação ambiental', slugs: comDocumento('educacao-ambiental') },
+  { id: 'com-compostagem', label: 'Com documento de compostagem', slugs: comDocumento('compostagem') },
+]
 const inicial = (name: string) => normalizeName(name).charAt(0).toUpperCase()
 
 type MunicipalityIndexProps = {
@@ -31,7 +40,10 @@ export function MunicipalityIndex({ eyebrow, title, description, filtroInicial =
   const termo = normalizeName(query.trim())
 
   const visiveis = useMemo(
-    () => cityRecords.filter((city) => (filtro === 'todos' || comPlano.has(city.slug)) && normalizeName(city.name).includes(termo)),
+    () => {
+      const slugs = FILTROS.find((item) => item.id === filtro)?.slugs
+      return cityRecords.filter((city) => (!slugs || slugs.has(city.slug)) && normalizeName(city.name).includes(termo))
+    },
     [filtro, termo],
   )
   const grupos = useMemo(() => {
@@ -60,12 +72,11 @@ export function MunicipalityIndex({ eyebrow, title, description, filtroInicial =
           <input ref={inputRef} type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Buscar município" />
         </label>
         <div className="segmented" role="group" aria-label="Filtrar municípios">
-          <button type="button" aria-pressed={filtro === 'todos'} onClick={() => setFiltro('todos')}>
-            Todos <span className="segmented-count">{cityRecords.length}</span>
-          </button>
-          <button type="button" aria-pressed={filtro === 'com-plano'} onClick={() => setFiltro('com-plano')}>
-            Com plano de coleta seletiva <span className="segmented-count">{comPlano.size}</span>
-          </button>
+          {FILTROS.map((item) => (
+            <button key={item.id} type="button" aria-pressed={filtro === item.id} onClick={() => setFiltro(item.id)}>
+              {item.label} <span className="segmented-count">{item.slugs?.size ?? cityRecords.length}</span>
+            </button>
+          ))}
         </div>
       </div>
 

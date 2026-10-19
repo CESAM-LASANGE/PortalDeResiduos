@@ -19,16 +19,16 @@ O Sistema GRS (`sadgrs.streamlit.app`) responde 303 (redireciona para a autentic
 
 | Spec | Rótulo no site antigo | Nome real do arquivo | Consequência |
 |---|---|---|---|
-| L08 | Cadeia da Reciclagem e sua Tributação | Divulgação das ações de Educação Ambiental.pdf | **Rótulo errado.** Não é duplicata do artigo local; entra com o nome real |
-| L08 | Panorama da Educação Ambiental | DIAGNÓSTICO PROGRAMAS DE EDUCACAO AMBIENTAL.pdf | confere |
+| L08 | Cadeia da Reciclagem e sua Tributação | Divulgação das ações de Educação Ambiental.pdf | **O rótulo estava certo; o nome do arquivo engana.** A primeira página é "Cadeia da Reciclagem e sua Tributação no Estado de Mato Grosso do Sul". É um material de divulgação (2.253 palavras, 7,9 MB), diferente do artigo local de 5 páginas com o mesmo tema. Entram os dois |
+| L08 | Panorama da Educação Ambiental | DIAGNÓSTICO PROGRAMAS DE EDUCACAO AMBIENTAL.pdf | diagnóstico de 210 páginas do convênio |
 | L10 | Guia do usuário (PDF) | Estudo estatístico para estimação de resíduos sólidos.pdf | **Rótulo errado.** O PDF do guia não está no acervo; o arquivo é o estudo de Apoio a Decisão |
 | L10 | Parte 1 / Parte 2 / Parte 4 | Parte_1.mp4 / Parte_2.mp4 / **Parte_3.mp4** | o terceiro vídeo é a Parte 3; não falta vídeo |
 | L05 | Cartilha | Cartilha_compostagem_final.pdf | **Outro documento:** 11 páginas, "Compostagem: gestão de resíduos orgânicos"; a cartilha local (10 páginas) é a do método Takakura. Entram as duas |
 | L05 | Planilha de Dimensionamento de Usina de Compostagem | …xlsm | formato XLSM |
 | L06 | Projeto Arquitetônico para Usina de Triagem de Resíduos de Campo Grande / Corumbá | Apresentação UTR de Campo Grande / Apresentação da UTR de Corumba | confere (apresentações dos projetos) |
-| L07 | Taxa de Resíduos | Cartilha para implantação de taxa municipal de resíduos sólidos urbanos.pdf | documento diferente da nota técnica local sobre taxa de RSU |
-| L07 | Levantamento Logística Reversa | Relatório Anual de Logística Reversa | confere |
-| L07 | Mapeamento dos Agentes da Reciclagem | LEVANTAMENTO DOS AGENTES RECICLAGEM.pdf | confere |
+| L07 | Taxa de Resíduos | Cartilha para implantação de taxa municipal de resíduos sólidos urbanos.pdf | cartilha de 44 páginas (setembro de 2024), diferente da nota técnica local sobre taxa de RSU |
+| L07 | Levantamento Logística Reversa | Relatório Anual de Logística Reversa | relatório de 30 páginas (folhas de processo) |
+| L07 | Mapeamento dos Agentes da Reciclagem | LEVANTAMENTO DOS AGENTES RECICLAGEM.pdf | relatório de 51 páginas do convênio |
 | L09 | Relatório geral dos panoramas | Panorama de Gestão de Resíduos Sólidos no estado | confere |
 | L12 | Naviraí, São Gabriel do Oeste, Bataguassu, Chapadão do Sul, Bonito | "<Município>_Gestão dos recursos orgânicos - Compostagem(_Usina).pdf" | **confirmado:** documentos municipais de compostagem |
 | L04 | os 17 municípios | "PMEA <MUNICÍPIO>.pdf" | confirmado: Planos Municipais de Educação Ambiental |
