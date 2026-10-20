@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://portalresiduosms.online/sitemap.xml
+Sitemap: https://portalderesiduos.vercel.app/sitemap.xml
