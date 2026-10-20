@@ -1,7 +1,7 @@
 // Gera public/sitemap.xml e public/robots.txt a partir do mapa de rotas, dos 79 panoramas e das notícias.
 // Só entram páginas canônicas: aliases com redirecionamento, rotas legadas e os caminhos longos do
 // WordPress (que repetem páginas) ficam de fora.
-// Domínio: SITE_URL, ou o do WordPress atual (https://portalresiduosms.online).
+// Domínio: VITE_SITE_URL (ambiente), ou o padrão de site.json; o mesmo das metatags de index.html.
 // Uso: npm run sync:data
 import fs from 'node:fs'
 import path from 'node:path'
@@ -10,7 +10,8 @@ import { newsSlugs, siteRoutes } from '../src/data/siteMap.ts'
 import { panoramaRecords } from '../src/data/panoramas.generated.ts'
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
-const SITE = (process.env.SITE_URL ?? 'https://portalresiduosms.online').replace(/\/+$/, '')
+const padrao = JSON.parse(fs.readFileSync(path.join(root, 'site.json'), 'utf8')).url
+const SITE = (process.env.VITE_SITE_URL ?? padrao).replace(/\/+$/, '')
 
 // A única URL desta página é o caminho longo do WordPress; /planos-de-educacao-ambiental/ repete a do menu.
 const SO_NO_CAMINHO_LONGO = '/producoes-do-convenio/materiais-compilados/plano-de-compostagem/municipios-contemplados/'

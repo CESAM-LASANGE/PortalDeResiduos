@@ -59,3 +59,10 @@
 
 - **Domínio presumido:** `https://portalresiduosms.online` no sitemap, no robots e nas metatags, por ser o do WordPress atual. Não foi confirmado; `SITE_URL` troca (ver `docs/deploy.md`).
 - **Sitemap canônico:** 111 páginas; aliases e caminhos longos repetidos ficam de fora (regra em `scripts/generate-sitemap.mjs`).
+
+## 2026-10-20 — Hospedagem: Vercel + Supabase (planos gratuitos)
+
+- **Decisão do dono do projeto:** seguir o padrão dos sites do CESAM, com tudo no Supabase e na Vercel, nos planos gratuitos.
+- **Como fica:** app estático na Vercel (`vercel.json`); arquivos de `public/uploads` no Supabase Storage, servidos por rewrite em `/uploads/*`, sem mudar nenhuma URL. Detalhes e riscos em `docs/deploy.md`.
+- **Risco aceito a acompanhar:** o Supabase gratuito pausa por inatividade; é preciso uma verificação periódica.
+- **Substitui:** a suposição de hospedagem Apache da tarefa anterior; `.htaccess` e `_redirects` ficam como alternativa.
