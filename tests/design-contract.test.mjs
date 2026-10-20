@@ -18,11 +18,11 @@ test('D0.2: check:quality roda o gate de design', () => {
   assert.match(scripts['check:quality'], /npm run check:design/)
 })
 
-test('D1.1: no celular o logo é recortado na marca do projeto e o botão de menu tem 44 px', () => {
+test('D1.1: no celular só a marca do projeto aparece e o botão de menu tem 44 px', () => {
   const css = readCss()
   // Desde a D3.8 o cabeçalho quebra em 1279 px (logo) e 1080 px (menu móvel), não mais em 900 px.
   const mobile = [...css.matchAll(/@media \(max-width: (?:900|1080|1279)px\) \{([\s\S]*?)\n\}/g)].map((m) => m[1]).join('\n')
-  assert.match(mobile, /\.brand img \{[^}]*object-fit: cover[^}]*object-position: left/)
+  assert.match(mobile, /\.brand img\.brand-partner \{ display: none; \}/)
   assert.match(mobile, /\.menu-toggle \{[^}]*width: 44px[^}]*height: 44px/)
 })
 

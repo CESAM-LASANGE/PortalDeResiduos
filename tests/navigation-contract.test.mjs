@@ -33,7 +33,7 @@ test('todo destino interno citado no código existe no mapa de rotas', () => {
     const src = read(f)
     for (const m of src.matchAll(/['"`](\/[a-z0-9-]+(?:\/[a-z0-9-]+)*\/(?:#[a-z0-9-]+)?)['"`]/g)) {
       const alvo = m[1]
-      if (alvo.startsWith('/uploads/')) continue
+      if (alvo.startsWith('/uploads/') || alvo.startsWith('/brand/')) continue
       if (!exists(alvo)) quebrados.push(`${f}: ${alvo}`)
     }
   }
