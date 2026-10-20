@@ -55,6 +55,12 @@ test('Supabase: o envio pula nome com acento, que o Storage não aceita, e confe
   assert.match(script, /50 \* 1024 \* 1024/)
   assert.match(script, /SUPABASE_SERVICE_ROLE_KEY/)
   assert.ok(!/eyJ[A-Za-z0-9_-]{20,}/.test(script), 'nenhuma chave no código')
+  assert.match(script, /startsWith\('sb_'\)/, 'chave nova (sb_secret_) não é JWT: só vai em apikey')
+  assert.ok(!/sb_secret_[A-Za-z0-9]{10,}/.test(script), 'nenhuma chave no código')
+})
+
+test('Supabase: o /uploads/ aponta para o projeto do portal', () => {
+  assert.equal(config.rewrites[0].destination, 'https://ijnpqueinuhuauykqxvh.supabase.co/storage/v1/object/public/uploads/:path*')
 })
 
 test('domínio vem de VITE_SITE_URL, com o padrão em site.json', () => {

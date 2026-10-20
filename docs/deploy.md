@@ -10,14 +10,14 @@ navegador → Vercel (app, ~0,6 MB)
 
 ## Passo a passo
 
-1. **Supabase:** criar um projeto (plano gratuito). Anotar a URL (`https://<projeto>.supabase.co`) e a chave de serviço (Project Settings > API).
+1. **Supabase:** criar um projeto (plano gratuito). Anotar a URL (`https://<projeto>.supabase.co`) e a chave secreta (Project Settings > API Keys > Secret keys, `sb_secret_…`; a `service_role` antiga também serve).
 2. **Enviar os arquivos**, do seu terminal (a chave nunca vai para o repositório nem para a Vercel):
    ```sh
    node scripts/upload-to-supabase.mjs --dry-run     # confere: 1.397 arquivos, 405 MB
-   SUPABASE_URL=https://<projeto>.supabase.co SUPABASE_SERVICE_ROLE_KEY=<chave> node scripts/upload-to-supabase.mjs
+   SUPABASE_URL=https://ijnpqueinuhuauykqxvh.supabase.co SUPABASE_SERVICE_ROLE_KEY=<chave secreta> node scripts/upload-to-supabase.mjs
    ```
    O script cria o bucket público `uploads`, reenvia sem duplicar e pula 5 arquivos com acento no nome (um banner e as miniaturas), que o Storage não aceita e o código não usa.
-3. **`vercel.json`:** trocar `SEU-PROJETO` pela referência do projeto Supabase na regra de `/uploads/:path*` (`npm run check:vercel` avisa se esquecer).
+3. **`vercel.json`:** já aponta para o projeto `ijnpqueinuhuauykqxvh`. Se o projeto Supabase mudar, trocar a referência na regra de `/uploads/:path*` (`npm run check:vercel` avisa se sobrar o valor de exemplo).
 4. **Vercel:** importar o repositório (framework Vite; o `buildCommand` já está no `vercel.json`). Em Settings > Environment Variables, definir `VITE_SITE_URL` com o endereço final (por exemplo `https://<projeto>.vercel.app`).
 5. **Sitemap:** com o domínio definido, rodar `VITE_SITE_URL=<endereço> npm run sync:data` e commitar `public/sitemap.xml` e `public/robots.txt`.
 6. **Conferir:** abrir direto `/cidades/bonito/`, uma URL antiga de plano e um PDF (`/uploads/2025/03/Cartilha_compostagem_acelerada.pdf`); recarregar; mandar o link no WhatsApp e ver a prévia.
