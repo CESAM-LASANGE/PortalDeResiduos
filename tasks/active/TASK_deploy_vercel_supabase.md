@@ -30,3 +30,5 @@ Deixar o repositório pronto para publicar na Vercel com os arquivos no Supabase
 - Não verificado: o rewrite para o Supabase de verdade (o simulador serviu os arquivos locais no lugar do bucket); o upload real; os limites atuais dos planos gratuitos.
 - Para o dono do projeto: criar o projeto Supabase e a conta na Vercel; rodar o envio com a chave; trocar `SEU-PROJETO` em `vercel.json`; definir `VITE_SITE_URL`. Passo a passo em `docs/deploy.md`.
 - Riscos: Supabase gratuito pausa o projeto sem atividade (os PDFs saem do ar) e limita a saída de dados do Storage; ver `docs/deploy.md`.
+
+- 2026-10-20: o dono do projeto criou o projeto Supabase (`ijnpqueinuhuauykqxvh`); `vercel.json` aponta para ele e o script aceita a chave nova (`sb_secret_…`). Falta rodar o envio com a chave secreta, no terminal dele.

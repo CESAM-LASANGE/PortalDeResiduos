@@ -3,7 +3,7 @@
 // Uso:
 //   node scripts/upload-to-supabase.mjs --dry-run      confere os arquivos sem enviar nada
 //   SUPABASE_URL=https://<projeto>.supabase.co SUPABASE_SERVICE_ROLE_KEY=<chave> node scripts/upload-to-supabase.mjs
-// A chave de serviço dá acesso total ao projeto: use só no terminal, nunca em arquivo versionado nem na Vercel.
+// A chave secreta (sb_secret_…, ou a service_role antiga) dá acesso total ao projeto: use só no terminal, nunca em arquivo versionado nem na Vercel.
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -33,7 +33,8 @@ if (dryRun) process.exit(0)
 const { SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY: chave } = process.env
 if (!SUPABASE_URL || !chave) throw new Error('defina SUPABASE_URL e SUPABASE_SERVICE_ROLE_KEY')
 const base = SUPABASE_URL.replace(/\/+$/, '')
-const cabecalho = { Authorization: `Bearer ${chave}`, apikey: chave }
+// Chave nova (sb_secret_…) não é um JWT: vai só em apikey. A antiga (service_role, JWT) também vai em Authorization.
+const cabecalho = chave.startsWith('sb_') ? { apikey: chave } : { Authorization: `Bearer ${chave}`, apikey: chave }
 
 const criar = await fetch(`${base}/storage/v1/bucket`, { method: 'POST', headers: { ...cabecalho, 'Content-Type': 'application/json' }, body: JSON.stringify({ id: BUCKET, name: BUCKET, public: true, file_size_limit: LIMITE }) })
 if (!criar.ok && !/already exists|Duplicate/i.test(await criar.text())) throw new Error(`não criou o bucket (${criar.status})`)

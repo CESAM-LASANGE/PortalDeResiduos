@@ -6,7 +6,7 @@
   "cleanUrls": false,
   "trailingSlash": true,
   "rewrites": [
-    { "source": "/uploads/:path*", "destination": "https://SEU-PROJETO.supabase.co/storage/v1/object/public/uploads/:path*" },
+    { "source": "/uploads/:path*", "destination": "https://ijnpqueinuhuauykqxvh.supabase.co/storage/v1/object/public/uploads/:path*" },
     { "source": "/(.*)", "destination": "/index.html" }
   ],
   "headers": [
