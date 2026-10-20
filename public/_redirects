@@ -1,0 +1,2 @@
+# Netlify e Cloudflare Pages: qualquer rota sem arquivo vai para o index.html.
+/*  /index.html  200

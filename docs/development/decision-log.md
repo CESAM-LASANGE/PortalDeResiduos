@@ -54,3 +54,8 @@
 - **L01, ponteiro:** no celular os alvos de 24 px de municípios vizinhos se sobrepõem. O toque escolhe o marcador mais próximo (até 12 px) e, longe de todos, o município sob o ponteiro. Os botões atendem teclado e leitor de tela. Até 560 px, os nomes aparecem só no marcador em foco ou escolhido.
 - **L02:** Campo Grande com link para o My Maps, sem incorporar (decisão 1, b). A equipe não confirmou a atualidade dos pontos, então o bloco diz "Informação publicada em 2021 no portal anterior" (decisão 2). As imagens de localização ficam de fora, para as 79 fichas manterem uma só aparência (decisão 3).
 - **L03:** a fonte citada é "portal anterior (dados de 2018 e 2019)", e o título deixa o ano explícito, como série histórica (decisões 1 e 2). Vazio na fonte aparece como "—", e os números mantêm as casas decimais da fonte. Em Ponta Porã, a fonte não traz unidade na produção diária, e a tabela avisa isso em vez de supor toneladas.
+
+## 2026-10-20 — Preparação para publicar
+
+- **Domínio presumido:** `https://portalresiduosms.online` no sitemap, no robots e nas metatags, por ser o do WordPress atual. Não foi confirmado; `SITE_URL` troca (ver `docs/deploy.md`).
+- **Sitemap canônico:** 111 páginas; aliases e caminhos longos repetidos ficam de fora (regra em `scripts/generate-sitemap.mjs`).
