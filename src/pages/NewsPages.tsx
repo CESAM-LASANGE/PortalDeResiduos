@@ -1,6 +1,8 @@
 import { PageHero } from '../components/PageHero'
-import { Breadcrumbs } from '../components/Breadcrumbs'
+import type { Crumb } from '../components/Breadcrumbs'
 import { ArrowRight, CalendarDays, ExternalLink, FileText, Link as LinkIcon, Newspaper } from 'lucide-react'
+import { Link } from '../components/router'
+import { numericFacts, sortByDate } from '../data/newsDate'
 
 const ASSET = '/uploads/'
 type Navigate = (to: string) => void
@@ -144,25 +146,31 @@ export const newsRecords: NewsRecord[] = [
 ]
 
 
-function NewsHero({ title, excerpt, image, date }: Pick<NewsRecord, "title" | "excerpt" | "image" | "date">) { return <PageHero tone="mata" eyebrow={date} title={title} description={excerpt} image={image} /> }
+/** Ordem de leitura do portal: da mais recente para a mais antiga (capa e arquivo). */
+export const newsByDate = sortByDate(newsRecords)
 
-const newsCrumbs = (title?: string) => [
+function NewsHero({ title, excerpt, image, date, category, crumbs }: Pick<NewsRecord, "title" | "excerpt" | "image" | "date" | "category"> & { crumbs?: Crumb[] }) { return <PageHero size="title" eyebrow={`${category} · ${date}`} title={title} description={excerpt} image={image} crumbs={crumbs} /> }
+
+/** Trilha das notícias: no artigo, "Notícias" é o nível acima e o título não se repete. */
+const newsCrumbs = (artigo = false): Crumb[] => [
   { label: 'Início', href: '/' },
-  title ? { label: 'Notícias', href: '/noticias/' } : { label: 'Notícias' },
-  ...(title ? [{ label: title }] : []),
+  artigo ? { label: 'Notícias', href: '/noticias/' } : { label: 'Notícias' },
 ]
 
 export function NewsArchive({ navigate }: { navigate: Navigate }) {
-  return <><PageHero tone="mata" eyebrow="Arquivo editorial" title={<>Notícias que ajudam a <span>entender o território.</span></>} description="Resultados, decisões públicas, educação ambiental e os movimentos que transformam a gestão de resíduos sólidos em Mato Grosso do Sul." /><Breadcrumbs items={newsCrumbs()} /><section className="section container news-archive"><div className="news-archive-heading"><div><span className="archive-count">{newsRecords.length} artigos publicados</span><h2>Informação para acompanhar.</h2></div><p>Consulte o conteúdo original organizado por data e tema.</p></div><div className="news-archive-grid">{newsRecords.map((item) => <button className="news-archive-card" key={item.slug} onClick={() => navigate(`/noticias/${item.slug}/`)}><div className="news-archive-image"><img src={item.image} alt="" /><span>{item.category}</span></div><div className="news-archive-copy"><div className="news-card-meta"><CalendarDays size={14} /> {item.date}</div><h3>{item.title}</h3><p>{item.excerpt}</p><span className="text-link">Ler notícia <ArrowRight size={15} /></span></div></button>)}</div></section></>
+  return <><PageHero eyebrow="Arquivo editorial" title={<>Notícias que ajudam a <span>entender o território.</span></>} description="Resultados, decisões públicas, educação ambiental e os movimentos que transformam a gestão de resíduos sólidos em Mato Grosso do Sul." crumbs={newsCrumbs()} /><section className="section container news-archive"><div className="news-archive-heading"><div><span className="archive-count">{newsByDate.length} artigos publicados</span><h2>Informação para acompanhar.</h2></div><p>Consulte o conteúdo original organizado por data e tema.</p></div><div className="news-archive-grid">{newsByDate.map((item) => <Link to={`/noticias/${item.slug}/`} className="news-archive-card" key={item.slug}><div className="news-archive-image"><img src={item.image} alt="" /><span>{item.category}</span></div><div className="news-archive-copy"><div className="news-card-meta"><CalendarDays size={14} /> {item.date}</div><h3>{item.title}</h3><p>{item.excerpt}</p><span className="text-link">Ler notícia <ArrowRight size={15} /></span></div></Link>)}</div></section></>
 }
 
 export function NewsArticle({ path, navigate }: { path: string; navigate: Navigate }) {
   const slug = path.split('/').filter(Boolean).pop() ?? ''
   const item = newsRecords.find((record) => record.slug === slug)
   if (!item) return <ArticleFallback navigate={navigate} />
-  return <><NewsHero {...item} /><Breadcrumbs items={newsCrumbs(item.title)} /><section className="section container news-story"><article className="news-story-main"><div className="news-story-meta"><span>{item.category}</span><span>{item.date}</span></div><div className="news-story-lead">{item.excerpt}</div>{item.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}{item.source && <a className="news-source" href={item.source.href} target="_blank" rel="noreferrer"><LinkIcon size={16} /><span><small>Fonte original</small><strong>{item.source.label}</strong></span><ExternalLink size={15} /></a>}{item.links && <div className="news-links"><div className="eyebrow"><span className="eyebrow-line" /> Links citados no artigo</div>{item.links.map((link) => <a key={link.href} href={link.href} target="_blank" rel="noreferrer"><FileText size={15} /> {link.label} <ExternalLink size={14} /></a>)}</div>}<button className="text-link" onClick={() => navigate('/noticias/')}><ArrowRight size={15} className="back-arrow" /> Voltar para notícias</button></article><aside className="news-story-aside"><div className="news-aside-label"><Newspaper size={18} /> Em foco</div>{item.facts.map((fact) => <div className="news-fact" key={fact.label}><strong>{fact.value}</strong><span>{fact.label}</span></div>)}<button className="button button-primary" onClick={() => navigate('/publicacoes/')}>Ver publicações <ArrowRight size={15} /></button></aside></section></>
+  const numeros = numericFacts(item.facts)
+  // Resumo uma vez (PG-04.2): se o primeiro parágrafo já começa com ele, a linha fina sai.
+  const resumoRepetido = item.paragraphs[0]?.startsWith(item.excerpt) ?? false
+  return <><NewsHero {...item} excerpt={resumoRepetido ? '' : item.excerpt} crumbs={newsCrumbs(true)} /><section className={`section container news-story${numeros.length ? '' : ' news-story--single'}`}><article className="news-story-main">{item.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}{item.source && <a className="news-source" href={item.source.href} target="_blank" rel="noreferrer"><LinkIcon size={16} /><span><small>Fonte original</small><strong>{item.source.label}</strong></span><ExternalLink size={15} /></a>}{item.links && <div className="news-links"><div className="eyebrow"><span className="eyebrow-line" /> Links citados no artigo</div>{item.links.map((link) => <a key={link.href} href={link.href} target="_blank" rel="noreferrer"><FileText size={15} /> {link.label} <ExternalLink size={14} /></a>)}</div>}<Link to="/noticias/" className="text-link"><ArrowRight size={15} className="back-arrow" /> Voltar para notícias</Link></article>{numeros.length > 0 && <aside className="news-story-aside"><div className="news-aside-label"><Newspaper size={18} /> Em números</div>{numeros.map((fact) => <div className="news-fact" key={fact.label}><strong>{fact.value}</strong><span>{fact.label}</span></div>)}</aside>}</section></>
 }
 
 function ArticleFallback({ navigate }: { navigate: Navigate }) {
-  return <section className="section container city-empty-page"><div className="not-found-mark"><Newspaper size={24} /></div><div className="eyebrow"><span className="eyebrow-line" /> Notícia em migração</div><h2>Este artigo ainda não foi associado ao conteúdo local.</h2><p>Volte ao arquivo de notícias para consultar as publicações disponíveis.</p><button className="button button-dark" onClick={() => navigate('/noticias/')}>Ver notícias <ArrowRight size={16} /></button></section>
+  return <section className="section container city-empty-page"><div className="not-found-mark"><Newspaper size={24} /></div><div className="eyebrow"><span className="eyebrow-line" /> Notícia em migração</div><h2>Este artigo ainda não foi associado ao conteúdo local.</h2><p>Volte ao arquivo de notícias para consultar as publicações disponíveis.</p><Link to="/noticias/" className="button button-dark">Ver notícias <ArrowRight size={16} /></Link></section>
 }

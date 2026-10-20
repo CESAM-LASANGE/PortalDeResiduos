@@ -1,11 +1,11 @@
 import { type FormEvent, useEffect, useRef, useState } from "react"
-import { ArrowRight, BarChart3, BookOpen, ChevronLeft, ChevronRight, Recycle, Search } from "lucide-react"
+import { ArrowRight, ChevronLeft, ChevronRight, ExternalLink, Pause, Play, Search } from "lucide-react"
 import { openSiteSearch } from "./SiteSearch"
-import { newsRecords } from "../pages/NewsPages"
+import { newsByDate } from "../pages/NewsPages"
 import { territoryStats } from "../data/territory"
 import { searchSite, type SearchEntry } from "../data/search"
+import { Link } from "./router"
 
-const ASSET = "/uploads/"
 type Navigate = (to: string) => void
 
 type InstitutionalSlide = {
@@ -48,10 +48,13 @@ const institutionalSlides: InstitutionalSlide[] = [
   },
 ]
 
-const homeAreas = [
-  { icon: <BarChart3 />, kicker: "Ferramenta digital", title: "Apoio a decisão", text: "Indicadores e cenários para qualificar o gerenciamento municipal.", href: "/apoio-a-decisao/", image: "/uploads/2023/07/machine-learning.png" },
-  { icon: <Recycle />, kicker: "Inclusão socioprodutiva", title: "Cooperativas", text: "Materiais para fortalecer a organização e o trabalho dos catadores.", href: "/cooperativas/", image: "/uploads/2022/08/cartilha_frente.png" },
-  { icon: <BookOpen />, kicker: "Biblioteca pública", title: "Publicações", text: "Estudos, artigos e notas técnicas para consulta e compartilhamento.", href: "/publicacoes/", image: "/uploads/2025/12/Revista-IBRAPARC-pdf.jpg" },
+type HomeArea = { kicker: string; title: string; text: string; href: string; cta: string; external?: { label: string; href: string } }
+
+const homeAreas: HomeArea[] = [
+  { kicker: "Ferramenta digital", title: "Apoio a decisão", text: "Indicadores e cenários para qualificar o gerenciamento municipal.", href: "/apoio-a-decisao/", cta: "Acessar", external: { label: "Abrir sistema GRS", href: "https://sadgrs.streamlit.app/" } },
+  { kicker: "Inclusão socioprodutiva", title: "Cooperativas", text: "Materiais para fortalecer a organização e o trabalho dos catadores.", href: "/cooperativas/", cta: "Acessar" },
+  { kicker: "Biblioteca pública", title: "Publicações", text: "Estudos, artigos e notas técnicas para consulta e compartilhamento.", href: "/publicacoes/", cta: "Acessar" },
+  { kicker: "Sistema estadual", title: "Logística Reversa", text: "Um caminho para que embalagens retornem ao setor empresarial e tenham destinação ambientalmente adequada.", href: "/logistica-reversa/", cta: "Entender o sistema" },
 ]
 
 function HomeHeroSearch({ navigate }: { navigate: Navigate }) {
@@ -89,7 +92,7 @@ function HomeHeroSearch({ navigate }: { navigate: Navigate }) {
           <p>Nenhum resultado para “{query}”. Continue com Enter para buscar no acervo completo.</p>
         ) : (
           <ul role="listbox" aria-label="Sugestões de busca">
-            {results.map((entry) => <li key={`-`} role="option"><button type="button" onClick={() => openEntry(entry)}><span className="home-hero-search-result-kind">{entry.kind}</span><span>{entry.label}</span><ArrowRight size={15} aria-hidden="true" /></button></li>)}
+            {results.map((entry) => <li key={`${entry.kind}-${entry.href}`} role="option"><button type="button" onClick={() => openEntry(entry)}><span className="home-hero-search-result-kind">{entry.kind}</span><span>{entry.label}</span><ArrowRight size={15} aria-hidden="true" /></button></li>)}
           </ul>
         )}
       </div>}
@@ -97,22 +100,23 @@ function HomeHeroSearch({ navigate }: { navigate: Navigate }) {
   )
 }
 
-function InstitutionalSlideContent({ slide }: { slide: InstitutionalSlide }) {
+function HighlightContent({ slide }: { slide: InstitutionalSlide }) {
   return <>
     <p className="home-hero-slide-label">{slide.label}</p>
-    <h1>{slide.title}</h1>
+    <h2>{slide.title}</h2>
     <p>{slide.text}</p>
     {slide.stat && slide.statLabel && <div className="home-hero-stat"><strong>{slide.stat}</strong><span>{slide.statLabel}</span></div>}
   </>
 }
 
+const [introSlide, ...highlights] = institutionalSlides
+
 function HomeInstitutionalHero({ navigate }: { navigate: Navigate }) {
-  const [activeSlide, setActiveSlide] = useState(0)
-  const [enteringSlide, setEnteringSlide] = useState<number | null>(null)
-  const [transitionDirection, setTransitionDirection] = useState<"next" | "previous">("next")
-  const [paused, setPaused] = useState(false)
+  const [active, setActive] = useState(0)
+  const [userPaused, setUserPaused] = useState(false)
+  const [hoverPaused, setHoverPaused] = useState(false)
   const [reducedMotion, setReducedMotion] = useState(false)
-  const slide = institutionalSlides[activeSlide]
+  const paused = userPaused || hoverPaused || reducedMotion
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)")
@@ -123,60 +127,44 @@ function HomeInstitutionalHero({ navigate }: { navigate: Navigate }) {
   }, [])
 
   useEffect(() => {
-    if (paused || reducedMotion || enteringSlide !== null) return
-    const interval = window.setInterval(() => {
-      setTransitionDirection("next")
-      setEnteringSlide((activeSlide + 1) % institutionalSlides.length)
-    }, 5000)
+    if (paused) return
+    const interval = window.setInterval(() => setActive((current) => (current + 1) % highlights.length), 8000)
     return () => window.clearInterval(interval)
-  }, [activeSlide, enteringSlide, paused, reducedMotion])
+  }, [paused])
 
-  const showSlide = (next: number, direction: "next" | "previous") => {
-    const normalized = (next + institutionalSlides.length) % institutionalSlides.length
-    if (normalized === activeSlide || enteringSlide !== null) return
-    if (reducedMotion) {
-      setActiveSlide(normalized)
-      return
-    }
-    setTransitionDirection(direction)
-    setEnteringSlide(normalized)
-  }
-
-  const finishTransition = () => {
-    if (enteringSlide === null) return
-    setActiveSlide(enteringSlide)
-    setEnteringSlide(null)
-  }
+  const show = (next: number) => setActive((next + highlights.length) % highlights.length)
 
   return (
-    <section className="home-institutional-hero" id="sobre-projeto" aria-label="Sobre o Projeto Resíduos Sólidos">
+    <section className="home-institutional-hero" id="sobre-projeto" aria-labelledby="home-hero-title">
       <div className="container home-institutional-hero-inner">
-        <div
+        <div className="home-hero-intro">
+          <div className="eyebrow home-hero-eyebrow"><span className="eyebrow-line" /> Projeto Resíduos Sólidos — Disposição Legal</div>
+          <h1 id="home-hero-title">Informação para dar o destino certo.</h1>
+          <p className="home-hero-lead">{introSlide.text}</p>
+          <HomeHeroSearch navigate={navigate} />
+        </div>
+        <section
           className="home-hero-carousel"
-          role="region"
-          aria-roledescription="carrossel"
-          aria-label="Sobre o Projeto Resíduos Sólidos"
-          onMouseEnter={() => setPaused(true)}
-          onMouseLeave={() => setPaused(false)}
-          onFocusCapture={() => setPaused(true)}
+          aria-roledescription="carrossel" aria-label="Destaques"
+          onMouseEnter={() => setHoverPaused(true)}
+          onMouseLeave={() => setHoverPaused(false)}
+          onFocusCapture={() => setHoverPaused(true)}
           onBlurCapture={(event) => {
-            if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setPaused(false)
+            if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setHoverPaused(false)
           }}
         >
-          <div className="eyebrow home-hero-eyebrow"><span className="eyebrow-line" /> Projeto Resíduos Sólidos — Disposição Legal</div>
-          <div className="home-hero-slide-viewport">
-            <div className={"home-hero-slide" + (enteringSlide !== null ? " is-leaving to-" + transitionDirection : "")} aria-live="off" aria-hidden={enteringSlide !== null}><InstitutionalSlideContent slide={slide} /></div>
-            {enteringSlide !== null && <div className={"home-hero-slide is-entering from-" + transitionDirection} aria-live="off" onAnimationEnd={finishTransition}><InstitutionalSlideContent slide={institutionalSlides[enteringSlide]} /></div>}
+          <div className="home-hero-slides" aria-live={paused ? "polite" : "off"}>
+            {highlights.map((item, index) => <div key={item.label} className={"home-hero-slide" + (index === active ? " is-active" : "")} role="group" aria-roledescription="destaque" aria-label={(index + 1) + " de " + highlights.length} aria-hidden={index !== active}><HighlightContent slide={item} /></div>)}
           </div>
           <div className="home-hero-controls">
-            <button type="button" className="home-hero-nav" onClick={() => showSlide(activeSlide - 1, "previous")} aria-label="Mostrar mensagem anterior" disabled={enteringSlide !== null}><ChevronLeft size={17} /></button>
-            <div className="home-hero-dots" aria-label="Selecionar mensagem institucional">
-              {institutionalSlides.map((item, index) => <button type="button" key={item.label} className={index === activeSlide ? "is-active" : ""} onClick={() => showSlide(index, index > activeSlide ? "next" : "previous")} aria-label={"Mostrar mensagem " + (index + 1) + ": " + item.label} aria-current={index === activeSlide ? "true" : undefined} disabled={enteringSlide !== null}><span className="sr-only">{item.label}</span></button>)}
+            <button type="button" className="home-hero-nav" onClick={() => show(active - 1)} aria-label="Destaque anterior"><ChevronLeft size={17} /></button>
+            <button type="button" className="home-hero-nav" onClick={() => setUserPaused(!userPaused)} aria-label={userPaused ? "Continuar destaques" : "Pausar destaques"}>{userPaused ? <Play size={15} /> : <Pause size={15} />}</button>
+            <div className="home-hero-dots">
+              {highlights.map((item, index) => <button type="button" key={item.label} className={index === active ? "is-active" : ""} onClick={() => show(index)} aria-label={"Mostrar destaque " + (index + 1) + ": " + item.label} aria-current={index === active ? "true" : undefined} />)}
             </div>
-            <button type="button" className="home-hero-nav" onClick={() => showSlide(activeSlide + 1, "next")} aria-label="Mostrar próxima mensagem" disabled={enteringSlide !== null}><ChevronRight size={17} /></button>
+            <button type="button" className="home-hero-nav" onClick={() => show(active + 1)} aria-label="Próximo destaque"><ChevronRight size={17} /></button>
           </div>
-        </div>
-        <HomeHeroSearch navigate={navigate} />
+        </section>
       </div>
     </section>
   )
@@ -186,36 +174,26 @@ export function HomePage({ navigate }: { navigate: Navigate }) {
   return <>
     <HomeInstitutionalHero navigate={navigate} />
 
-    <section className="section container home-summary">
-      <div className="home-summary-copy">
-        <div className="eyebrow"><span className="eyebrow-line" /> Um acervo para agir</div>
-        <h2>Conhecimento organizado para <span>virar ação.</span></h2>
-        <p>Diagnósticos, planos, publicações e ferramentas para aproximar informação de quem planeja e de quem participa do cotidiano das cidades.</p>
-        <div className="home-summary-actions">
-          <button type="button" className="button button-dark" onClick={() => navigate("/producoes-do-convenio/")}>Explorar produções <ArrowRight size={16} /></button>
-          <button type="button" className="text-link" onClick={() => navigate("/cidades/")}>Ver municípios <ArrowRight size={16} /></button>
-        </div>
-      </div>
-      <div className="home-summary-mosaic" aria-label="Principais áreas do portal">
-        <button type="button" className="home-impact-card home-impact-card--territory" onClick={() => navigate("/diretorios/")}>
-          <span className="home-impact-label">Pareceres</span>
-          <strong>{territoryStats.withPanorama}</strong>
+    <section className="section container home-shortcuts" aria-label="Atalhos">
+      <div className="home-tiles">
+        <Link to="/diretorios/" className="home-tile">
+          <span className="home-tile-kicker">Pareceres</span>
+          <strong className="home-tile-number">{territoryStats.withPanorama}</strong>
           <p>municípios com parecer ou panorama publicado.</p>
-          <span className="home-impact-stamp">MS</span>
-          <span className="sr-only"> — abrir diretórios municipais</span>
-        </button>
-        <button type="button" className="home-impact-card home-impact-card--image" onClick={() => navigate("/projeto-valoriza/")}>
-          <img src="/uploads/2021/07/JOB-090-Banner-Projeto-Resíduos-Sólidos.jpg" alt="Trabalhadores e materiais da cadeia da reciclagem" loading="lazy" />
-          <div><span className="home-impact-label">Inclusão socioprodutiva</span><strong>Projeto Valoriza</strong><p>Cadeia da reciclagem mais justa.</p></div>
-          <span className="sr-only"> — abrir Projeto Valoriza</span>
-        </button>
-        <button type="button" className="home-impact-card home-impact-card--change" onClick={() => navigate("/nota-tecnica/")}>
-          <span className="home-impact-label">Documento técnico</span>
-          <strong>Notas Técnicas</strong>
+          <span className="home-tile-cta">Abrir diretórios municipais <ArrowRight size={16} aria-hidden="true" /></span>
+        </Link>
+        <Link to="/projeto-valoriza/" className="home-tile">
+          <span className="home-tile-kicker">Inclusão socioprodutiva</span>
+          <strong className="home-tile-title">Projeto Valoriza</strong>
+          <p>Cadeia da reciclagem mais justa.</p>
+          <span className="home-tile-cta">Abrir Projeto Valoriza <ArrowRight size={16} aria-hidden="true" /></span>
+        </Link>
+        <Link to="/nota-tecnica/" className="home-tile">
+          <span className="home-tile-kicker">Documento técnico</span>
+          <strong className="home-tile-title">Nota Técnica</strong>
           <p>Reconhecimento dos catadores recicláveis.</p>
-          <small>Publicação <span>·</span> Projeto Valoriza</small>
-          <span className="sr-only"> — abrir Nota Técnica</span>
-        </button>
+          <span className="home-tile-cta">Abrir Nota Técnica <ArrowRight size={16} aria-hidden="true" /></span>
+        </Link>
       </div>
     </section>
 
@@ -225,14 +203,20 @@ export function HomePage({ navigate }: { navigate: Navigate }) {
         <p className="section-heading-note">Cada área responde a uma necessidade concreta da gestão de resíduos.</p>
       </div>
       <div className="home-areas">
-        {homeAreas.map((area) => <button type="button" className="feature-card" key={area.title} onClick={() => navigate(area.href)}><div className="feature-visual"><img src={area.image} alt="" loading="lazy" /><span className="card-icon">{area.icon}</span></div><div className="feature-card-content"><span className="card-kicker">{area.kicker}</span><h3>{area.title}</h3><p>{area.text}</p><span className="card-arrow">Acessar <ArrowRight size={17} /></span></div></button>)}
+        {homeAreas.map((area) => <article className="home-area" key={area.title}>
+          <span className="card-kicker">{area.kicker}</span>
+          <h3>{area.title}</h3>
+          <p>{area.text}</p>
+          <div className="home-area-actions">
+            <Link to={area.href} className="text-link">{area.cta}<span className="sr-only">: {area.title}</span> <ArrowRight size={16} aria-hidden="true" /></Link>
+            {area.external && <a className="text-link" href={area.external.href} target="_blank" rel="noopener">{area.external.label} <ExternalLink size={15} aria-hidden="true" /><span className="sr-only"> (abre em nova aba)</span></a>}
+          </div>
+        </article>)}
       </div>
     </section>
 
     <section className="section news-section">
-      <div className="container"><div className="section-heading"><div><div className="eyebrow"><span className="eyebrow-line" /> Atualizações</div><h2>Notícias do <span>território.</span></h2></div><button type="button" className="text-link" onClick={() => navigate("/noticias/")}>Ver todas <ArrowRight size={16} /></button></div><div className="news-grid">{newsRecords.slice(0, 3).map((item) => <button type="button" className="news-card" key={item.slug} onClick={() => navigate("/noticias/" + item.slug + "/")}><div className="news-image"><img src={item.image} alt="" loading="lazy" /><span className="news-date">{item.date}</span></div><div className="news-card-copy"><h3>{item.title}</h3><p>{item.excerpt}</p><span className="text-link">Ler notícia <ArrowRight size={15} /></span></div></button>)}</div></div>
+      <div className="container"><div className="section-heading"><div><div className="eyebrow"><span className="eyebrow-line" /> Atualizações</div><h2>Notícias do <span>território.</span></h2></div><Link to="/noticias/" className="text-link">Ver todas <ArrowRight size={16} /></Link></div><div className="news-grid">{newsByDate.slice(0, 3).map((item) => <Link to={"/noticias/" + item.slug + "/"} className="news-card" key={item.slug}><div className="news-image"><img src={item.image} alt="" loading="lazy" /></div><div className="news-card-copy"><p className="news-card-meta"><span className="news-card-category">{item.category}</span><span>{item.date}</span></p><h3>{item.title}</h3></div></Link>)}</div></div>
     </section>
-
-    <section className="section container reverse-strip"><div className="reverse-art"><img src={ASSET + "2021/10/logistica-reversa-ilust.png"} alt="Ciclo de logística reversa" loading="lazy" /></div><div className="reverse-copy"><div className="eyebrow"><span className="eyebrow-line" /> Sistema estadual</div><h2>Logística <span>Reversa</span></h2><p>Um caminho para que embalagens retornem ao setor empresarial e tenham destinação ambientalmente adequada.</p><button type="button" className="text-link" onClick={() => navigate("/logistica-reversa/")}>Entender o sistema <ArrowRight size={16} /></button></div></section>
   </>
 }

@@ -1,0 +1,279 @@
+/* Camada 3 — componentes: selo, aviso, campo, linha de documento, cabeçalho, busca e herói de página. */
+
+/* --- Selo, aviso e campo (CP-08) --- */
+.badge {
+  display: inline-flex; align-items: center; gap: 0.4rem; min-height: 24px; padding: 0 0.5rem;
+  font-family: var(--font-mono); font-size: var(--step-meta); font-weight: 500; letter-spacing: 0.03em;
+  border-radius: var(--radius); white-space: nowrap;
+}
+.badge--doc { color: var(--ink); background: var(--paper-sunk); }
+.badge--positive { color: var(--positive); background: var(--positive-bg); }
+.badge--warning { color: var(--warning); background: var(--warning-bg); }
+.badge--outline { color: var(--ink-soft); border: 1px solid var(--line-strong); }
+
+.alert {
+  display: flex; align-items: flex-start; gap: 0.75rem; padding: 0.8rem 1rem;
+  font-size: var(--step-small); line-height: 1.55; color: var(--ink); border-left: 3px solid;
+}
+.alert > svg { flex: none; margin-top: 0.15rem; }
+.alert strong { display: block; font-weight: 600; }
+.alert p { margin-top: 0.2rem; color: var(--ink-soft); }
+.alert--warning { background: var(--warning-bg); border-left-color: var(--cerrado); }
+.alert--warning > svg { color: var(--warning); }
+.alert--success { background: var(--positive-bg); border-left-color: var(--positive); }
+.alert--success > svg { color: var(--positive); }
+.alert--error { background: var(--negative-bg); border-left-color: var(--negative); }
+.alert--error > svg { color: var(--negative); }
+
+.field { display: grid; gap: 0.4rem; }
+.field label { font-family: var(--font-sans); font-size: var(--step-small); font-weight: 600; color: var(--ink); }
+.field-control {
+  width: 100%; min-height: 44px; padding: 0.6rem 0.85rem; border: 1px solid var(--field-border);
+  border-radius: var(--radius); background: var(--paper-raised); color: var(--ink);
+  font-family: var(--font-sans); font-size: var(--step-0); line-height: 1.5;
+}
+textarea.field-control { resize: vertical; }
+.field-control::placeholder { color: var(--ink-faint); }
+.field-control:focus-visible { outline: 2px solid var(--cerrado); outline-offset: 2px; border-color: var(--mata); }
+.field.has-error .field-control { border-color: var(--negative); border-left-width: 3px; }
+.field-hint { font-size: var(--step-small); color: var(--ink-soft); }
+.field-error { font-size: var(--step-small); font-weight: 600; color: var(--negative); }
+
+/* --- Linha de documento (CP-07) --- */
+.document-row {
+  display: grid; grid-template-columns: 52px minmax(0, 1fr) auto; gap: 1rem; align-items: center;
+  padding: 0.9rem 0; border-top: 1px solid var(--line);
+}
+.document-row-thumb {
+  display: grid; place-items: center; width: 52px; height: 64px; overflow: hidden;
+  color: var(--mata); background: var(--paper-raised); border: 1px solid var(--line-strong);
+}
+.document-row-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.document-row-body h3 { font-family: var(--font-sans); font-size: var(--step-0); font-weight: 600; line-height: 1.35; letter-spacing: 0; }
+.document-row-desc { margin-top: 0.2rem; color: var(--ink-soft); font-size: var(--step-small); line-height: 1.5; }
+.document-row-meta {
+  display: flex; flex-wrap: wrap; gap: 0.25rem 0.75rem; margin-top: 0.3rem;
+  font-family: var(--font-mono); font-size: var(--step-meta); letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink-faint);
+}
+.document-row-action { min-height: 44px; padding: 0.55rem 0.9rem; }
+@media (max-width: 560px) {
+  .document-row { grid-template-columns: 44px minmax(0, 1fr); }
+  .document-row-thumb { width: 44px; height: 54px; }
+  .document-row-action { grid-column: 2; justify-self: start; }
+}
+
+/* =========================================================================
+   CHROME — barra de registro + cabeçalho
+   ========================================================================= */
+
+.topline {
+  display: flex; justify-content: space-between; align-items: center; gap: 1rem;
+  padding: 0.5rem var(--gutter);
+  background: var(--mata-deep); color: var(--on-mata-soft);
+  font-family: var(--font-mono); font-size: 0.75rem; font-weight: 500;
+  letter-spacing: 0.05em; text-transform: uppercase;
+}
+.topline-right { display: inline-flex; align-items: center; gap: 0.6rem; color: var(--on-mata); }
+.topline-right strong { color: var(--on-mata-strong); font-weight: 500; }
+.dot { width: 5px; height: 5px; border-radius: 50%; background: var(--cerrado); flex: none; }
+
+.site-header { position: sticky; top: 0; z-index: 30; background: var(--paper); border-bottom: 1px solid var(--line); }
+.header-inner {
+  width: min(1320px, 100% - 2 * var(--gutter)); margin-inline: auto; /* mais largo que o conteúdo (--maxw): cabem as três marcas */
+  min-height: 68px; display: flex; align-items: center; gap: 1rem;
+}
+/* Três marcas lado a lado: a altura acompanha o espaço que sobra ao menu (13,49 = soma das larguras
+   relativas das imagens; 780 px = menu, busca e folgas), de 31 px em 1280 a 44 px em telas largas. */
+.brand { --logo-h: clamp(30px, calc((min(1320px, 100vw - 2 * var(--gutter)) - 780px) / 13.49), 44px); padding: 0; background: transparent; display: flex; align-items: center; gap: 0.75rem; flex: none; text-decoration: none; }
+.brand img { display: block; width: auto; height: var(--logo-h); }
+/* A UEMS tem mais ar em volta e letras maiores que o selo do portal: menor, para pesar o mesmo. */
+.brand img[src$="uems.png"] { height: calc(var(--logo-h) * 0.77); }
+.menu-toggle { display: none; color: var(--ink); padding: 0.4rem; margin-right: -0.4rem; }
+
+.main-nav { display: flex; align-items: center; gap: 1.4rem; margin-left: auto; }
+.main-nav a {
+  position: relative; padding: 0.5rem 0; background: transparent; text-decoration: none;
+  font-family: var(--font-sans); font-size: var(--step-ui); font-weight: 600;
+  color: var(--ink-soft); white-space: nowrap;
+}
+.main-nav a::after {
+  content: ''; position: absolute; left: 0; bottom: 0; height: 2px; width: 0;
+  background: var(--mata); 
+}
+.main-nav a:hover { color: var(--ink); }
+.main-nav a:hover::after,
+.main-nav a.active::after { width: 100%; }
+.main-nav a.active { color: var(--mata); }
+
+.header-search {
+  display: inline-flex; align-items: center; gap: 0.5rem; min-height: 40px; padding: 0 0.85rem;
+  color: var(--ink); background: var(--paper-raised);
+  font-family: var(--font-sans); font-size: var(--step-ui); font-weight: 600;
+  border: 1px solid var(--line-strong); border-radius: var(--radius);
+  transition: border-color 0.18s ease, background 0.18s ease;
+}
+.header-search:hover { border-color: var(--mata); background: var(--paper-raised); }
+
+/* =========================================================================
+   BUSCA — painel modal
+   ========================================================================= */
+
+.search-overlay {
+  position: fixed; inset: 0; z-index: 60;
+  display: flex; justify-content: center; align-items: flex-start;
+  padding: clamp(1rem, 10vh, 7rem) var(--gutter) 2rem;
+  background: rgba(18, 53, 42, 0.32);
+  backdrop-filter: blur(2px);
+  animation: overlay-in 0.14s ease;
+}
+.search-panel {
+  width: min(640px, 100%);
+  background: var(--paper); border: 1px solid var(--line-strong);
+  border-radius: var(--radius); box-shadow: var(--shadow-overlay);
+  overflow: hidden; animation: panel-in 0.14s ease;
+}
+.search-field-row {
+  display: flex; align-items: center; gap: 0.75rem;
+  padding: 1rem 1.1rem; border-bottom: 1px solid var(--line); color: var(--ink-faint);
+}
+.search-input {
+  flex: 1; border: 0; background: transparent; outline: none;
+  font-size: var(--step-1); color: var(--ink);
+}
+.search-input::placeholder { color: var(--ink-faint); }
+.search-field-row:focus-within { outline: 2px solid var(--cerrado); outline-offset: -3px; }
+/* O painel já tem o botão "Fechar busca"; o × nativo duplicaria o controle. */
+.search-input::-webkit-search-cancel-button { display: none; -webkit-appearance: none; appearance: none; }
+.search-close {
+  display: grid; place-items: center; width: 32px; height: 32px; flex: none;
+  color: var(--ink-soft); border-radius: var(--radius);
+}
+.search-close:hover { background: var(--paper-sunk); color: var(--ink); }
+
+.search-results { max-height: min(60vh, 26rem); overflow-y: auto; }
+.search-hint { padding: 1.4rem 1.2rem; color: var(--ink-soft); font-size: var(--step-small); line-height: 1.6; }
+.search-results ul { list-style: none; padding: 0.4rem; }
+.search-result {
+  display: flex; align-items: center; gap: 0.85rem; width: 100%;
+  padding: 0.7rem 0.8rem; border-radius: var(--radius);
+  text-align: left; color: var(--ink);
+}
+.search-result.is-active { background: var(--paper-sunk); }
+.search-result-kind {
+  flex: none; width: 5.5rem;
+  font-family: var(--font-mono); font-size: 0.75rem; font-weight: 500;
+  letter-spacing: 0.04em; text-transform: uppercase; color: var(--mata);
+}
+.search-result-label { flex: 1; font-size: var(--step-0); line-height: 1.35; }
+.search-result svg { flex: none; color: var(--ink-faint); }
+
+/* =========================================================================
+   PAGE HERO — herói de página compartilhado (substitui page-intro e *-hero)
+   ========================================================================= */
+
+.page-hero { border-bottom: 1px solid var(--line); }
+.page-hero-inner {
+  display: grid; gap: clamp(2rem, 5vw, 4rem); align-items: center;
+  padding-block: clamp(1.25rem, 2.5vw, 1.75rem) var(--section-y);
+}
+.page-hero-extra { margin-top: 1.25rem; }
+.page-hero-badges { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+/* A trilha abre a página, acima da sobrelinha e do título (CP-10.1). */
+.page-hero-crumbs { padding-top: 0; margin-bottom: clamp(1.75rem, 4vw, 2.75rem); }
+.page-hero.has-figure .page-hero-inner { grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr); }
+.page-hero h1 { margin-top: 0.9rem; max-width: 18ch; }
+.page-hero--title h1 { font-size: var(--step-4); max-width: 28ch; }
+.page-hero-desc { margin-top: 1.1rem; max-width: 54ch; font-size: var(--step-body); line-height: 1.65; color: var(--ink-soft); }
+.page-hero-figure { border: 1px solid var(--line); background: var(--paper-sunk); }
+.page-hero-figure img { width: 100%; height: 100%; max-height: 340px; object-fit: contain; }
+
+/* --- Índice de municípios (CP-06) --- */
+.municipality-index-head { display: grid; gap: 0.75rem; max-width: 62ch; }
+.municipality-index-head h2 { margin: 0; }
+.municipality-index-head p { color: var(--ink-soft); font-size: var(--step-body); line-height: 1.65; }
+.municipality-index-tools { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem 2rem; margin-top: 2rem; }
+.municipality-index-tools .search-field { width: min(22rem, 100%); }
+.segmented { display: inline-flex; flex-wrap: wrap; border: 1px solid var(--line-strong); border-radius: var(--radius); background: var(--paper-raised); overflow: hidden; }
+.segmented button {
+  display: inline-flex; align-items: center; gap: 0.5rem; min-height: 44px; padding: 0 0.9rem;
+  font-family: var(--font-sans); font-size: var(--step-small); font-weight: 600; color: var(--ink-soft);
+  transition: color 0.18s ease, background 0.18s ease;
+}
+.segmented button + button { border-left: 1px solid var(--line-strong); }
+.segmented button[aria-pressed="true"] { color: var(--paper-raised); background: var(--mata); }
+.segmented-count { font-family: var(--font-mono); font-size: var(--step-meta); font-weight: 500; }
+.municipality-az { display: flex; flex-wrap: wrap; gap: 2px; margin-top: 1.5rem; }
+.municipality-az a {
+  display: inline-grid; place-items: center; min-width: 2.25rem; min-height: 2.25rem;
+  font-family: var(--font-mono); font-size: var(--step--1); color: var(--mata); text-decoration: none; border-radius: var(--radius);
+}
+.municipality-az a:hover { background: var(--paper-sunk); }
+.municipality-index-count { margin-top: 1rem; font-family: var(--font-mono); font-size: var(--step-meta); color: var(--ink-faint); }
+.municipality-index-empty { display: grid; justify-items: start; gap: 1rem; margin-top: 1rem; padding: 1.25rem; background: var(--paper-sunk); }
+/* Índice remissivo: grupos por letra em colunas (3 no desktop, 2 no celular). */
+.municipality-groups { columns: 2 22rem; column-gap: clamp(1.5rem, 4vw, 3rem); margin-top: 0.75rem; }
+.municipality-group { break-inside: avoid; padding-top: 0.9rem; }
+.municipality-group h3 {
+  padding-bottom: 0.3rem; margin-bottom: 0.2rem; font-size: var(--step-1); color: var(--mata);
+  border-bottom: 1px solid var(--line-strong); scroll-margin-top: 5.5rem;
+}
+.municipality-group ul { list-style: none; margin: 0; padding: 0; }
+.municipality-group li { display: flex; flex-wrap: wrap; align-items: center; column-gap: 1rem; border-bottom: 1px solid var(--line); }
+.municipality-name {
+  display: flex; align-items: center; min-height: 44px; margin-right: auto;
+  font-weight: 600; color: var(--ink); text-decoration: none;
+}
+.municipality-name:hover { color: var(--mata); text-decoration: underline; text-underline-offset: 0.18em; }
+.municipality-actions { display: flex; flex-wrap: wrap; gap: 0 0.9rem; }
+.municipality-action {
+  display: inline-flex; align-items: center; min-height: 36px;
+  font-size: var(--step-small); font-weight: 600; color: var(--mata); text-decoration: none;
+}
+.municipality-action:hover { text-decoration: underline; text-underline-offset: 0.18em; }
+.municipality-action-short { display: none; }
+.municipality-index-note { padding-bottom: var(--section-y); }
+
+/* Mapa dos municípios (L01): contornos do IBGE em SVG e marcadores como botões por cima. */
+.municipality-map { display: grid; grid-template-columns: minmax(0, 44rem) minmax(14rem, 1fr); gap: clamp(1.5rem, 4vw, 3rem); align-items: start; margin-top: 1.5rem; }
+.municipality-map-canvas { position: relative; }
+.municipality-map-svg { display: block; width: 100%; height: auto; }
+.municipality-map-svg path { fill: var(--paper-sunk); stroke: var(--paper); stroke-width: 1; vector-effect: non-scaling-stroke; }
+.municipality-map-svg path.is-visible { fill: var(--paper-raised); stroke: var(--line-strong); }
+.municipality-map-svg path.is-selected { fill: var(--mata-claro); stroke: var(--mata); }
+.municipality-map-markers { position: absolute; inset: 0; list-style: none; margin: 0; padding: 0; pointer-events: none; }
+.municipality-map-markers li { position: absolute; transform: translate(-50%, -50%); }
+/* O ponteiro é tratado no mapa (vizinho mais próximo); o botão atende teclado e leitor de tela. */
+.municipality-map-canvas { cursor: pointer; }
+.municipality-map-marker { position: relative; display: grid; place-items: center; width: 24px; height: 24px; padding: 0; background: none; border: 0; }
+.municipality-map-marker::before { content: ''; box-sizing: content-box; width: 10px; height: 10px; border: 2px solid var(--paper-raised); border-radius: 50%; background: var(--mata); }
+.municipality-map-marker[aria-expanded="true"]::before { width: 14px; height: 14px; background: var(--cerrado); }
+.municipality-map-label { position: absolute; left: 100%; top: 50%; display: none; transform: translateY(-50%); padding: 0 0.3rem; white-space: nowrap; font-family: var(--font-sans); font-size: var(--step-meta); font-weight: 600; color: var(--ink); background: var(--paper-raised); border: 1px solid var(--line); pointer-events: none; }
+.municipality-map-marker.is-label-left .municipality-map-label { left: auto; right: 100%; }
+.municipality-map.is-few .municipality-map-label,
+.municipality-map-marker:is(.is-hover, :focus-visible, [aria-expanded="true"]) .municipality-map-label { display: block; z-index: 1; }
+/* Fixo ao lado do mapa no desktop: abrir um município não rola a página sob o ponteiro. */
+.municipality-map-panel { position: sticky; top: 6rem; display: grid; gap: 0.75rem; justify-items: start; padding: 1.25rem; background: var(--paper-raised); border: 1px solid var(--line); border-top: 3px solid var(--mata); }
+.municipality-map-panel h3 { margin: 0; scroll-margin-top: 5.5rem; font-family: var(--font-display); font-size: var(--step-2); color: var(--ink); }
+.municipality-map-panel p { margin: 0; color: var(--ink-soft); font-size: var(--step-small); line-height: 1.6; }
+.municipality-map-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.municipality-map-close { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 44px; padding: 0; background: none; border: 0; cursor: pointer; }
+@media (max-width: 900px) {
+  .municipality-map { grid-template-columns: minmax(0, 1fr); }
+  .municipality-map-panel { position: static; }
+}
+/* No celular os nomes não cabem lado a lado: só o do marcador em foco ou escolhido. */
+@media (max-width: 560px) {
+  .municipality-map.is-few .municipality-map-marker:not(.is-hover, :focus-visible, [aria-expanded="true"]) .municipality-map-label { display: none; }
+}
+
+/* No celular: uma coluna; ações com rótulo curto e alvo de 44 px (DS-13) à direita do nome. */
+@media (max-width: 700px) {
+  .municipality-groups { columns: 1; }
+  .municipality-group li { flex-wrap: nowrap; column-gap: 0.25rem; }
+  .municipality-actions { flex-wrap: nowrap; gap: 0.25rem; }
+  .municipality-action { justify-content: center; min-width: 44px; min-height: 44px; padding: 0 0.4rem; font-family: var(--font-mono); font-size: var(--step-meta); font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; }
+  .municipality-action-long { display: none; }
+  .municipality-action-short { display: inline; }
+  .municipality-group { padding-top: 0.25rem; }
+  .municipality-group h3 { padding: 0.35rem 0 0.15rem; margin: 0; font-size: var(--step-0); }
+}

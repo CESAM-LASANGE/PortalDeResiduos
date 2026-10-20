@@ -8,3 +8,61 @@
 - **Decisão:** não introduzir framework de testes ou lint nesta etapa.
 - **Motivo:** manter a fundação sem instalar dependências e sem ampliar o escopo; os gates iniciais usam TypeScript, Node test runner, validadores locais e Vite.
 - **Próximo passo:** adicionar testes de comportamento de componentes quando houver uma necessidade concreta que justifique um runner de DOM.
+
+## 2026-09-29 — Refinamento de design (ADRs de `docs/design-refactor/09-decisoes.md`)
+
+- **ADR-001 (aceita, opção a):** `/cidades/`, `/diretorios/` e `/panoramas-da-gestao-de-residuos/` usam o mesmo `MunicipalityIndex`; as três URLs continuam.
+- **ADR-002 (aceita, opção a):** remover os links `#facebook` e `#linkedin` do rodapé até existirem URLs oficiais.
+- **ADR-003 (pendente, nível 4):** Playwright e axe não entram como devDependencies; medições de navegador rodam fora do projeto.
+- **ADR-004 (aceita, opção a):** herói só com texto nas páginas sem imagem relacionada; o texto "Sobre o panorama" é escrito a partir do conteúdo já publicado e aprovado pelo dono do projeto antes de publicar.
+- **ADR-005 (aceita, opção a):** o gerador de catálogos grava `sizeBytes`; os arquivos são regenerados com `npm run sync:data`, nunca editados à mão.
+- **ADR-006 (aceita, opção a):** menu Início · Municípios · Documentos · Produções do Convênio · Notícias · Contato; Documentos vira lista única com filtros; Produções do Convênio vira uma página só; nenhuma URL pública é removida.
+- **Motivo:** decisões tomadas pelo dono do projeto em 2026-09-29 a partir da auditoria https://claude.ai/artifact/RNMQP4tTRSNprZRooeNW17.
+
+## 2026-09-29 — Gate de design (D0.2)
+
+- **Decisão:** criar `npm run check:design` (`scripts/check-contrast.mjs` e `scripts/check-design-rules.mjs`, sem dependências) e incluí-lo em `check:quality`, antes do build.
+- **Motivo:** proteger os tokens de cor, a fonte mínima de 12 px, o uso de hex fora de `:root` e a navegação por `<Link>` durante o refinamento de design.
+- **Consequência:** `check-design-rules.mjs` funciona como catraca. Cada tarefa que melhora uma métrica baixa o teto no mesmo commit; subir um teto exige ADR.
+
+## 2026-09-29 — Execução contínua das fases de design
+
+- **Decisão:** o dono do projeto pediu a execução de todas as fases (D0 a D3) na ordem do backlog, com review do código ao final, em vez de um PR revisado por vez.
+- **Como fica:** uma branch e um commit por tarefa, empilhados. Texto público novo ou alterado usa o texto já proposto nas specs e na auditoria aprovada e fica listado em `docs/design-refactor/PROGRESS.md` para aprovação antes de publicar (inclui "Sobre o panorama", ADR-004). Nenhum arquivo é apagado; arquivos que ficarem sem uso são listados no handoff. Dependências continuam proibidas (ADR-003 pendente).
+
+
+## 2026-09-29 — Índice de municípios em colunas em vez de tabela (D3.1)
+
+- **Contexto:** a CP-06.5 pede tabela no desktop (Município, Documentos disponíveis, Abrir ficha) e lista de linhas no celular; a PG-02.3 pede altura ≤ 5.000 px em 390.
+- **Medida:** com uma linha por município (44 px de alvo mínimo, DS-13), a lista sozinha ocupa ~4.400 px no celular; `/cidades/` ficou com 6.312 px em 390 e 5.817 px em 1440 (a grade anterior tinha 4.414 px em 1440).
+- **Decisão:** índice remissivo — grupos por letra (`<h3>` + lista), em 3 colunas no desktop e 2 no celular. O nome do município é o link para a ficha. O selo "Panorama publicado" aparece nos 79 e por isso não distingue ninguém: fica fora da linha, e só o selo "Plano de coleta seletiva" (15) aparece. A descrição de cada rota já informa que os 79 têm panorama.
+- **Resultado:** `/cidades/` 4.497 px (390) e 2.724 px (1440); `/diretorios/` 4.344 px (390). `/panoramas-da-gestao-de-residuos/` fica em 5.263 px (390) até a D3.6 tirar a capa do herói (ADR-004).
+- **Consequência:** as ações por linha da D3.10 (Panorama · PDF, Plano) entram ao lado do nome, dentro da coluna.
+
+## 2026-09-29 — Fonte única de documentos e tamanho gerado (D3.5)
+
+- **Decisão:** `src/data/documents.ts` passa a ser a fonte dos 11 documentos do acervo que não são de um município, com os títulos e descrições já publicados. A ADR-005 (tamanho gerado, nunca digitado) se estende a eles: `scripts/generate-document-sizes.mjs` grava `src/data/document-sizes.generated.ts` a partir de `public/uploads`, e `npm run sync:data` roda o novo gerador.
+- **Motivo:** RC-1 (tipo, formato, tamanho e origem sem digitação manual) e uma lista só para as páginas e a busca (D3.9).
+- **Sem ano:** o único ano disponível é o da pasta de upload, que não é o ano de publicação; a PG-05.2 fica sem ano até existir o dado.
+
+## 2026-10-19 — Migração das funcionalidades do site antigo (specs L00–L13)
+
+- **Decisão:** as specs de `docs/specs/legado/` foram aprovadas pelo dono do projeto ("dei uma lida por cima e está bom"), incluindo as recomendações das decisões pendentes. A implementação vem em quatro blocos com PR próprio: A (L00, L13), B (L04–L12), C (L01), D (L02, L03).
+- **Fatos verificados em vez de supostos:** `scripts/check-external-links.mjs` lê o nome real dos arquivos do Drive. Onde o rótulo do site antigo contradiz o arquivo, vale o nome do arquivo (ver `docs/specs/legado/verificacao-2026-10-19.md`).
+- **L13:** as URLs antigas dos planos por município redirecionam para a ficha (`history.replaceState`), como `/sobre/`.
+- **L01, como desenhar o mapa:** opção (c) da spec, SVG próprio sem dependência nem tiles. Os contornos vêm da malha do IBGE (qualidade mínima, `BD/ibge/`, baixada por `scripts/fetch-ibge-malha.mjs`, fora do gate). Os marcadores usam as coordenadas do mapa do site antigo. Quando a coordenada cai fora do próprio município (Novo Horizonte do Sul, por dado errado; Rochedo, pela malha simplificada), o marcador vai para o centro do contorno oficial. O mapa fica só no índice de municípios (decisão 2) e carrega sob demanda.
+- **L01, ponteiro:** no celular os alvos de 24 px de municípios vizinhos se sobrepõem. O toque escolhe o marcador mais próximo (até 12 px) e, longe de todos, o município sob o ponteiro. Os botões atendem teclado e leitor de tela. Até 560 px, os nomes aparecem só no marcador em foco ou escolhido.
+- **L02:** Campo Grande com link para o My Maps, sem incorporar (decisão 1, b). A equipe não confirmou a atualidade dos pontos, então o bloco diz "Informação publicada em 2021 no portal anterior" (decisão 2). As imagens de localização ficam de fora, para as 79 fichas manterem uma só aparência (decisão 3).
+- **L03:** a fonte citada é "portal anterior (dados de 2018 e 2019)", e o título deixa o ano explícito, como série histórica (decisões 1 e 2). Vazio na fonte aparece como "—", e os números mantêm as casas decimais da fonte. Em Ponta Porã, a fonte não traz unidade na produção diária, e a tabela avisa isso em vez de supor toneladas.
+
+## 2026-10-20 — Preparação para publicar
+
+- **Domínio presumido:** `https://portalresiduosms.online` no sitemap, no robots e nas metatags, por ser o do WordPress atual. Não foi confirmado; `SITE_URL` troca (ver `docs/deploy.md`).
+- **Sitemap canônico:** 111 páginas; aliases e caminhos longos repetidos ficam de fora (regra em `scripts/generate-sitemap.mjs`).
+
+## 2026-10-20 — Hospedagem: Vercel + Supabase (planos gratuitos)
+
+- **Decisão do dono do projeto:** seguir o padrão dos sites do CESAM, com tudo no Supabase e na Vercel, nos planos gratuitos.
+- **Como fica:** app estático na Vercel (`vercel.json`); arquivos de `public/uploads` no Supabase Storage, servidos por rewrite em `/uploads/*`, sem mudar nenhuma URL. Detalhes e riscos em `docs/deploy.md`.
+- **Risco aceito a acompanhar:** o Supabase gratuito pausa por inatividade; é preciso uma verificação periódica.
+- **Substitui:** a suposição de hospedagem Apache da tarefa anterior; `.htaccess` e `_redirects` ficam como alternativa.
