@@ -5,7 +5,7 @@ import { resolveRoute, newsSlugs } from '../src/data/siteMap.ts'
 import { panoramaRecords } from '../src/data/panoramas.generated.ts'
 
 const ler = (p) => fs.readFileSync(new URL(`../${p}`, import.meta.url), 'utf8')
-const SITE = 'https://portalresiduosms.online'
+const SITE = JSON.parse(ler('site.json')).url
 const urls = [...ler('public/sitemap.xml').matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1])
 const caminhos = urls.map((url) => url.replace(SITE, ''))
 
