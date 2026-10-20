@@ -68,6 +68,6 @@ test('Supabase: o /uploads/ aponta para o projeto do portal', () => {
 
 test('domínio vem de VITE_SITE_URL, com o padrão em site.json', () => {
   assert.equal(JSON.parse(ler('site.json')).url, 'https://portalresiduosms.online')
-  assert.ok(ler('index.html').includes('%VITE_SITE_URL%/og-image.png'))
+  assert.ok(ler('index.html').includes('%VITE_SITE_URL%/og-logo.png'))
   assert.match(ler('vite.config.ts'), /import site from '\.\/site\.json'/)
 })
