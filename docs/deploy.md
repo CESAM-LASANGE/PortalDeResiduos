@@ -16,7 +16,7 @@ navegador → Vercel (app, ~0,6 MB)
    node scripts/upload-to-supabase.mjs --dry-run     # confere: 1.397 arquivos, 405 MB
    SUPABASE_URL=https://ijnpqueinuhuauykqxvh.supabase.co SUPABASE_SERVICE_ROLE_KEY=<chave secreta> node scripts/upload-to-supabase.mjs
    ```
-   O script cria o bucket público `uploads`, reenvia sem duplicar e pula 5 arquivos com acento no nome (um banner e as miniaturas), que o Storage não aceita e o código não usa.
+   O script cria o bucket público `uploads`, manda poucos arquivos por vez (o Storage corta a conexão com muitos em paralelo), tenta de novo quando a conexão cai e, se for interrompido, é só rodar de novo: ele pula o que já está no bucket. Pula 5 arquivos com acento no nome (um banner e as miniaturas), que o Storage não aceita e o código não usa.
 3. **`vercel.json`:** já aponta para o projeto `ijnpqueinuhuauykqxvh`. Se o projeto Supabase mudar, trocar a referência na regra de `/uploads/:path*` (`npm run check:vercel` avisa se sobrar o valor de exemplo).
 4. **Vercel:** importar o repositório (framework Vite; o `buildCommand` já está no `vercel.json`). Em Settings > Environment Variables, definir `VITE_SITE_URL` com o endereço final (por exemplo `https://<projeto>.vercel.app`).
 5. **Sitemap:** com o domínio definido, rodar `VITE_SITE_URL=<endereço> npm run sync:data` e commitar `public/sitemap.xml` e `public/robots.txt`.
