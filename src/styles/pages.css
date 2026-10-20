@@ -142,8 +142,9 @@
 
 /* Cabeçalho: logo completo só a partir de 1280 px; menu móvel até 1080 px (6 itens + Buscar, ADR-006). */
 @media (max-width: 1279px) {
-  /* Só a marca do projeto (os ~405 px iniciais do logo composto de 853 × 85). */
-  .brand img { height: 38px; width: 182px; object-fit: cover; object-position: left center; }
+  /* Só a marca do projeto; UEMS, CESAM e MPMS aparecem a partir de 1280 px. */
+  .brand img { height: 38px; width: auto; }
+  .brand img.brand-partner { display: none; }
 }
 
 @media (max-width: 1080px) {

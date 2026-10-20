@@ -28,6 +28,7 @@ import { SiteSearch } from './components/SiteSearch'
 import { Link, NavProvider, type NavigateFn } from './components/router'
 
 const ASSET = '/uploads/'
+const BRAND = '/brand/'
 
 type RouteKey = Exclude<RouteKind, 'not-found'> | 'not-found'
 
@@ -184,7 +185,9 @@ function Header({ route, path, menuOpen, setMenuOpen, navigate }: { route: Route
       <header className="site-header">
       <div className="header-inner">
         <Link to="/" className="brand" aria-label="Portal Resíduos MS — ir para o início">
-          <img src={`${ASSET}2020/03/logo.png`} alt="Portal Resíduos MS" />
+          <img src={`${BRAND}portal.png`} alt="Portal Resíduos MS" />
+          <img src={`${BRAND}uems.png`} alt="UEMS — Universidade Estadual de Mato Grosso do Sul" className="brand-partner" />
+          <img src={`${BRAND}cesam-mpms.png`} alt="CESAM e Ministério Público de Mato Grosso do Sul" className="brand-partner" />
         </Link>
         <button ref={menuToggleRef} className="menu-toggle" onClick={() => setMenuOpen(!menuOpen)} aria-label={menuOpen ? 'Fechar menu' : 'Abrir menu'} aria-expanded={menuOpen} aria-controls="main-navigation">
           {menuOpen ? <X size={24} /> : <Menu size={24} />}
