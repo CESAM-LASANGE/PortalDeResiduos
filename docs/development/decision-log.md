@@ -66,3 +66,9 @@
 - **Como fica:** app estático na Vercel (`vercel.json`); arquivos de `public/uploads` no Supabase Storage, servidos por rewrite em `/uploads/*`, sem mudar nenhuma URL. Detalhes e riscos em `docs/deploy.md`.
 - **Risco aceito a acompanhar:** o Supabase gratuito pausa por inatividade; é preciso uma verificação periódica.
 - **Substitui:** a suposição de hospedagem Apache da tarefa anterior; `.htaccess` e `_redirects` ficam como alternativa.
+
+## 2026-10-20 — Endereço provisório na Vercel
+
+- **No ar:** `https://portalderesiduos.vercel.app` (padrão CESAM de domínio provisório). `site.json` passa a ter esse endereço como padrão, e sitemap, robots e metatags o usam; `VITE_SITE_URL` na Vercel continua podendo sobrescrever.
+- **Verificado no ar:** rotas, redirecionamento para a barra final, CSP e cabeçalhos, PDFs e imagens vindos do Supabase por `/uploads/`, favicon e logos.
+- **Domínio próprio (futuro):** trocar `url` em `site.json`, rodar `npm run sync:data` e commitar o sitemap.
