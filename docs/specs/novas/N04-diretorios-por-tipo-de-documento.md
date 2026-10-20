@@ -54,7 +54,7 @@ A pessoa abre a lista, busca um município e clica nele.
 - A lista mostra exatamente os municípios que têm aquele documento (79, 15, 17 e 5) e a contagem.
 - Cada linha tem **um** link; ele abre **aquele** documento e nenhum outro (nova aba, `rel="noopener"`).
 - Em `/cidades/`: o nome abre a ficha, a ação abre o PDF do diagnóstico. Nada de plano ou compostagem nas linhas.
-- Bonito aparece nos quatro diretórios (Bonito tem diagnóstico, plano de coleta e compostagem; confira se tem educação ambiental) e nenhuma linha dele mistura documentos.
+- Bonito aparece nos quatro diretórios (tem diagnóstico, plano de coleta seletiva, plano de educação ambiental e compostagem, conferido nos dados) e nenhuma linha dele mistura documentos. Corumbá está em diagnóstico e educação ambiental; Naviraí, em educação ambiental e compostagem.
 - A busca por nome e o alfabeto continuam funcionando onde já existem.
 
 ## Restrições e invariantes
