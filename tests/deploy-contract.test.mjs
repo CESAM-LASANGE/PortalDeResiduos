@@ -47,7 +47,14 @@ test('prévia de compartilhamento e cor do tema', () => {
   const html = ler('index.html')
   for (const propriedade of ['og:type', 'og:locale', 'og:site_name', 'og:title', 'og:description', 'og:url', 'og:image', 'twitter:card'])
     assert.ok(html.includes(`"${propriedade}"`), propriedade)
-  assert.ok(html.includes('content="%VITE_SITE_URL%/og-image.png"'), 'o domínio vem de VITE_SITE_URL')
+  assert.ok(html.includes('content="%VITE_SITE_URL%/og-logo.png"'), 'o domínio vem de VITE_SITE_URL')
   assert.match(html, /<meta name="theme-color" content="#1b4b3a" \/>/)
-  assert.ok(fs.existsSync(new URL('../public/og-image.png', import.meta.url)))
+  assert.ok(fs.existsSync(new URL('../public/og-logo.png', import.meta.url)))
+})
+
+test('prévia de compartilhamento: imagem 1200 × 630 com a logo original, não a do favicon', () => {
+  const png = fs.readFileSync(new URL('../public/og-logo.png', import.meta.url))
+  assert.deepEqual([png.readUInt32BE(16), png.readUInt32BE(20)], [1200, 630])
+  assert.ok(!fs.existsSync(new URL('../public/og-image.png', import.meta.url)), 'o nome antigo ficaria em cache no WhatsApp')
+  assert.ok(png.length > 100_000, 'a logo original (JPEG recortado) pesa mais que o SVG simples do favicon')
 })
