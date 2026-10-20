@@ -13,7 +13,9 @@ const origem = path.join(root, 'public/uploads')
 const BUCKET = 'uploads'
 const LIMITE = 50 * 1024 * 1024 // arquivo máximo do plano gratuito
 const TOTAL_GRATUITO = 1024 * 1024 * 1024 // 1 GB de armazenamento
-const SIMULTANEOS = 6
+const SIMULTANEOS = 3 // mais que isso e o Storage corta a conexão (ENHANCE_YOUR_CALM)
+const TENTATIVAS = 6
+const espera = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 const dryRun = process.argv.includes('--dry-run')
 const TIPOS = { pdf: 'application/pdf', jpg: 'image/jpeg', jpeg: 'image/jpeg', png: 'image/png', webp: 'image/webp', gif: 'image/gif', svg: 'image/svg+xml', doc: 'application/msword', docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', xls: 'application/vnd.ms-excel', xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }
 
@@ -36,26 +38,52 @@ const base = SUPABASE_URL.replace(/\/+$/, '')
 // Chave nova (sb_secret_…) não é um JWT: vai só em apikey. A antiga (service_role, JWT) também vai em Authorization.
 const cabecalho = chave.startsWith('sb_') ? { apikey: chave } : { Authorization: `Bearer ${chave}`, apikey: chave }
 
-const criar = await fetch(`${base}/storage/v1/bucket`, { method: 'POST', headers: { ...cabecalho, 'Content-Type': 'application/json' }, body: JSON.stringify({ id: BUCKET, name: BUCKET, public: true, file_size_limit: LIMITE }) })
+const criar = await comTentativas(() => fetch(`${base}/storage/v1/bucket`, { method: 'POST', headers: { ...cabecalho, 'Content-Type': 'application/json' }, body: JSON.stringify({ id: BUCKET, name: BUCKET, public: true, file_size_limit: LIMITE }) }))
 if (!criar.ok && !/already exists|Duplicate/i.test(await criar.text())) throw new Error(`não criou o bucket (${criar.status})`)
 
+// Repete quando a conexão cai ou o Storage pede calma (429, 5xx); espera mais a cada tentativa.
+async function comTentativas(fazer) {
+  let ultimo
+  for (let tentativa = 1; tentativa <= TENTATIVAS; tentativa++) {
+    try {
+      const resposta = await fazer()
+      if (resposta.status !== 429 && resposta.status < 500) return resposta
+      ultimo = `HTTP ${resposta.status}`
+    } catch (erro) {
+      ultimo = erro.cause?.code ?? erro.message
+    }
+    await espera(1000 * 2 ** tentativa)
+  }
+  throw new Error(ultimo)
+}
+
 let feitos = 0
+let jaEstavam = 0
 const falhas = []
 const fila = [...enviar]
+const publico = (chave) => `${base}/storage/v1/object/public/${BUCKET}/${chave.split('/').map(encodeURIComponent).join('/')}`
 await Promise.all(Array.from({ length: SIMULTANEOS }, async () => {
   while (fila.length) {
     const f = fila.shift()
-    const tipo = TIPOS[path.extname(f.chave).slice(1).toLowerCase()] ?? 'application/octet-stream'
-    const resposta = await fetch(`${base}/storage/v1/object/${BUCKET}/${f.chave.split('/').map(encodeURIComponent).join('/')}`, {
-      method: 'POST',
-      headers: { ...cabecalho, 'Content-Type': tipo, 'x-upsert': 'true', 'Cache-Control': 'max-age=2592000' },
-      body: fs.readFileSync(f.arquivo),
-    })
-    if (resposta.ok) feitos++
-    else falhas.push(`${f.chave}: ${resposta.status}`)
-    if (feitos % 100 === 0) console.log(`  ${feitos}/${enviar.length}`)
+    try {
+      // Já está no bucket com o mesmo tamanho: pula, assim um envio interrompido retoma de onde parou.
+      const existente = await comTentativas(() => fetch(publico(f.chave), { method: 'HEAD' }))
+      if (existente.ok && Number(existente.headers.get('content-length')) === f.bytes) { jaEstavam++; continue }
+      const tipo = TIPOS[path.extname(f.chave).slice(1).toLowerCase()] ?? 'application/octet-stream'
+      const resposta = await comTentativas(() => fetch(`${base}/storage/v1/object/${BUCKET}/${f.chave.split('/').map(encodeURIComponent).join('/')}`, {
+        method: 'POST',
+        headers: { ...cabecalho, 'Content-Type': tipo, 'x-upsert': 'true', 'Cache-Control': 'max-age=2592000' },
+        body: fs.readFileSync(f.arquivo),
+      }))
+      if (resposta.ok) feitos++
+      else falhas.push(`${f.chave}: ${resposta.status}`)
+    } catch (erro) {
+      falhas.push(`${f.chave}: ${erro.message}`)
+    }
+    const andamento = feitos + jaEstavam + falhas.length
+    if (andamento % 100 === 0) console.log(`  ${andamento}/${enviar.length}`)
   }
 }))
-console.log(`${feitos} enviados, ${falhas.length} com falha.`)
-if (falhas.length) { console.log(falhas.join('\n')); process.exit(1) }
-console.log(`Confira: ${base}/storage/v1/object/public/${BUCKET}/${enviar[0].chave}`)
+console.log(`${feitos} enviados, ${jaEstavam} já estavam no bucket, ${falhas.length} com falha.`)
+if (falhas.length) { console.log(falhas.join('\n')); console.log('Rode o comando de novo: ele só envia o que falta.'); process.exit(1) }
+console.log(`Confira: ${publico(enviar[0].chave)}`)
