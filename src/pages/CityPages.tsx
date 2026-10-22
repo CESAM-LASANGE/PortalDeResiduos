@@ -1,5 +1,6 @@
 import { PageHero } from '../components/PageHero'
 import { MunicipalityIndex } from '../components/MunicipalityIndex'
+import { PanoramaGeral } from '../components/PanoramaGeral'
 import type { Crumb } from '../components/Breadcrumbs'
 import { Eyebrow } from '../components/Eyebrow'
 import { ArrowRight } from 'lucide-react'
@@ -21,16 +22,12 @@ function Hero({ title, description, crumbs }: { title: string; description: stri
 
 const cityCrumbs = (city?: string) => [
   { label: 'Início', href: '/' },
-  city ? { label: 'Cidades', href: '/cidades/' } : { label: 'Cidades' },
+  city ? { label: 'Panoramas', href: '/cidades/' } : { label: 'Panoramas' },
   ...(city ? [{ label: city }] : []),
 ]
 
 export function CityDirectory({ navigate: _navigate }: { navigate: Navigate }) {
-  return <><Hero title="Cidades" description="Consulte os panoramas municipais e encontre referências para compreender a gestão de resíduos sólidos em Mato Grosso do Sul." crumbs={cityCrumbs()} /><MunicipalityIndex eyebrow="Mato Grosso do Sul" title={<>Escolha um <span>município.</span></>} description={`${cityRecords.length} municípios com panorama local identificado no acervo.`} /></>
-}
-
-export function Directories({ navigate: _navigate }: { navigate: Navigate }) {
-  return <><Hero title="Diretórios" description="Acesse os pareceres e panoramas de gestão de resíduos sólidos de cada município de Mato Grosso do Sul." crumbs={[{ label: 'Início', href: '/' }, { label: 'Diretórios' }]} /><MunicipalityIndex title="Pareceres e panoramas por município" /></>
+  return <><Hero title="Panoramas" description="Consulte os panoramas municipais e encontre referências para compreender a gestão de resíduos sólidos em Mato Grosso do Sul." crumbs={cityCrumbs()} /><PanoramaGeral /><MunicipalityIndex relatorioGeral={false} planoDeColeta={false} eyebrow="Mato Grosso do Sul" title={<>Escolha um <span>município.</span></>} description={`${cityRecords.length} municípios com panorama local identificado no acervo.`} /></>
 }
 
 // Texto único para as 79 fichas, escrito a partir do conteúdo já publicado em Disposição Legal
@@ -65,7 +62,7 @@ export function CityDetail({ path, navigate }: { path: string; navigate: Navigat
           <p>{SOBRE_O_PANORAMA}</p>
           <Eyebrow>Continue a consulta</Eyebrow>
           <div className="city-about-links">
-            <Link to="/cidades/" className="text-link">Voltar para cidades <ArrowRight size={15} /></Link>
+            <Link to="/cidades/" className="text-link">Voltar para panoramas <ArrowRight size={15} /></Link>
             {plano && <Link to="/plano-de-coleta-seletiva/" className="text-link">Plano de Coleta Seletiva <ArrowRight size={15} /></Link>}
           </div>
         </aside>
@@ -77,5 +74,5 @@ export function CityDetail({ path, navigate }: { path: string; navigate: Navigat
 function UnknownCity({ path }: { path: string; navigate: Navigate }) {
   const rawSlug = path.split('/').filter(Boolean).pop() ?? 'município'
   const title = rawSlug.split('-').map((part) => part.charAt(0).toUpperCase() + part.slice(1)).join(' ')
-  return <><Hero title={title} description="Esta página municipal está registrada no mapa do portal, mas o panorama correspondente ainda não foi associado ao acervo local." crumbs={cityCrumbs(title)} /><section className="section container city-missing"><Alert tone="warning" title="Conteúdo em migração">O documento deste município ainda não está disponível. Consulte o diretório de cidades para acessar os panoramas já identificados.</Alert><Link to="/cidades/" className="button button-dark">Ver cidades disponíveis <ArrowRight size={16} /></Link></section></>
+  return <><Hero title={title} description="Esta página municipal está registrada no mapa do portal, mas o panorama correspondente ainda não foi associado ao acervo local." crumbs={cityCrumbs(title)} /><section className="section container city-missing"><Alert tone="warning" title="Conteúdo em migração">O documento deste município ainda não está disponível. Consulte a lista de panoramas para acessar os que já foram identificados.</Alert><Link to="/cidades/" className="button button-dark">Ver panoramas disponíveis <ArrowRight size={16} /></Link></section></>
 }

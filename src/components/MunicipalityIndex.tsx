@@ -28,6 +28,10 @@ const visaoDaUrl = (): Visao => (new URLSearchParams(window.location.search).get
 const inicial = (name: string) => normalizeName(name).charAt(0).toUpperCase()
 
 type MunicipalityIndexProps = {
+  /** Link do plano de coleta seletiva na linha e no painel do mapa; omitido nas páginas de panoramas, onde a página do plano já o tem. */
+  planoDeColeta?: boolean
+  /** Link do relatório geral dos panoramas no topo; omitido onde o Panorama geral já o traz. */
+  relatorioGeral?: boolean
   /** Filtro ao abrir; "com-plano" em Municípios Contemplados da coleta seletiva. */
   filtroInicial?: Filtro
   eyebrow?: string
@@ -40,7 +44,7 @@ type MunicipalityIndexProps = {
  * /panoramas-da-gestao-de-residuos/ (ADR-001). Busca sem acentos, filtro pelos
  * municípios com plano de coleta seletiva e salto por letra.
  */
-export function MunicipalityIndex({ eyebrow, title, description, filtroInicial = 'todos' }: MunicipalityIndexProps) {
+export function MunicipalityIndex({ eyebrow, title, description, filtroInicial = 'todos', relatorioGeral: mostrarRelatorio = true, planoDeColeta: mostrarPlano = true }: MunicipalityIndexProps) {
   const [query, setQuery] = useState('')
   const [filtro, setFiltro] = useState<Filtro>(filtroInicial)
   const [visao, setVisao] = useState<Visao>(visaoDaUrl)
@@ -77,7 +81,7 @@ export function MunicipalityIndex({ eyebrow, title, description, filtroInicial =
         {eyebrow && <Eyebrow>{eyebrow}</Eyebrow>}
         <h2 id="indice-municipios-titulo">{title}</h2>
         {description && <p>{description}</p>}
-        {relatorioGeral && (
+        {mostrarRelatorio && relatorioGeral && (
           <a className="text-link" href={relatorioGeral.href} target="_blank" rel="noopener">
             Relatório geral dos panoramas <ExternalLink size={15} aria-hidden="true" />
             <span className="sr-only"> (abre em nova aba)</span>
@@ -121,7 +125,7 @@ export function MunicipalityIndex({ eyebrow, title, description, filtroInicial =
         </div>
       ) : visao === 'mapa' ? (
         <Suspense fallback={<p className="municipality-index-count">Carregando mapa…</p>}>
-          <MunicipalityMap cidades={visiveis.map((city) => ({ slug: city.slug, name: city.name, panorama: `/uploads/2025/03/${city.file}`, plano: planos.get(city.slug)?.primaryDocumentUrl }))} />
+          <MunicipalityMap cidades={visiveis.map((city) => ({ slug: city.slug, name: city.name, panorama: `/uploads/2025/03/${city.file}`, plano: mostrarPlano ? planos.get(city.slug)?.primaryDocumentUrl : undefined }))} />
         </Suspense>
       ) : (
         <div className="municipality-groups">
@@ -130,7 +134,7 @@ export function MunicipalityIndex({ eyebrow, title, description, filtroInicial =
               <h3 id={`municipios-${letra.toLowerCase()}`}>{letra}</h3>
               <ul>
                 {cidades.map((city) => {
-                  const plano = planos.get(city.slug)
+                  const plano = mostrarPlano ? planos.get(city.slug) : undefined
                   return (
                     <li key={city.slug}>
                       <Link to={`/cidades/${city.slug}/`} className="municipality-name" aria-label={`${city.name}: abrir ficha`}>{city.name}</Link>
