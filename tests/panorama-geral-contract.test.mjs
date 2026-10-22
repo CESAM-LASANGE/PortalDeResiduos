@@ -44,3 +44,17 @@ test('mapa da disposição final: legenda com as 4 categorias, contagens dos dad
   assert.match(mapa, /disposalCategories/)
   assert.match(mapa, /<pattern/, 'o lixão tem hachura: não depende só da cor')
 })
+
+test('nome da página: "Panoramas" no lugar de "Cidades" (título, trilha, aba, rodapé, cartão e links)', () => {
+  assert.equal(resolveRoute('/cidades/').title, 'Panoramas')
+  const cidades = ler('src/pages/CityPages.tsx')
+  assert.match(cidades, /<Hero title="Panoramas"/)
+  assert.equal([...cidades.matchAll(/\{ label: 'Panoramas'/g)].length, 2, 'trilha da lista e da ficha')
+  assert.doesNotMatch(cidades, /label: 'Cidades'|title="Cidades"|Voltar para cidades|Ver cidades disponíveis|diretório de cidades/)
+  const app = ler('src/App.tsx')
+  assert.match(app, /<Link to="\/cidades\/">Panoramas<\/Link>/)
+  assert.match(app, /title: 'Panoramas', text: 'Acesse informações municipais/)
+  assert.doesNotMatch(app, /<Link to="\/cidades\/">Cidades<\/Link>|title: 'Cidades'/)
+  assert.match(ler('src/pages/InstitutionalPages.tsx'), /Consultar panoramas/)
+  assert.ok(ler('src/data/search.ts').includes('/cidades/'), 'a busca continua achando a página')
+})

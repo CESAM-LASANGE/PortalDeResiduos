@@ -35,7 +35,7 @@ export const siteRoutes: SiteRoute[] = [
   page("/sobre/", "Home", "home", { status: "legacy", notes: "URL legada redirecionada para a apresentação institucional da Home." }),
   page('/noticias/', 'Notícias', 'news', { status: 'foundation' }),
   page('/contact/', 'Contato', 'contact', { status: 'foundation' }),
-  page('/cidades/', 'Cidades', 'cities', { status: 'foundation' }),
+  page('/cidades/', 'Panoramas', 'cities', { status: 'foundation' }),
   page('/publicacoes/', 'Documentos', 'publications', { status: 'foundation' }),
   page('/projeto-valoriza/', 'Projeto Valoriza', 'valoriza', { status: 'foundation' }),
   page('/diretorios/', 'Diretórios', 'directories', { status: 'legacy', redirectTo: '/cidades/', notes: 'Mesma lista dos 79 municípios de /cidades/ (ADR-001); a URL antiga leva para lá.' }),
