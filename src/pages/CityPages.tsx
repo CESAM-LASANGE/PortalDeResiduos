@@ -27,7 +27,7 @@ const cityCrumbs = (city?: string) => [
 ]
 
 export function CityDirectory({ navigate: _navigate }: { navigate: Navigate }) {
-  return <><Hero title="Panoramas" description="Consulte os panoramas municipais e encontre referências para compreender a gestão de resíduos sólidos em Mato Grosso do Sul." crumbs={cityCrumbs()} /><PanoramaGeral /><MunicipalityIndex relatorioGeral={false} eyebrow="Mato Grosso do Sul" title={<>Escolha um <span>município.</span></>} description={`${cityRecords.length} municípios com panorama local identificado no acervo.`} /></>
+  return <><Hero title="Panoramas" description="Consulte os panoramas municipais e encontre referências para compreender a gestão de resíduos sólidos em Mato Grosso do Sul." crumbs={cityCrumbs()} /><PanoramaGeral /><MunicipalityIndex relatorioGeral={false} planoDeColeta={false} eyebrow="Mato Grosso do Sul" title={<>Escolha um <span>município.</span></>} description={`${cityRecords.length} municípios com panorama local identificado no acervo.`} /></>
 }
 
 // Texto único para as 79 fichas, escrito a partir do conteúdo já publicado em Disposição Legal

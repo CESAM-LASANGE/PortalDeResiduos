@@ -58,3 +58,16 @@ test('nome da página: "Panoramas" no lugar de "Cidades" (título, trilha, aba, 
   assert.match(ler('src/pages/InstitutionalPages.tsx'), /Consultar panoramas/)
   assert.ok(ler('src/data/search.ts').includes('/cidades/'), 'a busca continua achando a página')
 })
+
+test('lista de panoramas: sem o link do plano de coleta seletiva (a página do plano já o tem)', () => {
+  const funcao = (arquivo, nome) => ler(arquivo).match(new RegExp(`export function ${nome}[\\s\\S]*?\\n\\}`))[0]
+  assert.match(funcao('src/pages/CityPages.tsx', 'CityDirectory'), /<MunicipalityIndex [^>]*planoDeColeta=\{false\}/)
+  assert.match(funcao('src/pages/ProductionPages.tsx', 'Panoramas'), /<MunicipalityIndex [^>]*planoDeColeta=\{false\}/)
+  // Onde o plano é o assunto, o link continua.
+  assert.doesNotMatch(funcao('src/pages/ProductionPages.tsx', 'Municipalities'), /planoDeColeta=\{false\}/)
+  assert.doesNotMatch(funcao('src/pages/ProductionPages.tsx', 'MaterialsCompiled'), /planoDeColeta=\{false\}/)
+  const indice = ler('src/components/MunicipalityIndex.tsx')
+  assert.match(indice, /planoDeColeta: mostrarPlano = true/)
+  assert.match(indice, /const plano = mostrarPlano \? planos\.get\(city\.slug\) : undefined/)
+  assert.match(indice, /plano: mostrarPlano \? planos\.get\(city\.slug\)\?\.primaryDocumentUrl : undefined/, 'o painel do mapa também')
+})
