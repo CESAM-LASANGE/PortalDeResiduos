@@ -28,6 +28,8 @@ const visaoDaUrl = (): Visao => (new URLSearchParams(window.location.search).get
 const inicial = (name: string) => normalizeName(name).charAt(0).toUpperCase()
 
 type MunicipalityIndexProps = {
+  /** Link do relatório geral dos panoramas no topo; omitido onde o Panorama geral já o traz. */
+  relatorioGeral?: boolean
   /** Filtro ao abrir; "com-plano" em Municípios Contemplados da coleta seletiva. */
   filtroInicial?: Filtro
   eyebrow?: string
@@ -40,7 +42,7 @@ type MunicipalityIndexProps = {
  * /panoramas-da-gestao-de-residuos/ (ADR-001). Busca sem acentos, filtro pelos
  * municípios com plano de coleta seletiva e salto por letra.
  */
-export function MunicipalityIndex({ eyebrow, title, description, filtroInicial = 'todos' }: MunicipalityIndexProps) {
+export function MunicipalityIndex({ eyebrow, title, description, filtroInicial = 'todos', relatorioGeral: mostrarRelatorio = true }: MunicipalityIndexProps) {
   const [query, setQuery] = useState('')
   const [filtro, setFiltro] = useState<Filtro>(filtroInicial)
   const [visao, setVisao] = useState<Visao>(visaoDaUrl)
@@ -77,7 +79,7 @@ export function MunicipalityIndex({ eyebrow, title, description, filtroInicial =
         {eyebrow && <Eyebrow>{eyebrow}</Eyebrow>}
         <h2 id="indice-municipios-titulo">{title}</h2>
         {description && <p>{description}</p>}
-        {relatorioGeral && (
+        {mostrarRelatorio && relatorioGeral && (
           <a className="text-link" href={relatorioGeral.href} target="_blank" rel="noopener">
             Relatório geral dos panoramas <ExternalLink size={15} aria-hidden="true" />
             <span className="sr-only"> (abre em nova aba)</span>

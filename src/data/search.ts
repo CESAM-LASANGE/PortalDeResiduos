@@ -48,7 +48,7 @@ const ROUTE_KEYWORDS: Record<string, string> = {
   '/apoio-a-decisao/': 'sistema grs indicadores ferramenta dados streamlit',
   '/cooperativas/': 'catadores reciclagem estatuto cartilha inclusão',
   '/projeto-valoriza/': 'catadores censo inclusão socioprodutiva power bi',
-  '/diretorios/': 'municípios pareceres panoramas gestão de resíduos diretório',
+  '/diretorios/': 'municípios panoramas gestão de resíduos diretório',
   '/logistica-reversa/': 'embalagens sisrev imasul retorno',
   '/materiais-compilados/': 'panoramas planos documentos território',
   '/panorama-e-censo-dos-catadores/': 'catadores censo livro publicação',

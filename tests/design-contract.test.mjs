@@ -178,11 +178,11 @@ test('D2.4: DocumentRow abre em nova aba com aviso para leitor de tela e mostra 
   assert.match(row, /'Abrir no Drive'/)
 })
 
-test('D2.5: barra informativa fora do cabeçalho fixo, Cidades no menu e busca fora do <nav>', () => {
+test('D2.5: barra informativa fora do cabeçalho fixo, sem Municípios no menu e busca fora do <nav>', () => {
   const app = read('src/App.tsx')
   assert.match(app, /<div className="topline">[\s\S]*?Convênio técnico-científico MPMS · UEMS[\s\S]*?<\/div>\s*<header className="site-header">/)
-  // O rótulo "Cidades" (D2.5) virou "Municípios" na D3.8 (ADR-006); o destino continua /cidades/.
-  assert.match(app, /\['Municípios', '\/cidades\/'/)
+  // A aba "Municípios" (D2.5, D3.8) saiu do menu em 2026-10-22: os municípios abrem pelo cartão da tela inicial.
+  assert.doesNotMatch(app, /\['Municípios', '\/cidades\/'/)
   const nav = app.match(/<nav id="main-navigation"[\s\S]*?<\/nav>/)[0]
   assert.doesNotMatch(nav, /SiteSearch/)
   assert.match(read('src/components/SiteSearch.tsx'), /<span className="header-search-label">Buscar<\/span>/)
@@ -230,10 +230,10 @@ test('D2.8: os scripts de design leem todas as camadas de CSS', async () => {
   execFileSync('node', ['scripts/check-contrast.mjs'], { cwd: root, encoding: 'utf8' })
 })
 
-test('D3.1: as três rotas de municípios usam o mesmo MunicipalityIndex', () => {
+test('D3.1: as rotas de municípios usam o mesmo MunicipalityIndex (/diretorios/ redireciona para /cidades/)', () => {
   const cidades = read('src/pages/CityPages.tsx')
   const producoes = read('src/pages/ProductionPages.tsx')
-  assert.equal((cidades.match(/<MunicipalityIndex /g) ?? []).length, 2)
+  assert.equal((cidades.match(/<MunicipalityIndex /g) ?? []).length, 1)
   assert.doesNotMatch(cidades, /TerritoryIndex/)
   assert.match(producoes.match(/export function Panoramas[\s\S]*?\n\}/)[0], /<MunicipalityIndex /)
   const indice = read('src/components/MunicipalityIndex.tsx')
@@ -257,7 +257,7 @@ test('D3.2: a ficha lista os documentos reais e explica o panorama uma vez', () 
 test('D3.3: a inicial tem três atalhos iguais, sem carimbo, e o GRS a um clique', () => {
   const home = read('src/components/HomePage.tsx')
   const destinos = [...home.matchAll(/<Link to="([^"]+)" className="home-tile"/g)].map((m) => m[1])
-  assert.deepEqual(destinos, ['/diretorios/', '/projeto-valoriza/', '/nota-tecnica/'])
+  assert.deepEqual(destinos, ['/cidades/', '/projeto-valoriza/', '/nota-tecnica/'])
   assert.doesNotMatch(home, /home-impact-stamp|>MS</)
   assert.match(home, /"https:\/\/sadgrs\.streamlit\.app\/"/)
   assert.match(home, /newsByDate\.slice\(0, 3\)/)
@@ -324,7 +324,8 @@ test('D3.7: o contato usa Field e a confirmação não afirma que o aplicativo a
 test('D3.8: menu da ADR-006', () => {
   const app = read('src/App.tsx')
   const itens = [...app.match(/const NAV_LINKS = \[([\s\S]*?)\] as const/)[1].matchAll(/^\s*\['([^']+)', '(\/[^']*)'/gm)].map((m) => `${m[1]} ${m[2]}`)
-  assert.deepEqual(itens, ['Início /', 'Municípios /cidades/', 'Documentos /publicacoes/', 'Produções do Convênio /producoes-do-convenio/', 'Notícias /noticias/', 'Contato /contact/'])
+  // Sem Municípios desde 2026-10-22 (pedido do dono do projeto); a lista abre pela tela inicial.
+  assert.deepEqual(itens, ['Início /', 'Documentos /publicacoes/', 'Produções do Convênio /producoes-do-convenio/', 'Notícias /noticias/', 'Contato /contact/'])
 })
 
 test('D3.9: Documentos lista os 11 com filtro por tipo e a busca lê a mesma fonte', () => {

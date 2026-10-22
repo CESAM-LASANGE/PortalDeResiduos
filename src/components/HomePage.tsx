@@ -176,11 +176,11 @@ export function HomePage({ navigate }: { navigate: Navigate }) {
 
     <section className="section container home-shortcuts" aria-label="Atalhos">
       <div className="home-tiles">
-        <Link to="/diretorios/" className="home-tile">
-          <span className="home-tile-kicker">Pareceres</span>
+        <Link to="/cidades/" className="home-tile">
+          <span className="home-tile-kicker">Panoramas</span>
           <strong className="home-tile-number">{territoryStats.withPanorama}</strong>
-          <p>municípios com parecer ou panorama publicado.</p>
-          <span className="home-tile-cta">Abrir diretórios municipais <ArrowRight size={16} aria-hidden="true" /></span>
+          <p>municípios com panorama publicado.</p>
+          <span className="home-tile-cta">Abrir panoramas municipais <ArrowRight size={16} aria-hidden="true" /></span>
         </Link>
         <Link to="/projeto-valoriza/" className="home-tile">
           <span className="home-tile-kicker">Inclusão socioprodutiva</span>

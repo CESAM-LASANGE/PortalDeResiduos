@@ -17,7 +17,7 @@ import { resolveRoute, type RouteKind, type SiteRoute } from './data/siteMap'
 import { LandfillDifference, LegalDisposition, PlantModel, SeparateWaste } from './pages/InstitutionalPages'
 import { Cooperatives, DecisionSupport, PublicationsPage, TechnicalNote, UserGuide, ValorizaHub } from './pages/ResourcePages'
 import { CatadoresOverview, Composting, EducationPlans, EnvironmentalEducation, MaterialsCompiled, Municipalities, Panoramas, ProductionHub, SelectiveCollection } from './pages/ProductionPages'
-import { CityDetail, CityDirectory, Directories, cityRecords } from './pages/CityPages'
+import { CityDetail, CityDirectory, cityRecords } from './pages/CityPages'
 import { NewsArchive, NewsArticle, newsRecords } from './pages/NewsPages'
 import { LegacyNotice, ReciclaMatch, ReverseLogistics } from './pages/LegacyPages'
 import { HomePage } from './components/HomePage'
@@ -144,7 +144,6 @@ function App() {
           {route === 'cities' && routeInfo?.path !== '/cidades/' && <CityDetail path={routeInfo?.path ?? atual} navigate={navigate} />}
           {route === 'publications' && <PublicationsPage navigate={navigate} />}
           {route === 'valoriza' && <ValorizaHub navigate={navigate} />}
-          {route === 'directories' && <Directories navigate={navigate} />}
           {route === 'not-found' && <NotFound navigate={navigate} />}
         </main>
         <Footer navigate={navigate} />
@@ -155,7 +154,6 @@ function App() {
 
 const NAV_LINKS = [
   ['Início', '/', ['home']],
-  ['Municípios', '/cidades/', ['cities', 'directories']],
   ['Documentos', '/publicacoes/', ['publications']],
   ['Produções do Convênio', '/producoes-do-convenio/', ['projects', 'valoriza']],
   ['Notícias', '/noticias/', ['news', 'article']],
@@ -259,7 +257,7 @@ function Contact() {
 }
 
 function Footer({ navigate }: { navigate: NavigateFn }) {
-  return <footer className="site-footer"><div className="container footer-main"><div className="footer-brand"><img src={`${ASSET}2021/07/logo_white-1.png`} alt="Portal Resíduos MS" /><p>Informação, cooperação e ferramentas para uma gestão responsável dos resíduos sólidos.</p><div className="socials"><a href="mailto:contato@portalresiduosms.online" aria-label="E-mail"><Mail size={17} /></a></div></div><div><h3>Explorar</h3><Link to="/#sobre-projeto">Sobre o projeto</Link><Link to="/producoes-do-convenio/">Produções do convênio</Link><Link to="/noticias/">Notícias</Link></div><div><h3>Ferramentas</h3><Link to="/cidades/">Cidades</Link><Link to="/diretorios/">Diretórios</Link><Link to="/publicacoes/">Publicações</Link><Link to="/projeto-valoriza/">Projeto Valoriza</Link></div><div className="footer-contact"><h3>Fale com a gente</h3><p>contato@portalresiduosms.online</p><p>Campo Grande — MS</p><Link to="/contact/" className="footer-cta">Enviar mensagem <ArrowRight size={15} /></Link></div></div><div className="footer-bottom container"><span>© {new Date().getFullYear()} Portal Resíduos MS</span><span>Projeto Disposição Legal · MPMS + UEMS</span></div></footer>
+  return <footer className="site-footer"><div className="container footer-main"><div className="footer-brand"><img src={`${ASSET}2021/07/logo_white-1.png`} alt="Portal Resíduos MS" /><p>Informação, cooperação e ferramentas para uma gestão responsável dos resíduos sólidos.</p><div className="socials"><a href="mailto:contato@portalresiduosms.online" aria-label="E-mail"><Mail size={17} /></a></div></div><div><h3>Explorar</h3><Link to="/#sobre-projeto">Sobre o projeto</Link><Link to="/producoes-do-convenio/">Produções do convênio</Link><Link to="/noticias/">Notícias</Link></div><div><h3>Ferramentas</h3><Link to="/cidades/">Cidades</Link><Link to="/publicacoes/">Publicações</Link><Link to="/projeto-valoriza/">Projeto Valoriza</Link></div><div className="footer-contact"><h3>Fale com a gente</h3><p>contato@portalresiduosms.online</p><p>Campo Grande — MS</p><Link to="/contact/" className="footer-cta">Enviar mensagem <ArrowRight size={15} /></Link></div></div><div className="footer-bottom container"><span>© {new Date().getFullYear()} Portal Resíduos MS</span><span>Projeto Disposição Legal · MPMS + UEMS</span></div></footer>
 }
 
 export default App

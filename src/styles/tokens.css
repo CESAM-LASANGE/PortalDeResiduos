@@ -22,6 +22,7 @@
   --cerrado-texto: #8a5a1f; /* texto cerrado sobre papel (5,31:1); o --cerrado nunca é texto */
   --line: #e0dccd;
   --mata-claro: #dce8df; /* contorno do município escolhido no mapa (L01) */
+  --disp-privado: #78b08a; /* aterro sanitário privado no mapa da disposição final: verde médio entre --mata e o papel */
   --line-strong: #cec8b4; /* borda decorativa de cartão */
   --field-border: #8a8470; /* borda de campo de formulário (3,58:1, WCAG 1.4.11) */
   --on-mata: #edf0e9;

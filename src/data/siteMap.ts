@@ -38,7 +38,7 @@ export const siteRoutes: SiteRoute[] = [
   page('/cidades/', 'Cidades', 'cities', { status: 'foundation' }),
   page('/publicacoes/', 'Documentos', 'publications', { status: 'foundation' }),
   page('/projeto-valoriza/', 'Projeto Valoriza', 'valoriza', { status: 'foundation' }),
-  page('/diretorios/', 'Diretórios', 'directories', { status: 'foundation' }),
+  page('/diretorios/', 'Diretórios', 'directories', { status: 'legacy', redirectTo: '/cidades/', notes: 'Mesma lista dos 79 municípios de /cidades/ (ADR-001); a URL antiga leva para lá.' }),
   page('/producoes-do-convenio/', 'Produções do Convênio', 'projects', { status: 'foundation' }),
   page('/disposicao-legal/', 'Disposição Legal', 'projects'),
   page('/modelo-de-usinas-de-triagem-de-residuos/', 'Modelo de Usinas de Triagem de Resíduos', 'projects'),

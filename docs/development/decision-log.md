@@ -72,3 +72,10 @@
 - **No ar:** `https://portalderesiduos.vercel.app` (padrão CESAM de domínio provisório). `site.json` passa a ter esse endereço como padrão, e sitemap, robots e metatags o usam; `VITE_SITE_URL` na Vercel continua podendo sobrescrever.
 - **Verificado no ar:** rotas, redirecionamento para a barra final, CSP e cabeçalhos, PDFs e imagens vindos do Supabase por `/uploads/`, favicon e logos.
 - **Domínio próprio (futuro):** trocar `url` em `site.json`, rodar `npm run sync:data` e commitar o sitemap.
+
+## 2026-10-22 — Panorama geral e mapa em /cidades/, sem a aba Municípios
+
+- **Decisão do dono do projeto:** "parecer" vira "panorama"; a aba Municípios sai do menu e a lista abre só pela tela inicial; o panorama geral e o mapa da disposição final ficam acima da lista, o mapa à direita.
+- **Dados do mapa:** lidos da Figura 3 do relatório geral (fonte TCE, 2024), alinhada ao IBGE, conferidos contra o quadro da figura (79, 75, 4). É leitura de imagem; a equipe deve conferir. Ver `BD/relatorio/FONTE.md`.
+- **Rotas:** `/diretorios/` redireciona para `/cidades/`. **Revoga** a manutenção das duas rotas com textos diferentes (ADR-001) e o item "Municípios" do menu da ADR-006.
+- **Texto:** "Panorama" permanece; a N04 não renomeia para "Diagnóstico".
