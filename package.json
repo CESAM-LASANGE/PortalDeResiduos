@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
-    "sync:data": "node scripts/generate-panorama-catalog.mjs && node scripts/generate-selective-collection-catalog.mjs && node scripts/generate-document-sizes.mjs && node scripts/generate-legacy-documents.mjs && node scripts/generate-municipality-map.mjs && node scripts/generate-legacy-city-data.mjs && node scripts/generate-sitemap.mjs",
+    "sync:data": "node scripts/generate-panorama-catalog.mjs && node scripts/generate-selective-collection-catalog.mjs && node scripts/generate-document-sizes.mjs && node scripts/generate-legacy-documents.mjs && node scripts/generate-municipality-map.mjs && node scripts/generate-legacy-city-data.mjs && node scripts/generate-disposal-map.mjs && node scripts/generate-sitemap.mjs",
     "preview": "vite preview",
     "check:types": "tsc --noEmit",
     "test": "node --test tests/*.test.mjs",
