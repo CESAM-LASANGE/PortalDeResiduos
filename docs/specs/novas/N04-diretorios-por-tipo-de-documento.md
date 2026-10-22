@@ -19,6 +19,15 @@ Hoje a pessoa filtra a lista por "compostagem" ou "educação ambiental", mas ca
 
 Fontes de dados (não mudam): `cityRecords` (79, `panoramas.generated.ts`), `selectiveCollectionPlans` (15, com `primaryDocumentUrl`), `municipalDocuments` (17 de educação ambiental e 5 de compostagem, `municipalDocuments.ts`).
 
+## Mudanças posteriores (2026-10-22), antes de implementar
+
+Entregues em `design/panorama-geral-municipios` (tarefa `TASK_design_panorama_geral.md`). Partir da `main` depois do merge desse PR:
+
+- A aba "Municípios" saiu do menu; o cartão da tela inicial abre `/cidades/`.
+- `/diretorios/` agora é alias legado e **redireciona** para `/cidades/`; `Directories` foi removido de `CityPages.tsx`. A lista de municípios passa a ter uma única rota, `/cidades/`, mais `/panoramas-da-gestao-de-residuos/`.
+- `/cidades/` ganhou, acima da lista, o **Panorama geral** (`PanoramaGeral.tsx`) com o mapa da disposição final; o `MunicipalityIndex` ali recebe `relatorioGeral={false}`. Esse bloco **não** faz parte dos quatro diretórios por documento e deve ser preservado.
+- O contrato do D3.1 passou a esperar um só `<MunicipalityIndex ` em `CityPages.tsx`.
+
 ## Escopo
 
 Quatro diretórios, cada um com a **mesma tela** (um único componente configurável) e **uma só ação por linha**:
@@ -34,7 +43,7 @@ Quatro diretórios, cada um com a **mesma tela** (um único componente configur�
   - Um município que tem os três documentos aparece nos três diretórios, **uma entrada em cada**, cada uma levando só ao seu documento.
   - Tirar os filtros de plano, educação ambiental e compostagem de `/cidades/`. Em seu lugar, uma linha de links para os outros diretórios, com a contagem (por exemplo, "Plano de coleta seletiva · 15").
   - Tirar "Plano de coleta seletiva" do painel do mapa (fica "Ficha" e "Diagnóstico · PDF").
-  - Trocar "Panorama" por "Diagnóstico" nos **textos exibidos** (ver restrições).
+  - ~~Trocar "Panorama" por "Diagnóstico"~~ — revogado, ver decisão 2.
   - Bonito na lista de coleta seletiva: a linha continua, com aviso (decisão 1 abaixo).
 - Não inclui:
   - Mudar a ficha do município (`CityDetail`): continua reunindo todos os documentos, inclusive o cronograma e os mapas da coleta seletiva, que a lista de coleta deixa de mostrar.
@@ -60,7 +69,7 @@ A pessoa abre a lista, busca um município e clica nele.
 ## Restrições e invariantes
 
 - **URLs:** nenhuma removida ou alterada (regra do `AGENTS.md`). Os aliases legados e `resolveRoute` ficam como estão.
-- **Textos:** trocar só o que o visitante lê. **Não** renomear identificadores, nomes de arquivo, slugs nem rotas (`panoramas.generated.ts`, `/panoramas-da-gestao-de-residuos/`, `Panorama-de-Gestao-de-RS-…pdf`). **Não** renomear "Panorama e Censo dos Catadores", que é outro documento (`/panorama-e-censo-dos-catadores/`, `documents.ts`, `LegacyPages.tsx`, `search.ts`).
+- **Textos:** **não** renomear "Panorama" (decisão 2). **Não** renomear identificadores, nomes de arquivo, slugs nem rotas (`panoramas.generated.ts`, `/panoramas-da-gestao-de-residuos/`, `Panorama-de-Gestao-de-RS-…pdf`). **Não** renomear "Panorama e Censo dos Catadores", que é outro documento (`/panorama-e-censo-dos-catadores/`, `documents.ts`, `LegacyPages.tsx`, `search.ts`).
 - **Conteúdo que não pode ser inventado:** o aviso de Bonito diz só o que está verificado (o arquivo marcado como plano no banco é o "Anexo I – Minuta da Lei de Coleta Seletiva Municipal"; `docs/specs/legado/verificacao-2026-10-19.md`). Não escrever que o plano "não existe" além disso.
 - **Dados:** não editar `*.generated.ts`; as contagens vêm dos dados, não de números digitados.
 - **Acessibilidade:** a linha tem um link com nome acessível "<Município>: abrir o <documento> (nova aba)"; foco visível; alvo de toque de 44 px no celular; sem rolagem horizontal de 320 a 1440 px.
@@ -70,7 +79,7 @@ A pessoa abre a lista, busca um município e clica nele.
 ## Decisões (já tomadas pelo dono do projeto, ao aprovar o esboço)
 
 1. **Bonito na coleta seletiva:** a linha continua, apontando para o arquivo hoje marcado como plano, com um aviso curto de que esse arquivo é a minuta da lei. A troca pelo plano verdadeiro depende da equipe (spec N03).
-2. **"Diagnóstico" substitui "Panorama"** nos textos visíveis. O dono do projeto precisa aprovar a lista final dos textos alterados (handoff), como nos blocos anteriores.
+2. **"Panorama" continua** (atualizado em 2026-10-22: o dono do projeto disse "é panoramas"). Não renomear para "Diagnóstico"; onde esta spec diz "Diagnóstico", ler "Panorama". Os textos visíveis que o Orca alterar ainda precisam da aprovação dele (handoff).
 3. **A ficha do município fica,** e a lista de municípios do diagnóstico leva a ela.
 4. **O mapa fica só no diagnóstico.**
 
@@ -86,7 +95,7 @@ A pessoa abre a lista, busca um município e clica nele.
 - [ ] Cada linha tem um único link e abre só o documento do diretório (teste com URLs literais, por exemplo Bonito, Corumbá, Naviraí).
 - [ ] `/cidades/` sem os filtros de plano, educação ambiental e compostagem; com links para os outros diretórios.
 - [ ] Painel do mapa sem a ação de plano de coleta seletiva.
-- [ ] "Panorama" → "Diagnóstico" só nos textos visíveis; "Panorama e Censo dos Catadores", URLs, slugs e arquivos intactos (teste por busca no código).
+- [ ] "Panorama" preservado nos textos; "Panorama e Censo dos Catadores", URLs, slugs e arquivos intactos.
 - [ ] Nenhuma URL pública removida; `validate-project` e o teste "toda página publicada no WordPress resolve" continuam passando.
 - [ ] `npm run check:quality` e `npm run check:design` verdes; avaliação em 390 e 1440 px e sem rolagem horizontal de 320 a 1440 px.
 

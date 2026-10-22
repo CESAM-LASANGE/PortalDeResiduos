@@ -6,6 +6,10 @@
 
 Quatro diretórios de municípios (diagnóstico 79, coleta seletiva 15, educação ambiental 17, compostagem 5), com a mesma tela e **um só link por linha**, que abre apenas o documento daquele diretório. A spec tem a tabela completa, as restrições e os critérios.
 
+## Atenção: o que mudou depois que esta tarefa foi escrita (2026-10-22)
+
+Leia a seção "Mudanças posteriores" da spec N04. Resumo: **"Panorama" não vira "Diagnóstico"**; `/diretorios/` redireciona para `/cidades/`; `/cidades/` tem um Panorama geral com mapa acima da lista, que deve ser preservado; sem a aba "Municípios" no menu. Parta da `main` já com o PR `design/panorama-geral-municipios` mergeado.
+
 ## Ordem sugerida (TDD: Red → Green → Refactor → Eval → Review)
 
 1. **Seams de teste** (confirmar com o dono do projeto se mudar): (a) configuração de cada diretório como função pura (município → URL e rótulo), com URLs literais; (b) contratos de ligação das páginas; (c) navegador em 390 e 1440 px.
