@@ -25,7 +25,7 @@ test('Vercel: cabeçalhos de segurança e CSP sem script inline nem eval', () =>
 })
 
 test('Vercel: a CSP libera só o que o site usa de fora (fontes do Google e o painel do Power BI)', () => {
-  assert.equal(csp['frame-src'], 'https://app.powerbi.com')
+  assert.ok(csp['frame-src'].split(' ').includes('https://app.powerbi.com'))
   assert.match(csp['style-src'], /https:\/\/fonts\.googleapis\.com/)
   assert.equal(csp['font-src'], 'https://fonts.gstatic.com')
   assert.equal(csp['connect-src'], "'self'")

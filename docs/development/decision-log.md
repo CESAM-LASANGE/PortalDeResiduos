@@ -79,3 +79,9 @@
 - **Dados do mapa:** lidos da Figura 3 do relatório geral (fonte TCE, 2024), alinhada ao IBGE, conferidos contra o quadro da figura (79, 75, 4). É leitura de imagem; a equipe deve conferir. Ver `BD/relatorio/FONTE.md`.
 - **Rotas:** `/diretorios/` redireciona para `/cidades/`. **Revoga** a manutenção das duas rotas com textos diferentes (ADR-001) e o item "Municípios" do menu da ADR-006.
 - **Texto:** "Panorama" permanece; a N04 não renomeia para "Diagnóstico".
+
+## 2026-10-25 — Vídeo e manual do GRS junto do sistema
+
+- **Decisão do dono do projeto:** o guia em vídeo (3 partes do Drive) toca na página de Apoio a Decisão, junto do sistema; o manual do usuário entra no mesmo bloco.
+- **Segurança:** `frame-src` passa a incluir `https://drive.google.com`; o player só é carregado depois do clique.
+- **Manual:** o banco do WordPress não o tem (o "Guia do usuário (PDF)" lá era outro arquivo). Ele é o "Guia do Usuário SAD - GRS.pdf", citado no Anexo I do Estudo Estatístico (Etapa 2.2) com um link de OneDrive pessoal e não público. Precisa que alguém com acesso entregue o PDF. Ver `tasks/active/TASK_design_grs_video_manual.md`.
