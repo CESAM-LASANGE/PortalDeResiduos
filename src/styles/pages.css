@@ -873,3 +873,21 @@
 @media (max-width: 700px) {
   .production-item { grid-template-columns: 1fr; }
 }
+
+/* Apoio a Decisão: guia em vídeo e manual junto do sistema. */
+.grs-como-usar { padding-block: var(--section-y); border-top: 1px solid var(--line); }
+.grs-como-usar-cabecalho { display: grid; gap: 0.5rem; max-width: 58ch; margin-bottom: 1.5rem; }
+.grs-como-usar-cabecalho h2 { margin: 0; }
+.grs-como-usar-cabecalho p { color: var(--ink-soft); font-size: var(--step-body); line-height: 1.7; }
+.grs-como-usar-layout { display: grid; grid-template-columns: minmax(0, 1.8fr) minmax(0, 1fr); gap: clamp(1.5rem, 4vw, 3rem); align-items: start; }
+.grs-video { display: grid; gap: 1rem; justify-items: start; }
+.grs-video-quadro { position: relative; width: 100%; aspect-ratio: 16 / 9; background: var(--paper-sunk); border: 1px solid var(--line); }
+.grs-video-quadro iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.grs-video-assistir { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: 0.5rem; width: 100%; padding: 1rem; color: var(--mata); background: transparent; border: 0; cursor: pointer; font-family: var(--font-sans); font-size: var(--step-ui); font-weight: 600; }
+.grs-video-assistir small { color: var(--ink-faint); font-size: var(--step-small); font-weight: 400; }
+.grs-manual { display: grid; gap: 0.75rem; justify-items: start; padding: 1.5rem; background: var(--paper-raised); border: 1px solid var(--line); border-top: 3px solid var(--mata); color: var(--mata); }
+.grs-manual h3 { margin: 0; font-family: var(--font-display); font-size: var(--step-2); color: var(--ink); }
+.grs-manual p { margin: 0; color: var(--ink-soft); font-size: var(--step-small); line-height: 1.65; }
+@media (max-width: 900px) {
+  .grs-como-usar-layout { grid-template-columns: minmax(0, 1fr); }
+}
