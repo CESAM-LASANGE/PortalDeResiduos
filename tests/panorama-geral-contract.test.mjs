@@ -8,7 +8,7 @@ const ler = (p) => fs.readFileSync(new URL(`../${p}`, import.meta.url), 'utf8')
 test('menu: a aba Municípios saiu; os municípios abrem só pela tela inicial', () => {
   const app = ler('src/App.tsx')
   const itens = [...app.match(/const NAV_LINKS = \[([\s\S]*?)\] as const/)[1].matchAll(/^\s*\['([^']+)', '(\/[^']*)'/gm)].map((m) => `${m[1]} ${m[2]}`)
-  assert.deepEqual(itens, ['Início /', 'Documentos /publicacoes/', 'Produções do Convênio /producoes-do-convenio/', 'Notícias /noticias/', 'Contato /contact/'])
+  assert.ok(!itens.some((item) => item.startsWith('Municípios')), 'a aba Municípios continua fora do menu (a lista completa está em tests/menu-contract.test.mjs)')
   const destinos = [...ler('src/components/HomePage.tsx').matchAll(/<Link to="([^"]+)" className="home-tile"/g)].map((m) => m[1])
   assert.equal(destinos[0], '/cidades/')
 })
