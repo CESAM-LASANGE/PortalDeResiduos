@@ -6,6 +6,7 @@ export type RouteKind =
   | 'cities'
   | 'publications'
   | 'valoriza'
+  | 'technical'
   | 'directories'
   | 'article'
   | 'not-found'
@@ -54,7 +55,7 @@ export const siteRoutes: SiteRoute[] = [
   page('/planos-de-educacao-ambiental/', 'Planos de Educação Ambiental', 'projects', { parent: '/educacao-ambiental/' }),
   page('/educacao-ambiental/planos-de-educacao-ambiental/', 'Planos de Educação Ambiental', 'projects', { parent: '/educacao-ambiental/' }),
   page('/panorama-e-censo-dos-catadores/', 'Panorama e Censo dos Catadores', 'projects', { parent: '/producoes-do-convenio/' }),
-  page('/nota-tecnica/', 'Nota Técnica', 'projects'),
+  page('/nota-tecnica/', 'Notas Técnicas', 'technical'),
   page('/como-separar-corretamente-seu-lixo/', 'Como Separar Corretamente Seu Lixo', 'projects'),
   page('/diferenca-de-lixao-e-aterro-sanitario/', 'Diferença de Lixão e Aterro Sanitário', 'projects'),
   page('/producoes-do-convenio/materiais-compilados/panoramas-da-gestao-de-residuos/', 'Panoramas da Gestão de Resíduos', 'projects', { status: 'legacy', redirectTo: '/cidades/', notes: 'Caminho longo do WordPress; leva para /cidades/.' }),

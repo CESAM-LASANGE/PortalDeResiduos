@@ -325,8 +325,8 @@ test('D3.7: o contato usa Field e a confirmação não afirma que o aplicativo a
 test('D3.8: menu da ADR-006', () => {
   const app = read('src/App.tsx')
   const itens = [...app.match(/const NAV_LINKS = \[([\s\S]*?)\] as const/)[1].matchAll(/^\s*\['([^']+)', '(\/[^']*)'/gm)].map((m) => `${m[1]} ${m[2]}`)
-  // Sem Municípios desde 2026-10-22 (pedido do dono do projeto); a lista abre pela tela inicial.
-  assert.deepEqual(itens, ['Início /', 'Documentos /publicacoes/', 'Produções do Convênio /producoes-do-convenio/', 'Notícias /noticias/', 'Contato /contact/'])
+  // Sem Municípios (2026-10-22) e sem Documentos (2026-10-25), com Notas técnicas: ver tests/menu-contract.test.mjs.
+  assert.deepEqual(itens, ['Início /', 'Produções do Convênio /producoes-do-convenio/', 'Notas técnicas /nota-tecnica/', 'Notícias /noticias/', 'Contato /contact/'])
 })
 
 test('D3.9: Documentos lista os 11 com filtro por tipo e a busca lê a mesma fonte', () => {

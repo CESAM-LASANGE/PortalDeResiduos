@@ -53,7 +53,7 @@ type HomeArea = { kicker: string; title: string; text: string; href: string; cta
 const homeAreas: HomeArea[] = [
   { kicker: "Ferramenta digital", title: "Apoio a decisão", text: "Indicadores e cenários para qualificar o gerenciamento municipal.", href: "/apoio-a-decisao/", cta: "Acessar", external: { label: "Abrir sistema GRS", href: "https://sadgrs.streamlit.app/" } },
   { kicker: "Inclusão socioprodutiva", title: "Cooperativas", text: "Materiais para fortalecer a organização e o trabalho dos catadores.", href: "/cooperativas/", cta: "Acessar" },
-  { kicker: "Biblioteca pública", title: "Publicações", text: "Estudos, artigos e notas técnicas para consulta e compartilhamento.", href: "/publicacoes/", cta: "Acessar" },
+  { kicker: "Biblioteca pública", title: "Documentos", text: "Estudos, artigos e notas técnicas para consulta e compartilhamento.", href: "/publicacoes/", cta: "Acessar" },
   { kicker: "Sistema estadual", title: "Logística Reversa", text: "Um caminho para que embalagens retornem ao setor empresarial e tenham destinação ambientalmente adequada.", href: "/logistica-reversa/", cta: "Entender o sistema" },
 ]
 

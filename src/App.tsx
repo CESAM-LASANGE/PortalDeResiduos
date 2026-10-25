@@ -119,7 +119,7 @@ function App() {
           {route === 'projects' && routeInfo?.path === '/como-separar-corretamente-seu-lixo/' && <SeparateWaste navigate={navigate} />}
           {route === 'projects' && routeInfo?.path === '/diferenca-de-lixao-e-aterro-sanitario/' && <LandfillDifference navigate={navigate} />}
           {route === 'projects' && routeInfo?.path === '/cooperativas/' && <Cooperatives />}
-          {route === 'projects' && routeInfo?.path === '/nota-tecnica/' && <TechnicalNote />}
+          {route === 'technical' && <TechnicalNote />}
           {route === 'projects' && routeInfo?.path === '/apoio-a-decisao/' && <DecisionSupport navigate={navigate} />}
           {route === 'projects' && routeInfo?.path === '/apoio-a-decisao/guia-do-usuario-do-grs/' && <UserGuide navigate={navigate} />}
           {route === 'projects' && routeInfo?.path === '/producoes-do-convenio/' && <ProductionHub navigate={navigate} />}
@@ -153,8 +153,8 @@ function App() {
 
 const NAV_LINKS = [
   ['Início', '/', ['home']],
-  ['Documentos', '/publicacoes/', ['publications']],
   ['Produções do Convênio', '/producoes-do-convenio/', ['projects', 'valoriza']],
+  ['Notas técnicas', '/nota-tecnica/', ['technical']],
   ['Notícias', '/noticias/', ['news', 'article']],
   ['Contato', '/contact/', ['contact']],
 ] as const

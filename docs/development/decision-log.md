@@ -90,3 +90,8 @@
 
 - **Decisão do dono do projeto:** os diagnósticos (panoramas) ganham um card próprio em Produções do Convênio.
 - **Rotas:** `/panoramas-da-gestao-de-residuos/` e o caminho longo do WordPress viram alias de `/cidades/`, junto com `/diretorios/`: uma só lista dos 79 municípios.
+
+## 2026-10-25 — Novo menu: Notas técnicas no lugar de Documentos
+
+- **Decisão do dono do projeto:** o menu passa a ter Início, Produções do Convênio, Notas técnicas, Notícias e Contato. Documentos sai do menu e vira card na tela inicial, ao lado de Logística Reversa (o card "Publicações" foi renomeado). **Revoga** o item "Documentos" do menu da ADR-006.
+- **Rotas:** nenhuma URL muda. `/nota-tecnica/` ganha o tipo `technical` e o título "Notas Técnicas".
