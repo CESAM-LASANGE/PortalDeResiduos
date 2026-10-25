@@ -111,7 +111,8 @@ test('L04/L12: ficha, índice, páginas e busca usam os documentos municipais', 
   assert.match(ler('src/pages/CityPages.tsx').match(/export function CityDetail[\s\S]*?\n\}/)[0], /municipalDocuments\.filter/)
   const producao = ler('src/pages/ProductionPages.tsx')
   assert.match(producao.match(/export function EducationPlans[\s\S]*?\n\}/)[0], /<DocumentRow /)
-  assert.match(producao.match(/export function Municipalities[\s\S]*?\n\}/)[0], /'compostagem'/)
+  // Os municípios da compostagem agora estão no mapa do Plano de Compostagem (tests/mapa-compostagem-contract.test.mjs).
+  assert.match(ler('src/components/CompostagemMap.tsx'), /doc\.kind === 'compostagem'/)
   const indice = ler('src/components/MunicipalityIndex.tsx')
   assert.match(indice, /'com-educacao-ambiental'/)
   assert.match(indice, /'com-compostagem'/)

@@ -11,6 +11,7 @@ import { documents } from '../data/documents'
 import { municipalDocuments } from '../data/cities'
 import { DocumentRow } from '../components/DocumentRow'
 import { DocumentosDaPagina } from '../components/DocumentosDaPagina'
+import { CompostagemMap } from '../components/CompostagemMap'
 
 const ASSET = '/uploads/'
 type Navigate = (to: string) => void
@@ -78,7 +79,6 @@ export function MaterialsCompiled({ navigate: _navigate }: { navigate: Navigate 
 }
 
 export function SelectiveCollection({ navigate, nested = false }: { navigate: Navigate; nested?: boolean }) {
-  const municipalitiesHref = nested ? "/producoes-do-convenio/materiais-compilados/plano-de-coleta-seletiva/municipios-contemplados/" : "/municipios-contemplados/"
   const totalDocuments = selectiveCollectionPlans.reduce((total, plan) => total + plan.documents.length, 0)
 
   return <>
@@ -94,7 +94,9 @@ export function SelectiveCollection({ navigate, nested = false }: { navigate: Na
           <div><strong>{totalDocuments}</strong><span>documentos disponíveis</span></div>
           <div><strong>5</strong><span>itens por município</span></div>
         </div>
-        <Link to={municipalitiesHref} className="button button-dark">Ver diretório de municípios <ArrowRight size={16} /></Link>
+        {nested
+          ? <Link to="/producoes-do-convenio/materiais-compilados/plano-de-coleta-seletiva/municipios-contemplados/" className="button button-dark">Ver diretório de municípios <ArrowRight size={16} /></Link>
+          : <Link to="/municipios-contemplados/" className="button button-dark">Ver diretório de municípios <ArrowRight size={16} /></Link>}
       </article>
       <aside className="collection-plan-aside">
         <Eyebrow>O que você encontra</Eyebrow>
@@ -129,20 +131,13 @@ export function SelectiveCollection({ navigate, nested = false }: { navigate: Na
 
 export function Composting({ navigate, nested = false }: { navigate: Navigate; nested?: boolean }) {
   const href = `${ASSET}2025/03/Cartilha_compostagem_acelerada.pdf`
-  return <><ProductionHero eyebrow="Cuidado com a matéria orgânica" title="Plano de Compostagem" description="Orientações para reduzir o envio de resíduos orgânicos aos aterros e transformar matéria em recurso para o território." crumbs={[{ label: 'Início', href: '/' }, { label: 'Materiais Compilados', href: '/materiais-compilados/' }, { label: 'Plano de Compostagem' }]} /><section className="section container education-layout"><article className="prose"><Eyebrow>Resíduo orgânico é recurso</Eyebrow><h2>Mais vida no solo, menos rejeito.</h2><p>A compostagem aproxima a gestão de resíduos da agricultura, da educação ambiental e do cuidado cotidiano com o território. O planejamento ajuda a escolher escala, método e parceiros.</p><p>Use a cartilha como ponto de partida para entender a compostagem acelerada e construir uma estratégia adequada ao município.</p><div className="education-points"><div><Sprout size={20} /><strong>Redução na origem</strong><span>Menos matéria orgânica no fluxo de rejeitos.</span></div><div><Leaf size={20} /><strong>Benefício ambiental</strong><span>Transformação em composto e melhoria do solo.</span></div><div><BookOpen size={20} /><strong>Educação prática</strong><span>Conhecimento que pode ser aplicado em escolas e comunidades.</span></div></div><Link to="/producoes-do-convenio/materiais-compilados/plano-de-compostagem/municipios-contemplados/" className="button button-dark">Ver municípios contemplados <ArrowRight size={16} /></Link></article><aside className="education-aside"><Eyebrow>Material local</Eyebrow><img src={`${ASSET}2025/03/Cartilha_compostagem_acelerada-pdf.jpg`} alt="Capa da cartilha de compostagem" /><strong>Cartilha de compostagem acelerada</strong><p>Material introdutório para consulta e compartilhamento.</p><a className="text-link" href={href} target="_blank" rel="noreferrer">Abrir cartilha <ArrowRight size={15} /></a></aside></section><DocumentosDaPagina contexto="/plano-de-compostagem/" /></>
+  return <><ProductionHero eyebrow="Cuidado com a matéria orgânica" title="Plano de Compostagem" description="Orientações para reduzir o envio de resíduos orgânicos aos aterros e transformar matéria em recurso para o território." crumbs={[{ label: 'Início', href: '/' }, { label: 'Materiais Compilados', href: '/materiais-compilados/' }, { label: 'Plano de Compostagem' }]} /><section className="section container education-layout"><article className="prose"><Eyebrow>Resíduo orgânico é recurso</Eyebrow><h2>Mais vida no solo, menos rejeito.</h2><p>A compostagem aproxima a gestão de resíduos da agricultura, da educação ambiental e do cuidado cotidiano com o território. O planejamento ajuda a escolher escala, método e parceiros.</p><p>Use a cartilha como ponto de partida para entender a compostagem acelerada e construir uma estratégia adequada ao município.</p><div className="education-points"><div><Sprout size={20} /><strong>Redução na origem</strong><span>Menos matéria orgânica no fluxo de rejeitos.</span></div><div><Leaf size={20} /><strong>Benefício ambiental</strong><span>Transformação em composto e melhoria do solo.</span></div><div><BookOpen size={20} /><strong>Educação prática</strong><span>Conhecimento que pode ser aplicado em escolas e comunidades.</span></div></div></article><aside className="education-aside"><Eyebrow>Material local</Eyebrow><img src={`${ASSET}2025/03/Cartilha_compostagem_acelerada-pdf.jpg`} alt="Capa da cartilha de compostagem" /><strong>Cartilha de compostagem acelerada</strong><p>Material introdutório para consulta e compartilhamento.</p><a className="text-link" href={href} target="_blank" rel="noreferrer">Abrir cartilha <ArrowRight size={15} /></a></aside></section><CompostagemMap /><DocumentosDaPagina contexto="/plano-de-compostagem/" /></>
 }
 
-export function Municipalities({ navigate: _navigate, mode = "coleta" }: { navigate: Navigate; mode?: "coleta" | "compostagem" }) {
-  const isSelectiveCollection = mode === "coleta"
-  const parent = isSelectiveCollection ? "Plano de Coleta Seletiva" : "Plano de Compostagem"
-  const back = isSelectiveCollection ? "/plano-de-coleta-seletiva/" : "/plano-de-compostagem/"
-  // Compostagem: os documentos municipais do site antigo (L12), não o índice dos 79.
-  const compostagem = municipalDocuments.filter((doc) => doc.kind === 'compostagem').sort((a, b) => a.name.localeCompare(b.name, 'pt-BR'))
+export function Municipalities({ navigate: _navigate }: { navigate: Navigate }) {
   return <>
-    <ProductionHero eyebrow="Recorte territorial" title="Municípios Contemplados" description={"Consulte os municípios associados ao " + parent.toLowerCase() + " e acesse os materiais municipais disponíveis."} crumbs={[{ label: "Início", href: "/" }, { label: "Materiais Compilados", href: "/materiais-compilados/" }, { label: parent, href: back }, { label: "Municípios Contemplados" }]} />
-    {isSelectiveCollection
-      ? <MunicipalityIndex filtroInicial="com-plano" eyebrow="Diretório territorial" title={<>Escolha um <span>município.</span></>} description={selectiveCollectionPlans.length + " municípios possuem materiais de coleta seletiva publicados no acervo."} />
-      : <section className="section container document-library" aria-labelledby="compostagem-municipios-titulo"><Eyebrow>Diretório territorial</Eyebrow><h2 id="compostagem-municipios-titulo">Escolha um <span>município.</span></h2><p className="municipality-index-count">{compostagem.length} municípios com documentos de compostagem publicados no acervo</p><div className="document-list">{compostagem.map((doc) => <DocumentRow key={doc.url} title={doc.title} type="Compostagem" href={doc.url} origin="drive" />)}</div></section>}
+    <ProductionHero eyebrow="Recorte territorial" title="Municípios Contemplados" description="Consulte os municípios associados ao plano de coleta seletiva e acesse os materiais municipais disponíveis." crumbs={[{ label: "Início", href: "/" }, { label: "Materiais Compilados", href: "/materiais-compilados/" }, { label: "Plano de Coleta Seletiva", href: "/plano-de-coleta-seletiva/" }, { label: "Municípios Contemplados" }]} />
+    <MunicipalityIndex filtroInicial="com-plano" eyebrow="Diretório territorial" title={<>Escolha um <span>município.</span></>} description={selectiveCollectionPlans.length + " municípios possuem materiais de coleta seletiva publicados no acervo."} />
   </>
 }
 
