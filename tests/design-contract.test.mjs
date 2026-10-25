@@ -235,7 +235,8 @@ test('D3.1: as rotas de municípios usam o mesmo MunicipalityIndex (/diretorios/
   const producoes = read('src/pages/ProductionPages.tsx')
   assert.equal((cidades.match(/<MunicipalityIndex /g) ?? []).length, 1)
   assert.doesNotMatch(cidades, /TerritoryIndex/)
-  assert.match(producoes.match(/export function Panoramas[\s\S]*?\n\}/)[0], /<MunicipalityIndex /)
+  // /panoramas-da-gestao-de-residuos/ virou alias de /cidades/ (2026-10-25): sem página própria com a mesma lista.
+  assert.doesNotMatch(producoes, /export function Panoramas\b/)
   const indice = read('src/components/MunicipalityIndex.tsx')
   assert.match(indice, /cityRecords/)
   assert.match(indice, /selectiveCollectionPlans/)
@@ -353,7 +354,7 @@ test('D3.11: Produções em uma página, com ações diretas, e sem páginas só
   const hub = src.match(/export function ProductionHub[\s\S]*?\n\}/)[0]
   assert.match(hub, /production-anchors/)
   const ids = [...src.matchAll(/\{ id: '([a-z-]+)', eyebrow:/g)].map((m) => m[1])
-  assert.deepEqual(ids, ['apoio-a-decisao', 'materiais-compilados', 'projeto-valoriza', 'educacao-ambiental', 'disposicao-legal', 'usinas-de-triagem', 'cooperativas'])
+  assert.deepEqual(ids, ['apoio-a-decisao', 'panoramas', 'materiais-compilados', 'projeto-valoriza', 'educacao-ambiental', 'disposicao-legal', 'usinas-de-triagem', 'cooperativas'])
   assert.match(src, /https:\/\/sadgrs\.streamlit\.app\//)
   assert.match(src, /arquivo\('Panorama e Censo dos Catadores'\)/)
   assert.match(src.match(/export function MaterialsCompiled[\s\S]*?\n\}/)[0], /<MunicipalityIndex /)

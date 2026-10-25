@@ -86,6 +86,11 @@
 - **Segurança:** `frame-src` passa a incluir `https://drive.google.com`; o player só é carregado depois do clique.
 - **Manual:** o banco do WordPress não o tem (o "Guia do usuário (PDF)" lá era outro arquivo). Ele é o "Guia do Usuário SAD - GRS.pdf", citado no Anexo I do Estudo Estatístico (Etapa 2.2) com um link de OneDrive pessoal e não público. Precisa que alguém com acesso entregue o PDF. Ver `tasks/active/TASK_design_grs_video_manual.md`.
 
+## 2026-10-25 — Panoramas em Produções do Convênio
+
+- **Decisão do dono do projeto:** os diagnósticos (panoramas) ganham um card próprio em Produções do Convênio.
+- **Rotas:** `/panoramas-da-gestao-de-residuos/` e o caminho longo do WordPress viram alias de `/cidades/`, junto com `/diretorios/`: uma só lista dos 79 municípios.
+
 ## 2026-10-25 — Novo menu: Notas técnicas no lugar de Documentos
 
 - **Decisão do dono do projeto:** o menu passa a ter Início, Produções do Convênio, Notas técnicas, Notícias e Contato. Documentos sai do menu e vira card na tela inicial, ao lado de Logística Reversa (o card "Publicações" foi renomeado). **Revoga** o item "Documentos" do menu da ADR-006.

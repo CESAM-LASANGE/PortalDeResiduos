@@ -62,7 +62,8 @@ test('nome da página: "Panoramas" no lugar de "Cidades" (título, trilha, aba, 
 test('lista de panoramas: sem o link do plano de coleta seletiva (a página do plano já o tem)', () => {
   const funcao = (arquivo, nome) => ler(arquivo).match(new RegExp(`export function ${nome}[\\s\\S]*?\\n\\}`))[0]
   assert.match(funcao('src/pages/CityPages.tsx', 'CityDirectory'), /<MunicipalityIndex [^>]*planoDeColeta=\{false\}/)
-  assert.match(funcao('src/pages/ProductionPages.tsx', 'Panoramas'), /<MunicipalityIndex [^>]*planoDeColeta=\{false\}/)
+  assert.equal(resolveRoute('/panoramas-da-gestao-de-residuos/').redirectTo, '/cidades/')
+  assert.equal(resolveRoute('/producoes-do-convenio/materiais-compilados/panoramas-da-gestao-de-residuos/').redirectTo, '/cidades/')
   // Onde o plano é o assunto, o link continua.
   assert.doesNotMatch(funcao('src/pages/ProductionPages.tsx', 'Municipalities'), /planoDeColeta=\{false\}/)
   assert.doesNotMatch(funcao('src/pages/ProductionPages.tsx', 'MaterialsCompiled'), /planoDeColeta=\{false\}/)
@@ -70,4 +71,16 @@ test('lista de panoramas: sem o link do plano de coleta seletiva (a página do p
   assert.match(indice, /planoDeColeta: mostrarPlano = true/)
   assert.match(indice, /const plano = mostrarPlano \? planos\.get\(city\.slug\) : undefined/)
   assert.match(indice, /plano: mostrarPlano \? planos\.get\(city\.slug\)\?\.primaryDocumentUrl : undefined/, 'o painel do mapa também')
+})
+
+test('Produções do Convênio: seção própria dos panoramas, com a lista e o relatório geral', () => {
+  const producoes = ler('src/pages/ProductionPages.tsx')
+  const secao = producoes.match(/\{ id: 'panoramas', eyebrow:[^\n]*\},?\n/)[0]
+  assert.match(secao, /title: 'Panoramas da Gestão de Resíduos'/)
+  assert.match(secao, /label: 'Ver os panoramas', href: '\/cidades\/'/)
+  assert.match(secao, /label: 'Relatório geral dos panoramas', href: arquivo\('Relatório geral dos panoramas'\), externo: true/)
+  // Sem repetir os mesmos links em Materiais compilados.
+  const materiais = producoes.match(/\{ id: 'materiais-compilados', eyebrow:[^\n]*\},?\n/)[0]
+  assert.doesNotMatch(materiais, /Ver municípios|Panoramas da gestão de resíduos|href: '\/cidades\/'/)
+  assert.match(materiais, /Plano de coleta seletiva/)
 })
