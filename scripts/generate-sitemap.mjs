@@ -13,14 +13,13 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const padrao = JSON.parse(fs.readFileSync(path.join(root, 'site.json'), 'utf8')).url
 const SITE = (process.env.VITE_SITE_URL ?? padrao).replace(/\/+$/, '')
 
-// A única URL desta página é o caminho longo do WordPress; /planos-de-educacao-ambiental/ repete a do menu.
-const SO_NO_CAMINHO_LONGO = '/producoes-do-convenio/materiais-compilados/plano-de-compostagem/municipios-contemplados/'
+// /planos-de-educacao-ambiental/ repete a página do menu.
 const REPETIDAS = ['/corumba/', '/planos-de-educacao-ambiental/']
 
 const paginas = siteRoutes
   .filter((rota) => !rota.redirectTo && rota.status !== 'legacy')
   .map((rota) => rota.path)
-  .filter((caminho) => caminho === SO_NO_CAMINHO_LONGO || (!caminho.startsWith('/producoes-do-convenio/materiais-compilados/') && !caminho.startsWith('/producoes-do-convenio/panorama-e-censo-dos-catadores/')))
+  .filter((caminho) => !caminho.startsWith('/producoes-do-convenio/materiais-compilados/') && !caminho.startsWith('/producoes-do-convenio/panorama-e-censo-dos-catadores/'))
   .filter((caminho) => !REPETIDAS.includes(caminho) && !caminho.startsWith('/cidades/'))
 const caminhos = [...new Set([
   ...paginas,

@@ -16,7 +16,7 @@ test('sitemap: só páginas canônicas, no domínio do site, sem repetição', (
     const rota = resolveRoute(caminho)
     assert.ok(rota && !rota.redirectTo, `${caminho} deve ser uma página, não um alias`)
     assert.notEqual(rota.status, 'legacy', caminho)
-    if (caminho.startsWith('/producoes-do-convenio/materiais-compilados/')) assert.equal(caminho, '/producoes-do-convenio/materiais-compilados/plano-de-compostagem/municipios-contemplados/', `${caminho} é caminho longo que repete outra página`)
+    assert.ok(!caminho.startsWith('/producoes-do-convenio/materiais-compilados/'), `${caminho} é caminho longo que repete outra página`)
   }
 })
 
@@ -26,7 +26,7 @@ test('sitemap: início, os 79 municípios e as 8 notícias', () => {
   for (const slug of newsSlugs) assert.ok(caminhos.includes(`/noticias/${slug}/`), slug)
   assert.ok(caminhos.includes('/documentos/') === false, '/documentos/ é alias legado de /publicacoes/')
   assert.ok(caminhos.includes('/publicacoes/'))
-  assert.ok(caminhos.includes('/producoes-do-convenio/materiais-compilados/plano-de-compostagem/municipios-contemplados/'), 'a página de compostagem só existe nesse caminho')
+  assert.ok(caminhos.includes('/plano-de-compostagem/'), 'os municípios da compostagem estão no mapa dessa página')
   assert.ok(!caminhos.includes('/planos-de-educacao-ambiental/'), 'repete /educacao-ambiental/planos-de-educacao-ambiental/')
 })
 

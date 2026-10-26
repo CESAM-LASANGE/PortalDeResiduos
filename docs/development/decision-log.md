@@ -95,3 +95,9 @@
 
 - **Decisão do dono do projeto:** o menu passa a ter Início, Produções do Convênio, Notas técnicas, Notícias e Contato. Documentos sai do menu e vira card na tela inicial, ao lado de Logística Reversa (o card "Publicações" foi renomeado). **Revoga** o item "Documentos" do menu da ADR-006.
 - **Rotas:** nenhuma URL muda. `/nota-tecnica/` ganha o tipo `technical` e o título "Notas Técnicas".
+
+## 2026-10-25 — Mapa no Plano de Compostagem
+
+- **Decisão do dono do projeto:** o botão que levava aos municípios contemplados dá lugar a um mapa do Estado, com os municípios contemplados em destaque e os demais transparentes; escolher um abre o plano dele. Menos um clique.
+- **Ponto de retorno:** tag `rollback/antes-do-mapa-compostagem` (main em `36450de`). Ver `tasks/active/TASK_design_mapa_compostagem.md`.
+- **Rotas:** a página de municípios contemplados da compostagem vira alias de `/plano-de-compostagem/`.

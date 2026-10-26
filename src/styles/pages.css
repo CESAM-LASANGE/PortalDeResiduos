@@ -891,3 +891,14 @@
 @media (max-width: 900px) {
   .grs-como-usar-layout { grid-template-columns: minmax(0, 1fr); }
 }
+
+/* Mapa do Plano de Compostagem: só os municípios contemplados têm cor; os demais ficam na cor do fundo. */
+.compost-map-section { padding-block: var(--section-y); border-top: 1px solid var(--line); }
+.compost-map .municipality-map-svg path { fill: none; stroke: var(--line-strong); }
+.compost-map .municipality-map-svg path.is-contemplado { fill: var(--mata); stroke: var(--paper); cursor: pointer; }
+.compost-map .municipality-map-svg path.is-selected { fill: var(--cerrado); stroke: var(--paper); cursor: pointer; }
+.compost-map .municipality-map-marker::before { background: var(--paper-raised); border-color: var(--mata); }
+.compost-map .municipality-map-marker[aria-pressed="true"]::before { background: var(--cerrado); border-color: var(--paper-raised); }
+.compost-map .municipality-map-marker:is(:hover, :focus-visible, [aria-pressed="true"]) .municipality-map-label { display: block; z-index: 1; }
+.compost-map-legenda { display: flex; align-items: center; gap: 0.6rem; color: var(--ink-faint); font-size: var(--step-small); }
+.compost-map-amostra { flex: none; width: 18px; height: 18px; background: var(--mata); border: 1px solid var(--mata); }
