@@ -166,7 +166,7 @@ export function SiteSearch({ navigate }: SiteSearchProps) {
                         <button
                           type="button"
                           className={`search-result${index === active ? ' is-active' : ''}`}
-                          onMouseEnter={() => setActive(index)}
+                          onPointerEnter={(event) => { if (event.pointerType === 'mouse') setActive(index) }}
                           onClick={() => openEntry(entry)}
                         >
                           <span className="search-result-kind">{entry.kind}</span>

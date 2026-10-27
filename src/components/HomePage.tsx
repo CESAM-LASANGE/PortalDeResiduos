@@ -87,7 +87,7 @@ function HomeHeroSearch({ navigate }: { navigate: Navigate }) {
         <input id="home-hero-search-input" type="search" placeholder="Pesquisar no acervo..." value={query} onChange={(event) => setQuery(event.target.value)} role="combobox" aria-expanded={showSuggestions} aria-controls="home-hero-search-results" aria-autocomplete="list" autoComplete="off" />
         <button type="submit">Pesquisar <ArrowRight size={16} /></button>
       </div>
-      {showSuggestions && <div className="home-hero-search-suggestions" id="home-hero-search-results" aria-live="polite">
+      {showSuggestions && <div className="home-hero-search-suggestions" id="home-hero-search-results" aria-live="polite" onMouseDown={(event) => event.preventDefault()}>
         {results.length === 0 ? (
           <p>Nenhum resultado para “{query}”. Continue com Enter para buscar no acervo completo.</p>
         ) : (
