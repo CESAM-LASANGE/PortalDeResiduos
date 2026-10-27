@@ -28,9 +28,11 @@ test('inicial: a barra de pesquisa fica centralizada, metade no verde e metade n
   assert.doesNotMatch(css.match(/\.home-institutional-hero \{[^}]*\}/)[0], /overflow: hidden/, 'overflow cortaria a barra')
 })
 
-test('inicial: as 5 partes têm tamanhos parecidos e a letra se ajusta ao tamanho do texto', () => {
+test('inicial: as 5 partes têm tamanhos parecidos e a MESMA letra em todas', () => {
   const tamanhos = partes.map((t) => t.length)
   assert.ok(Math.max(...tamanhos) / Math.min(...tamanhos) < 2, `partes desiguais: ${tamanhos.join(', ')}`)
-  assert.match(home, /"--fs": /, 'tamanho da letra calculado pelo comprimento')
-  assert.match(ler('src/styles/pages.css'), /\.home-hero-slide-text \{[^}]*font-size: clamp\(1rem, (?:calc\()?var\(--fs\)/)
+  assert.doesNotMatch(home, /--fs/, 'nada de tamanho por parte')
+  const css = ler('src/styles/pages.css')
+  assert.match(css, /\.home-hero-slide-text \{[^}]*font-size: var\(--step-2\)/)
+  assert.match(css, /\.home-hero-slide \{ align-content: center; \}/)
 })

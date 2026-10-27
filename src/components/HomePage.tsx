@@ -1,4 +1,4 @@
-import { type CSSProperties, type FormEvent, useEffect, useRef, useState } from "react"
+import { type FormEvent, useEffect, useRef, useState } from "react"
 import { ArrowRight, ChevronLeft, ChevronRight, ExternalLink, Pause, Play, Search } from "lucide-react"
 import { openSiteSearch } from "./SiteSearch"
 import { newsByDate } from "../pages/NewsPages"
@@ -100,7 +100,7 @@ function HomeHeroSearch({ navigate }: { navigate: Navigate }) {
 function HighlightContent({ slide }: { slide: InstitutionalSlide }) {
   return <>
     <p className="home-hero-slide-label">{slide.label}</p>
-    <p className="home-hero-slide-text" style={{ "--fs": `${Math.min(2.1, Math.max(1.25, 26 / Math.sqrt(slide.text.length))).toFixed(2)}rem` } as CSSProperties}>{slide.text}</p>
+    <p className="home-hero-slide-text">{slide.text}</p>
     {slide.stat && slide.statLabel && <div className="home-hero-stat"><strong>{slide.stat}</strong><span>{slide.statLabel}</span></div>}
   </>
 }
