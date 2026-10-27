@@ -64,10 +64,10 @@ export const siteRoutes: SiteRoute[] = [
   page('/producoes-do-convenio/panorama-e-censo-dos-catadores/', 'Panorama e Censo dos Catadores', 'projects', { parent: '/producoes-do-convenio/' }),
   page('/producoes-do-convenio/materiais-compilados/plano-de-compostagem/', 'Plano de Compostagem', 'projects', { parent: '/producoes-do-convenio/materiais-compilados/' }),
   page('/producoes-do-convenio/materiais-compilados/plano-de-coleta-seletiva/municipios-contemplados/', 'Municípios Contemplados', 'projects', { parent: '/producoes-do-convenio/materiais-compilados/plano-de-coleta-seletiva/' }),
-  page('/producoes-do-convenio/materiais-compilados/plano-de-compostagem/municipios-contemplados/', 'Municípios Contemplados', 'projects', { parent: '/producoes-do-convenio/materiais-compilados/plano-de-compostagem/' }),
+  page('/producoes-do-convenio/materiais-compilados/plano-de-compostagem/municipios-contemplados/', 'Municípios Contemplados', 'projects', { status: 'legacy', redirectTo: '/plano-de-compostagem/', notes: 'Os municípios contemplados agora estão no mapa do Plano de Compostagem.' }),
   // Caminhos aninhados do WordPress que não tinham rota (achado do Bloco B): levam à página equivalente.
   page('/producoes-do-convenio/materiais-compilados/', 'Materiais Compilados', 'projects', { status: 'legacy', redirectTo: '/materiais-compilados/' }),
-  page('/producoes-do-convenio/materiais-compilados/municipios-contemplados/', 'Municípios Contemplados', 'projects', { status: 'legacy', redirectTo: '/producoes-do-convenio/materiais-compilados/plano-de-compostagem/municipios-contemplados/', notes: 'No WordPress, a página tinha os documentos municipais de compostagem (L12).' }),
+  page('/producoes-do-convenio/materiais-compilados/municipios-contemplados/', 'Municípios Contemplados', 'projects', { status: 'legacy', redirectTo: '/plano-de-compostagem/', notes: 'No WordPress, a página tinha os documentos municipais de compostagem (L12).' }),
   page('/producoes-do-convenio/educacao-ambiental/', 'Educação Ambiental', 'projects', { status: 'legacy', redirectTo: '/educacao-ambiental/' }),
   page('/producoes-do-convenio/educacao-ambiental/planos-de-educacao-ambiental/', 'Planos de Educação Ambiental', 'projects', { status: 'legacy', redirectTo: '/planos-de-educacao-ambiental/' }),
   // Planos de coleta seletiva por município no site antigo (L13): levam à ficha, que lista o plano.
