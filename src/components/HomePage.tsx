@@ -10,41 +10,38 @@ type Navigate = (to: string) => void
 
 type InstitutionalSlide = {
   label: string
-  title: string
   text: string
   stat?: string
   statLabel?: string
 }
 
+// Introdução do Programa Resíduos Sólidos – Disposição Legal, em 5 partes que se alternam. O texto é o do material
+// institucional, sem alterações; só se juntaram as quebras de linha do PDF. A remissão "(Figura 1)" ficou de fora,
+// porque a figura não existe no site.
 const institutionalSlides: InstitutionalSlide[] = [
   {
-    label: "O projeto",
-    title: "Informação para dar o destino certo.",
-    text: "O Portal Resíduos MS organiza dados, ferramentas e cooperação para uma disposição final ambientalmente adequada em Mato Grosso do Sul.",
+    label: "Introdução",
+    text: "O Programa Resíduos Sólidos – Disposição Legal idealizado pelo Centro de Apoio Operacional das Promotorias de Justiça do Meio Ambiente, da Habitação e Urbanismo e do Patrimônio Histórico e Cultural (CAOMA) do Ministério Público de Mato Grosso do Sul (MPMS)",
   },
   {
-    label: "Trajetória",
-    title: "Desde 2015, um diagnóstico para todo o estado.",
-    text: "O trabalho começou com o Projeto Curupira, reunindo informações sobre gestão, gerenciamento e disposição final nos municípios sul-mato-grossenses.",
+    label: "Introdução",
+    text: "teve início em 2015 com o diagnóstico dos principais aspectos relacionados à gestão e gerenciamento dos resíduos sólidos dos 79 municípios de Mato Grosso do Sul.",
     stat: "79",
-    statLabel: "municípios no diagnóstico inicial",
+    statLabel: "municípios diagnosticados a partir de 2015",
   },
   {
-    label: "Cooperação técnica",
-    title: "Conhecimento que vira ação pública.",
-    text: "Em 2020, MPMS e UEMS formalizaram o convênio técnico-científico para fortalecer a Política Nacional de Resíduos Sólidos no estado.",
+    label: "Força-tarefa",
+    text: "Em 2015 e 2016, o Ministério Público de Mato Grosso do Sul (MPMS), Tribunal de Contas de Mato Grosso do Sul (TCE-MS), Secretaria de Estado de Meio Ambiente, Desenvolvimento, Ciência, Tecnologia e Inovação (SEMADESC-MS) e o Instituto de Meio Ambiente de Mato Grosso do Sul (IMASUL) iniciaram uma força-tarefa",
+  },
+  {
+    label: "Força-tarefa",
+    text: "visando realizar inspeções, levantamentos e publicações sobre a destinação dos resíduos sólidos nos municípios do estado, com vistas à extinção dos lixões e a implementação da Lei nº 12.305/2010 que instituiu a Política Nacional de Resíduos Sólidos em MS.",
   },
   {
     label: "Resultados",
-    title: "Uma mudança concreta no território.",
-    text: "A força-tarefa entre instituições públicas reduziu a disposição final inadequada e contribuiu para o encerramento de lixões.",
+    text: "Esta força-tarefa gerou significativos frutos, com a redução em 8 anos, de 80% para 5% de municípios com disposição final inadequada, gerando fechamento de 75 lixões.",
     stat: "80% → 5%",
-    statLabel: "de municípios com disposição inadequada em oito anos",
-  },
-  {
-    label: "Inclusão socioprodutiva",
-    title: "Catadores no centro da transformação.",
-    text: "Em 2024, o CAOMA lançou o Projeto Valoriza para apoiar a inclusão social e produtiva de catadores de materiais recicláveis.",
+    statLabel: "de municípios com disposição final inadequada, em 8 anos",
   },
 ]
 
@@ -103,13 +100,12 @@ function HomeHeroSearch({ navigate }: { navigate: Navigate }) {
 function HighlightContent({ slide }: { slide: InstitutionalSlide }) {
   return <>
     <p className="home-hero-slide-label">{slide.label}</p>
-    <h2>{slide.title}</h2>
-    <p>{slide.text}</p>
+    <p className="home-hero-slide-text">{slide.text}</p>
     {slide.stat && slide.statLabel && <div className="home-hero-stat"><strong>{slide.stat}</strong><span>{slide.statLabel}</span></div>}
   </>
 }
 
-const [introSlide, ...highlights] = institutionalSlides
+const highlights = institutionalSlides
 
 function HomeInstitutionalHero({ navigate }: { navigate: Navigate }) {
   const [active, setActive] = useState(0)
@@ -139,9 +135,7 @@ function HomeInstitutionalHero({ navigate }: { navigate: Navigate }) {
       <div className="container home-institutional-hero-inner">
         <div className="home-hero-intro">
           <div className="eyebrow home-hero-eyebrow"><span className="eyebrow-line" /> Projeto Resíduos Sólidos — Disposição Legal</div>
-          <h1 id="home-hero-title">Informação para dar o destino certo.</h1>
-          <p className="home-hero-lead">{introSlide.text}</p>
-          <HomeHeroSearch navigate={navigate} />
+          <h1 id="home-hero-title" className="sr-only">Informação para dar o destino certo.</h1>
         </div>
         <section
           className="home-hero-carousel"
@@ -154,17 +148,20 @@ function HomeInstitutionalHero({ navigate }: { navigate: Navigate }) {
           }}
         >
           <div className="home-hero-slides" aria-live={paused ? "polite" : "off"}>
-            {highlights.map((item, index) => <div key={item.label} className={"home-hero-slide" + (index === active ? " is-active" : "")} role="group" aria-roledescription="destaque" aria-label={(index + 1) + " de " + highlights.length} aria-hidden={index !== active}><HighlightContent slide={item} /></div>)}
+            {highlights.map((item, index) => <div key={index} className={"home-hero-slide" + (index === active ? " is-active" : "")} role="group" aria-roledescription="destaque" aria-label={(index + 1) + " de " + highlights.length} aria-hidden={index !== active}><HighlightContent slide={item} /></div>)}
           </div>
           <div className="home-hero-controls">
             <button type="button" className="home-hero-nav" onClick={() => show(active - 1)} aria-label="Destaque anterior"><ChevronLeft size={17} /></button>
             <button type="button" className="home-hero-nav" onClick={() => setUserPaused(!userPaused)} aria-label={userPaused ? "Continuar destaques" : "Pausar destaques"}>{userPaused ? <Play size={15} /> : <Pause size={15} />}</button>
             <div className="home-hero-dots">
-              {highlights.map((item, index) => <button type="button" key={item.label} className={index === active ? "is-active" : ""} onClick={() => show(index)} aria-label={"Mostrar destaque " + (index + 1) + ": " + item.label} aria-current={index === active ? "true" : undefined} />)}
+              {highlights.map((item, index) => <button type="button" key={index} className={index === active ? "is-active" : ""} onClick={() => show(index)} aria-label={"Mostrar destaque " + (index + 1) + ": " + item.label} aria-current={index === active ? "true" : undefined} />)}
             </div>
             <button type="button" className="home-hero-nav" onClick={() => show(active + 1)} aria-label="Próximo destaque"><ChevronRight size={17} /></button>
           </div>
         </section>
+      </div>
+      <div className="home-hero-search-anchor">
+        <HomeHeroSearch navigate={navigate} />
       </div>
     </section>
   )
