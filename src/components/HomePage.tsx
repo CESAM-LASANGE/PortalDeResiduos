@@ -1,4 +1,4 @@
-import { type FormEvent, useEffect, useRef, useState } from "react"
+import { type CSSProperties, type FormEvent, useEffect, useRef, useState } from "react"
 import { ArrowRight, ChevronLeft, ChevronRight, ExternalLink, Pause, Play, Search } from "lucide-react"
 import { openSiteSearch } from "./SiteSearch"
 import { newsByDate } from "../pages/NewsPages"
@@ -21,7 +21,11 @@ type InstitutionalSlide = {
 const institutionalSlides: InstitutionalSlide[] = [
   {
     label: "Introdução",
-    text: "O Programa Resíduos Sólidos – Disposição Legal idealizado pelo Centro de Apoio Operacional das Promotorias de Justiça do Meio Ambiente, da Habitação e Urbanismo e do Patrimônio Histórico e Cultural (CAOMA) do Ministério Público de Mato Grosso do Sul (MPMS) teve início em 2015 com o diagnóstico dos principais aspectos relacionados à gestão e gerenciamento dos resíduos sólidos dos 79 municípios de Mato Grosso do Sul.",
+    text: "O Programa Resíduos Sólidos – Disposição Legal idealizado pelo Centro de Apoio Operacional das Promotorias de Justiça do Meio Ambiente, da Habitação e Urbanismo e do Patrimônio Histórico e Cultural (CAOMA) do Ministério Público de Mato Grosso do Sul (MPMS)",
+  },
+  {
+    label: "Introdução",
+    text: "teve início em 2015 com o diagnóstico dos principais aspectos relacionados à gestão e gerenciamento dos resíduos sólidos dos 79 municípios de Mato Grosso do Sul.",
     stat: "79",
     statLabel: "municípios diagnosticados a partir de 2015",
   },
@@ -30,20 +34,14 @@ const institutionalSlides: InstitutionalSlide[] = [
     text: "Em 2015 e 2016, o Ministério Público de Mato Grosso do Sul (MPMS), Tribunal de Contas de Mato Grosso do Sul (TCE-MS), Secretaria de Estado de Meio Ambiente, Desenvolvimento, Ciência, Tecnologia e Inovação (SEMADESC-MS) e o Instituto de Meio Ambiente de Mato Grosso do Sul (IMASUL) iniciaram uma força-tarefa",
   },
   {
-    label: "Objetivos",
+    label: "Força-tarefa",
     text: "visando realizar inspeções, levantamentos e publicações sobre a destinação dos resíduos sólidos nos municípios do estado, com vistas à extinção dos lixões e a implementação da Lei nº 12.305/2010 que instituiu a Política Nacional de Resíduos Sólidos em MS.",
   },
   {
     label: "Resultados",
-    text: "Esta força-tarefa gerou significativos frutos, com a redução em 8 anos, de 80% para 5% de municípios com disposição final inadequada,",
+    text: "Esta força-tarefa gerou significativos frutos, com a redução em 8 anos, de 80% para 5% de municípios com disposição final inadequada, gerando fechamento de 75 lixões.",
     stat: "80% → 5%",
     statLabel: "de municípios com disposição final inadequada, em 8 anos",
-  },
-  {
-    label: "Resultados",
-    text: "gerando fechamento de 75 lixões.",
-    stat: "75",
-    statLabel: "lixões fechados",
   },
 ]
 
@@ -102,7 +100,7 @@ function HomeHeroSearch({ navigate }: { navigate: Navigate }) {
 function HighlightContent({ slide }: { slide: InstitutionalSlide }) {
   return <>
     <p className="home-hero-slide-label">{slide.label}</p>
-    <p className="home-hero-slide-text">{slide.text}</p>
+    <p className="home-hero-slide-text" style={{ "--fs": `${Math.min(2.1, Math.max(1.25, 26 / Math.sqrt(slide.text.length))).toFixed(2)}rem` } as CSSProperties}>{slide.text}</p>
     {slide.stat && slide.statLabel && <div className="home-hero-stat"><strong>{slide.stat}</strong><span>{slide.statLabel}</span></div>}
   </>
 }
