@@ -187,9 +187,9 @@ export function HomePage({ navigate }: { navigate: Navigate }) {
         </Link>
         <Link to="/nota-tecnica/" className="home-tile">
           <span className="home-tile-kicker">Documento técnico</span>
-          <strong className="home-tile-title">Nota Técnica</strong>
+          <strong className="home-tile-title">Notas Técnicas</strong>
           <p>Reconhecimento dos catadores recicláveis.</p>
-          <span className="home-tile-cta">Abrir Nota Técnica <ArrowRight size={16} aria-hidden="true" /></span>
+          <span className="home-tile-cta">Abrir Notas Técnicas <ArrowRight size={16} aria-hidden="true" /></span>
         </Link>
       </div>
     </section>
