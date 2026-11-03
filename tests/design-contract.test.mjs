@@ -341,11 +341,11 @@ test('D3.9: Documentos lista os 11 com filtro por tipo e a busca lê a mesma fon
   assert.match(busca, /selectiveCollectionPlans/)
 })
 
-test('D3.10: cada município abre o panorama e, quando há, o plano direto da linha', () => {
+test('D3.10: cada linha abre direto o documento do filtro (panorama em "Todos"); ver tests/acoes-por-filtro-contract.test.mjs', () => {
   const indice = read('src/components/MunicipalityIndex.tsx')
-  assert.match(indice, /href=\{`\/uploads\/2025\/03\/\$\{city\.file\}`\}/)
-  assert.match(indice, /plano\.primaryDocumentUrl/)
-  assert.match(indice, /Panorama · PDF/)
+  assert.match(indice, /acoesDoMunicipio\(filtro, city/)
+  assert.match(indice, /href=\{acao\.url\}/)
+  assert.match(read('src/data/municipalActions.ts'), /Panorama · PDF/)
   assert.match(indice, /\(abre em nova aba\)/)
 })
 

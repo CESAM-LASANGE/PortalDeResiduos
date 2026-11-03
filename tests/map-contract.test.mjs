@@ -44,6 +44,8 @@ test('L01: marcadores são botões com nome acessível e o painel tem as ações
   const mapa = fs.readFileSync(new URL('../src/components/MunicipalityMap.tsx', import.meta.url), 'utf8')
   assert.match(mapa, /<button[\s\S]{0,400}?aria-label=\{`\$\{[a-z.]+\}: abrir opções`\}/)
   assert.match(mapa, /'Escape'/)
-  for (const acao of ['Ficha', 'Panorama · PDF', 'Plano de coleta seletiva']) assert.ok(mapa.includes(acao), acao)
+  // Ficha e, em seguida, o documento do filtro da lista (acoesDoMunicipio): ver tests/acoes-por-filtro-contract.test.mjs.
+  assert.ok(mapa.includes('Ficha'))
+  assert.match(mapa, /atual\.acoes\.map/)
   assert.match(mapa, /<svg[^>]*aria-hidden="true"/)
 })

@@ -69,8 +69,7 @@ test('lista de panoramas: sem o link do plano de coleta seletiva (a página do p
   assert.doesNotMatch(funcao('src/pages/ProductionPages.tsx', 'MaterialsCompiled'), /planoDeColeta=\{false\}/)
   const indice = ler('src/components/MunicipalityIndex.tsx')
   assert.match(indice, /planoDeColeta: mostrarPlano = true/)
-  assert.match(indice, /const plano = mostrarPlano \? planos\.get\(city\.slug\) : undefined/)
-  assert.match(indice, /plano: mostrarPlano \? planos\.get\(city\.slug\)\?\.primaryDocumentUrl : undefined/, 'o painel do mapa também')
+  assert.equal((indice.match(/acoesDoMunicipio\(filtro, city, dados, mostrarPlano\)/g) ?? []).length, 2, 'linha e painel do mapa')
 })
 
 test('Produções do Convênio: seção própria dos panoramas, com a lista e o relatório geral', () => {

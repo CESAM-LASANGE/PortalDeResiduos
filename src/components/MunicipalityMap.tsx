@@ -3,14 +3,13 @@ import { ExternalLink, X } from 'lucide-react'
 import { Eyebrow } from './Eyebrow'
 import { Link } from './router'
 import { mapViewBox, municipalityShapes } from '../data/municipality-map.generated'
+import type { AcaoDoMunicipio } from '../data/municipalActions'
 
 export type MunicipioNoMapa = {
   slug: string
   name: string
-  /** URL do panorama em PDF. */
-  panorama: string
-  /** URL do plano de coleta seletiva, nos municípios que têm. */
-  plano?: string
+  /** O documento que o painel abre, conforme o filtro da lista (acoesDoMunicipio). */
+  acoes: AcaoDoMunicipio[]
 }
 
 const [, , LARGURA, ALTURA] = mapViewBox.split(' ').map(Number)
@@ -121,14 +120,11 @@ export default function MunicipalityMap({ cidades }: { cidades: MunicipioNoMapa[
             <h3 ref={tituloRef} tabIndex={-1}>{atual.name}</h3>
             <div className="municipality-map-actions">
               <Link to={`/cidades/${atual.slug}/`} className="button button-dark">Ficha</Link>
-              <a className="button button-ghost" href={atual.panorama} target="_blank" rel="noopener">
-                Panorama · PDF <ExternalLink size={15} aria-hidden="true" /><span className="sr-only"> (abre em nova aba)</span>
-              </a>
-              {atual.plano && (
-                <a className="button button-ghost" href={atual.plano} target="_blank" rel="noopener">
-                  Plano de coleta seletiva <ExternalLink size={15} aria-hidden="true" /><span className="sr-only"> (abre em nova aba)</span>
+              {atual.acoes.map((acao) => (
+                <a key={acao.url} className="button button-ghost" href={acao.url} target="_blank" rel="noopener">
+                  {acao.rotulo} <ExternalLink size={15} aria-hidden="true" /><span className="sr-only"> (abre em nova aba)</span>
                 </a>
-              )}
+              ))}
             </div>
             <button type="button" className="text-link municipality-map-close" onClick={fechar}>
               <X size={15} aria-hidden="true" /> Fechar
