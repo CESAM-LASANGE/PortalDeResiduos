@@ -5,23 +5,26 @@ import { Link } from './router'
 import { cityRecords, municipalDocuments, normalizeName } from '../data/cities'
 import { selectiveCollectionPlans } from '../data/selective-collection-plans.generated'
 import { documents } from '../data/documents'
+import { acoesDoMunicipio, type FiltroDoIndice } from '../data/municipalActions'
 
-export type Filtro = 'todos' | 'com-plano' | 'com-educacao-ambiental' | 'com-compostagem'
+export type Filtro = FiltroDoIndice
 
 const planos = new Map(selectiveCollectionPlans.map((plan) => [plan.slug, plan]))
 const comPlano = new Set(planos.keys())
+const planosPorUrl = new Map(selectiveCollectionPlans.map((plan) => [plan.slug, plan.primaryDocumentUrl]))
 const comDocumento = (kind: 'educacao-ambiental' | 'compostagem') => new Set(municipalDocuments.filter((doc) => doc.kind === kind).map((doc) => doc.slug))
 
 // Sem `slugs`, o filtro mostra todos os municípios.
 const FILTROS: Array<{ id: Filtro; label: string; slugs?: Set<string> }> = [
   { id: 'todos', label: 'Todos' },
-  { id: 'com-plano', label: 'Com plano de coleta seletiva', slugs: comPlano },
-  { id: 'com-educacao-ambiental', label: 'Com plano de educação ambiental', slugs: comDocumento('educacao-ambiental') },
-  { id: 'com-compostagem', label: 'Com documento de compostagem', slugs: comDocumento('compostagem') },
+  { id: 'com-plano', label: '(PCS) Plano de coleta Seletiva', slugs: comPlano },
+  { id: 'com-educacao-ambiental', label: '(PEA) Plano de educação ambiental', slugs: comDocumento('educacao-ambiental') },
+  { id: 'com-compostagem', label: 'Plano de compostagem', slugs: comDocumento('compostagem') },
 ]
 // Visão estadual dos panoramas (L09), no topo do índice.
 const relatorioGeral = documents.find((doc) => doc.title === 'Relatório geral dos panoramas')
 // O mapa (L01) e os contornos do IBGE só são baixados quando alguém escolhe "Mapa".
+const dados = { planos: planosPorUrl, documentos: municipalDocuments }
 const MunicipalityMap = lazy(() => import('./MunicipalityMap'))
 type Visao = 'lista' | 'mapa'
 const visaoDaUrl = (): Visao => (new URLSearchParams(window.location.search).get('visao') === 'mapa' ? 'mapa' : 'lista')
@@ -125,7 +128,7 @@ export function MunicipalityIndex({ eyebrow, title, description, filtroInicial =
         </div>
       ) : visao === 'mapa' ? (
         <Suspense fallback={<p className="municipality-index-count">Carregando mapa…</p>}>
-          <MunicipalityMap cidades={visiveis.map((city) => ({ slug: city.slug, name: city.name, panorama: `/uploads/2025/03/${city.file}`, plano: mostrarPlano ? planos.get(city.slug)?.primaryDocumentUrl : undefined }))} />
+          <MunicipalityMap cidades={visiveis.map((city) => ({ slug: city.slug, name: city.name, acoes: acoesDoMunicipio(filtro, city, dados, mostrarPlano) }))} />
         </Suspense>
       ) : (
         <div className="municipality-groups">
@@ -134,21 +137,17 @@ export function MunicipalityIndex({ eyebrow, title, description, filtroInicial =
               <h3 id={`municipios-${letra.toLowerCase()}`}>{letra}</h3>
               <ul>
                 {cidades.map((city) => {
-                  const plano = mostrarPlano ? planos.get(city.slug) : undefined
+                  const acoes = acoesDoMunicipio(filtro, city, dados, mostrarPlano)
                   return (
                     <li key={city.slug}>
                       <Link to={`/cidades/${city.slug}/`} className="municipality-name" aria-label={`${city.name}: abrir ficha`}>{city.name}</Link>
                       <span className="municipality-actions">
-                        <a className="municipality-action" href={`/uploads/2025/03/${city.file}`} target="_blank" rel="noopener">
-                          <span className="municipality-action-long">Panorama · PDF</span><span className="municipality-action-short">PDF</span>
-                          <span className="sr-only"> de {city.name} (abre em nova aba)</span>
-                        </a>
-                        {plano && (
-                          <a className="municipality-action" href={plano.primaryDocumentUrl} target="_blank" rel="noopener">
-                            <span className="municipality-action-long">Plano de coleta seletiva</span><span className="municipality-action-short">Plano</span>
+                        {acoes.map((acao) => (
+                          <a key={acao.url} className="municipality-action" href={acao.url} target="_blank" rel="noopener">
+                            <span className="municipality-action-long">{acao.rotulo}</span><span className="municipality-action-short">{acao.curto}</span>
                             <span className="sr-only"> de {city.name} (abre em nova aba)</span>
                           </a>
-                        )}
+                        ))}
                       </span>
                     </li>
                   )
