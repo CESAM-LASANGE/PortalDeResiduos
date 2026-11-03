@@ -57,20 +57,18 @@ export function ProductionHub({ navigate: _navigate }: { navigate: Navigate }) {
     <nav className="container production-anchors" aria-label="Produções nesta página">
       {PRODUCOES.map((producao) => <a key={producao.id} href={`#${producao.id}`}>{producao.title}</a>)}
     </nav>
-    <div className="container production-list">
+    <div className="container production-grid">
       {PRODUCOES.map((producao) => (
-        <section key={producao.id} id={producao.id} className="production-item" aria-labelledby={`${producao.id}-titulo`}>
-          <div>
-            <Eyebrow>{producao.eyebrow}</Eyebrow>
-            <h2 id={`${producao.id}-titulo`}>{producao.title}</h2>
-            <p>{producao.text}</p>
-          </div>
-          <div className="production-item-actions">
+        <article key={producao.id} id={producao.id} className="production-card" aria-labelledby={`${producao.id}-titulo`}>
+          <Eyebrow>{producao.eyebrow}</Eyebrow>
+          <h2 id={`${producao.id}-titulo`}>{producao.title}</h2>
+          <p>{producao.text}</p>
+          <div className="production-card-actions">
             {producao.acoes.map((acao, index) => acao.externo
               ? <a key={acao.href} className={index === 0 ? 'button button-primary' : 'text-link'} href={acao.href} target="_blank" rel="noopener">{acao.label}<span className="sr-only">: {producao.title} (abre em nova aba)</span> <ExternalLink size={15} aria-hidden="true" /></a>
               : <Link key={acao.href} to={acao.href} className={index === 0 ? 'button button-primary' : 'text-link'}>{acao.label}{acao.label === 'Acessar produção' && <span className="sr-only">: {producao.title}</span>} <ArrowRight size={15} aria-hidden="true" /></Link>)}
           </div>
-        </section>
+        </article>
       ))}
     </div>
   </>

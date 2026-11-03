@@ -861,16 +861,18 @@
 .production-anchors { display: flex; flex-wrap: wrap; gap: 0.25rem 1.25rem; padding-block: 1rem; border-bottom: 1px solid var(--line); }
 .production-anchors a { display: inline-flex; align-items: center; min-height: 44px; font-size: var(--step-small); font-weight: 600; color: var(--mata); text-decoration: none; }
 .production-anchors a:hover { text-decoration: underline; text-underline-offset: 0.18em; }
-.production-list { padding-bottom: var(--section-y); }
-.production-item {
-  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1.25rem clamp(2rem, 6vw, 4rem); align-items: center;
-  padding-block: clamp(1.75rem, 4vw, 2.5rem); border-bottom: 1px solid var(--line); scroll-margin-top: 5rem;
+.production-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.25rem; padding-block: 1.75rem var(--section-y); }
+/* Mesma linguagem dos cards da tela inicial: rótulo em registro, título em serifa, texto de apoio e a chamada embaixo. */
+.production-card { display: flex; flex-direction: column; gap: 0.5rem; padding: 1.4rem 1.5rem; background: var(--paper-raised); border: 1px solid var(--line); border-top: 3px solid var(--mata); scroll-margin-top: 5.5rem; }
+.production-card h2 { margin: 0.3rem 0 0; font-family: var(--font-display); font-size: var(--step-2); font-weight: 600; line-height: 1.15; }
+.production-card p { flex: 1; margin: 0; color: var(--ink-soft); font-size: var(--step-small); line-height: 1.55; }
+.production-card-actions { display: flex; flex-direction: column; align-items: flex-start; gap: 0.5rem; margin-top: 0.9rem; padding-top: 0.9rem; border-top: 1px solid var(--line); }
+@media (max-width: 1080px) {
+  .production-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
-.production-item h2 { margin: 0.6rem 0 0.5rem; font-size: var(--step-3); }
-.production-item p { max-width: 52ch; color: var(--ink-soft); font-size: var(--step-body); line-height: 1.65; }
-.production-item-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem 1.5rem; }
 @media (max-width: 700px) {
-  .production-item { grid-template-columns: 1fr; }
+  .production-grid { grid-template-columns: 1fr; gap: 1rem; }
+  .production-card { padding: 1.1rem 1.15rem; }
 }
 
 /* Apoio a Decisão: guia em vídeo e manual junto do sistema. */
