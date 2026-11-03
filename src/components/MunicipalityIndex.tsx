@@ -18,8 +18,8 @@ const comDocumento = (kind: 'educacao-ambiental' | 'compostagem') => new Set(mun
 const FILTROS: Array<{ id: Filtro; label: string; slugs?: Set<string> }> = [
   { id: 'todos', label: 'Todos' },
   { id: 'com-plano', label: '(PCS) Plano de coleta Seletiva', slugs: comPlano },
-  { id: 'com-educacao-ambiental', label: '(PEA) Plano de educação ambiental', slugs: comDocumento('educacao-ambiental') },
   { id: 'com-compostagem', label: 'Plano de compostagem', slugs: comDocumento('compostagem') },
+  { id: 'com-educacao-ambiental', label: '(PEA) Plano de educação ambiental', slugs: comDocumento('educacao-ambiental') },
 ]
 // Visão estadual dos panoramas (L09), no topo do índice.
 const relatorioGeral = documents.find((doc) => doc.title === 'Relatório geral dos panoramas')

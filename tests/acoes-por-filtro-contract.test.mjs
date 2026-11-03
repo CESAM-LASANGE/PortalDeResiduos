@@ -42,3 +42,8 @@ test('lista e painel do mapa usam a mesma função', () => {
   assert.match(mapa, /atual\.acoes\.map/)
   assert.doesNotMatch(mapa, /atual\.panorama|atual\.plano/)
 })
+
+test('filtros de Panoramas na ordem: Panorama (Todos), coleta seletiva, compostagem, educação ambiental', () => {
+  const ids = [...ler('src/components/MunicipalityIndex.tsx').match(/const FILTROS[\s\S]*?\n\]/)[0].matchAll(/\{ id: '([a-z-]+)'/g)].map((m) => m[1])
+  assert.deepEqual(ids, ['todos', 'com-plano', 'com-compostagem', 'com-educacao-ambiental'])
+})
