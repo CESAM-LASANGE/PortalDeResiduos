@@ -81,5 +81,5 @@ test('Produções do Convênio: seção própria dos panoramas, com a lista e o 
   // Sem repetir os mesmos links em Materiais compilados.
   const materiais = producoes.match(/\{ id: 'materiais-compilados', eyebrow:[^\n]*\},?\n/)[0]
   assert.doesNotMatch(materiais, /Ver municípios|Panoramas da gestão de resíduos|href: '\/cidades\/'/)
-  assert.match(materiais, /Plano de coleta seletiva/)
+  assert.match(materiais, /Acessar produção/)
 })
