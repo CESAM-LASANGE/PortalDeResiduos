@@ -354,7 +354,8 @@ test('D3.11: Produções em uma página, com ações diretas, e sem páginas só
   const hub = src.match(/export function ProductionHub[\s\S]*?\n\}/)[0]
   assert.match(hub, /production-anchors/)
   const ids = [...src.matchAll(/\{ id: '([a-z-]+)', eyebrow:/g)].map((m) => m[1])
-  assert.deepEqual(ids, ['apoio-a-decisao', 'panoramas', 'materiais-compilados', 'projeto-valoriza', 'educacao-ambiental', 'disposicao-legal', 'usinas-de-triagem', 'cooperativas'])
+  // A ordem de cima para baixo está em tests/ordem-producoes-contract.test.mjs.
+  assert.deepEqual([...ids].sort(), ['apoio-a-decisao', 'coleta-seletiva', 'compostagem', 'cooperativas', 'disposicao-legal', 'educacao-ambiental', 'materiais-compilados', 'panoramas', 'projeto-valoriza', 'usinas-de-triagem'])
   assert.match(src, /https:\/\/sadgrs\.streamlit\.app\//)
   assert.match(src, /arquivo\('Panorama e Censo dos Catadores'\)/)
   assert.match(src.match(/export function MaterialsCompiled[\s\S]*?\n\}/)[0], /<MunicipalityIndex /)
